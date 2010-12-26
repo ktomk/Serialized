@@ -5,5 +5,5 @@
   THANKS
   
   Sven Kiera - Continued Eclipse IDE PHP Tool Integration support.
-  Sebastian Bergman - Making PHPUnit support assertion of triggered notices
+  Sebastian Bergmann - Making PHPUnit support assertion of triggered notices
     and errors in 3.5.5.
