@@ -95,7 +95,7 @@ class Parser {
 		$map = array_flip($this->typeChars);
 		if (!isset($map[$char])) {
 			// @codeCoverageIgnoreStart
-			throw new \InvalidArgumentException(sprintf('Unknown char "%s" to identify a vartype', $char));
+			throw new \InvalidArgumentException(sprintf('Unknown char "%s" to identify a vartype.', $char));
 			// @codeCoverageIgnoreEnd
 		}
 		return $map[$char];
@@ -103,7 +103,7 @@ class Parser {
 	private function typeByName($name) {
 		$map = array_flip($this->typeNames);
 		if (!isset($map[$name])) {
-			throw new \InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype', $name));
+			throw new \InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype.', $name));
 		}
 		return $map[$name];
 	}
@@ -130,7 +130,7 @@ class Parser {
 			return array(self::TYPE_NULL, 0);
 		if (':' !== $test)
 			return $error;
-		if (false === strpos('abdiOs', $token))
+		if (false === strpos('abdiOrRs', $token))
 			return $error;
 		return array($this->typeByChar($token), 2);
 	}
@@ -161,20 +161,33 @@ class Parser {
 		}
 		$char = $this->data[$offset];
 		if ($charExpected !== $char) {
-			throw new ParseException(sprintf('Unexpected char "%s" at offset %d. Expected "%s"', $char, $offset, $charExpected));
+			throw new ParseException(sprintf('Unexpected char "%s" at offset %d. Expected "%s".', $char, $offset, $charExpected));
 		}
 	}
 	private function expectEof($offset) {
 		$len = strlen($this->data);
 		$end = ($offset + 1) === $len;
 		if (!$end) {
-			throw new ParseException(sprintf('Not EOF after offset %d. Length is %d', $offset, $len));
+			throw new ParseException(sprintf('Not EOF after offset %d. Length is %d.', $offset, $len));
 		}
+	}
+	private function parseRecursionValue($offset) {
+		$len = $this->matchRegex('([1-9]+[0-9]*)', $offset);
+		if (!$len) {
+			throw new ParseException(sprintf('Invalid character sequence for recursion index at offset %d.', $offset));
+		}
+		$this->expectChar(';', $offset+$len);
+		$valueString = substr($this->data, $offset, $len);
+		$value = (int) $valueString;
+		return array($value, $len+1);
+	}
+	private function parseRecursionrefValue($offset) {
+		return $this->parseRecursionValue($offset);
 	}
 	private function parseStringValue($offset, $terminator = ';') {
 		$lenLength = $this->matchRegex('([0-9]+(?=:))', $offset);
 		if (!$lenLength) {
-			throw new ParseException(sprintf('Invalid character sequence for string vartype at offset %d', $offset));
+			throw new ParseException(sprintf('Invalid character sequence for string vartype at offset %d.', $offset));
 		}
 		$this->expectChar(':', $offset+$lenLength);
 		$this->expectChar('"', $offset+$lenLength+1);
@@ -188,7 +201,7 @@ class Parser {
 	private function parseIntValue($offset) {
 		$len = $this->matchRegex('([-+]?[0-9]+)', $offset);
 		if (!$len) {
-			throw new ParseException(sprintf('Invalid character sequence for integer value at offset %d', $offset));
+			throw new ParseException(sprintf('Invalid character sequence for integer value at offset %d.', $offset));
 		}
 		$this->expectChar(';', $offset+$len);
 		$valueString = substr($this->data, $offset, $len);
@@ -212,13 +225,13 @@ class Parser {
 		return $build;	
 	}
 	private function parseInvalidValue($offset) {		
-		throw new ParseException(sprintf('Invalid ("%s") at offset %d', $this->extract($offset), $offset));
+		throw new ParseException(sprintf('Invalid ("%s") at offset %d.', $this->extract($offset), $offset));
 	}
 	private function parseFloatValue($offset) {
 		$pattern = '((?:[-]?INF|[+-]?(?:(?:[0-9]+|(?:[0-9]*[\.][0-9]+)|(?:[0-9]+[\.][0-9]*))|(?:[0-9]+|(?:([0-9]*[\.][0-9]+)|(?:[0-9]+[\.][0-9]*)))[eE][+-]?[0-9]+));)';
 		$len = $this->matchRegex($pattern, $offset);
 		if (!$len) {
-			throw new ParseException(sprintf('Invalid character sequence for float vartype at offset %d', $offset));
+			throw new ParseException(sprintf('Invalid character sequence for float vartype at offset %d.', $offset));
 		}
 		$valueString = substr($this->data, $offset, $len-1);
 		$value = unserialize("d:{$valueString};"); // using unserialize for INF and -INF.
@@ -232,7 +245,7 @@ class Parser {
 	private function parseBoolValue($offset) {
 		$char = $this->data[$offset];
 		if ('0' !== $char && '1' !== $char) {
-			throw new ParseException(sprintf('Unexpected char "%s" at offset %d. Expected "0" or "1"', $char, $offset));
+			throw new ParseException(sprintf('Unexpected char "%s" at offset %d. Expected "0" or "1".', $char, $offset));
 		}
 		$this->expectChar(';',$offset+1);
 		$valueInt = (int) $char;
@@ -251,7 +264,7 @@ class Parser {
 		$offsetStart = $offset;
 		$lenMatch = $this->matchRegex('([0-9]+:)', $offset);
 		if (!$lenMatch) {
-			throw new ParseException(sprintf('Invalid character sequence for array length at offset %d', $offset));
+			throw new ParseException(sprintf('Invalid character sequence for array length at offset %d.', $offset));
 		}
 		$lenString = substr($this->data, $offset, $lenMatch-1);
 		$lenLen = (int) $lenString;
@@ -262,7 +275,7 @@ class Parser {
 			list($keyHinted, $keyLength) = $this->parseValue($offset);
 			list($keyTypeName, $keyType) = $this->infoOf($keyHinted);
 			if ($this->invalidArrayKeyType($keyType)) {
-				throw new ParseException(sprintf('Invalid vartype %s (%d) for array key at offset %d', $keyTypeName, $keyType, $offset));
+				throw new ParseException(sprintf('Invalid vartype %s (%d) for array key at offset %d.', $keyTypeName, $keyType, $offset));
 			}
 			list($valueHinted, $valueLength) = $this->parseValue($offset+=$keyLength);
 			$offset+=$valueLength;
@@ -284,7 +297,7 @@ class Parser {
 		foreach($classMembers as $index => $member) {
 			list(list($typeSpec)) = $member;
 			if ('string' !== $typeSpec)
-				throw new ParseException(sprintf('Unexpected type %s, expected string on offset %d', $typeSpec, $offset));
+				throw new ParseException(sprintf('Unexpected type %s, expected string on offset %d.', $typeSpec, $offset));
 			$classMembers[$index][0][0] = $this->typeNameByType(self::TYPE_MEMBER); 
 		}
 		$totalLen += $len;

@@ -86,8 +86,6 @@ class ParserTest extends TestCase
 			array(array()),
 			array('a'=>array('aa'=>array('aaa'=>array('aaaa'=>'string value')))),
 			array(new \StdClass),
-			// FIXME add recursion like this: 
-			array(new \StdClass, $class, new \StdClass, $class),
 		);
 		$i = 0;
 		foreach($tests as $test) {
@@ -99,17 +97,61 @@ class ParserTest extends TestCase
 			try {
 				$result = $object->getParsed();
 			} catch (Exception $e) {
-				printf("DEBUG: %s\n", $serialized);
-				// FIXME debug output: printf("...%s...\n", substr($serialized, 187, 40));
 				throw $e;
 			}
 			$this->assertEquals($expected, $result);
 		}
 	}
+	
+	public function testRecursion()
+	{			
+		$o = new \stdClass;
+		$o->normal = $o;
+		$o->reference = &$o;
+		$serialized = serialize($o);
+		// O:8:"stdClass":2:{s:6:"normal";r:1;s:9:"reference";R:1;}
+		$expected = array('object', array(
+						array('classname', 'stdClass'),
+						array('members', array(
+							array(
+								array('member', 'normal'),
+								array('recursion', 1)
+							),
+							array(
+								array('member', 'reference'),
+								array('recursionref', 1)
+							)
+						))
+		));
+		$parser = new Parser($serialized);
+		$result = $parser->getParsed();
+		$this->assertEquals($expected, $result);
+		
+		$o = new \stdClass;
+		$data = array($o, $o);
+		$serialized = serialize($data);
+		$expected = array('array', array(
+						array(
+							array('int', 0),
+							array('object', array(
+								array('classname', 'stdClass'),
+								array('members', array())	
+							))
+							
+						),
+						array(
+							array('int', 1),
+							array('recursion', 2)
+						)
+						
+		));
+		$parser->setSerialized($serialized);
+		$result = $parser->getParsed();
+		$this->assertEquals($expected, $result);
+	}
 
 	public function testObject()
 	{
-		
 		# test: object with no members
 		
 		$object = new \StdClass;
@@ -248,7 +290,7 @@ class ParserTest extends TestCase
 		\PHPUnit_Framework_Error_Warning::$enabled = FALSE;
 		$result = @Parser::parse($serialized);
 		\PHPUnit_Framework_Error_Warning::$enabled = TRUE;
-		$this->assertLastError('Error parsing serialized string: Invalid ("[;]") at offset 0', 'Parser.php');
+		$this->assertLastError('Error parsing serialized string: Invalid ("[;]") at offset 0.', 'Parser.php');
 		$this->assertSame(false, $result);
 		$this->addToAssertionCount(1);
 		try {
