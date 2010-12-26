@@ -146,10 +146,10 @@
       
       array(
          (string) 'array',  array(
-		     array(
+             array(
                  array((string) 'string', (string) 'key'),  # key   \_ pair
                  array((string) 'string', (string) 'value') # value /
-			 )
+             )
          )
       )
       
@@ -236,14 +236,14 @@
       
       array('array', array(
           array(
-              array('int', 0),
-              array('object', array(
+              array('int', 0),       // key
+              array('object', array( // value
                   array('classname', 'stdClass'),
                   array('members', array())
               ))              
           ),
           array(
-              array('int', 1),
-              array('reference', 2)
+              array('int', 1),       // key
+              array('reference', 2)  // value
           )
       ))
