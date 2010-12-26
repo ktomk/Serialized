@@ -112,7 +112,7 @@
            see below for notation of values.
            
     The notation of DATA varies based on the datatype which varies 
-  between array and object. See II-2-1 for array and II-2-2 for 
+  between array and object. See 2-1 for array and 2-2 for 
   object.
     
   2-1 ARRAY
