@@ -1,0 +1,252 @@
+  Serialized - PHP Library for Serialized Data
+
+  Copyright (C) 2010  Tom Klingenberg
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+    
+  ARRAY NOTATION
+  
+  CONTENTS
+  	
+  	Introduction
+  	1 Single Datatypes
+    2 Compound Datatypes
+    2-1 Array
+    2-2 Object
+    3 Recursion
+  
+  INTRODUCTION
+
+    The Array Notation represents _all_ content of a serialized string in 
+  form of a standard PHP array with two values:
+  
+    NATIVE  ~= array(TYPE, DATA)
+  
+    Of which the two elements are numerically indexed:
+  
+      First Element  (0): TYPE (always string)
+      Second Element (1): DATA (of mixed type: NULL, scalar or array)
+    
+    All possible forms in PHP pseudo code are therefore:
+    
+            array((string) TYPE, NULL);
+      -or-  array((string) TYPE, (int) DATA);
+      -or-  array((string) TYPE, (float) DATA);
+      -or-  array((string) TYPE, (string) DATA);
+      -or-  array((string) TYPE, (bool) DATA);
+      -or-  array((string) TYPE, (array) DATA);
+      
+    The Array Notation has been chosen to represent parsed data in form
+  of a parse-tree. Next to the Array Notation, a object based represenation
+  is planned. See ROADMAP.
+  
+    DATA varies based on TYPE which can be grouped in SINGLE, COMPOUND and
+  RECURSION. See the tree for grouping and association to PHP datatypes. 
+
+                             TYPE
+                              |
+      SINGLE---------------COMPOUND--------------RECURSION
+        |                     |                      |
+        +- null               +- array               +- recursion[*]
+        +- int                `- object              `- reference[*]
+        +- float
+        +- string
+        `- bool
+
+    The Array Notation is quite complex to explain in written form. See
+  ARRAYNOT.pdf or ARRAYNOT.odg for a graphical representation.
+  
+  ----
+    [*] recursion and reference in the tree do not represent a native PHP 
+        datatype but a serialized one. They are (un)serialisation-ordered
+        sequence-based non-negative integer indices starting at one.
+    
+  1 SINGLE DATATYPES
+    
+    Single datatypes are NULL and scalars (Resources can not be seria-
+  lized[*]) have their value stored natively as the following table shows:
+  
+      # | NATIVE         | TYPE     | DATA 
+    ----+----------------+----------+--------------
+      1 | (null) NULL    | 'null'   | (null) NULL
+      2 | (bool) TRUE    | 'bool'   | (bool) TRUE
+      3 | (int) 1        | 'int'    | (int) 1 
+      4 | (float) 22.5   | 'float'  | (float) 22.5  
+      5 | (string) 'foo' | 'string' | (string) 'foo'
+      
+    TABLE: Single or simple PHP datatypes as Array Notation as
+           NATIVE ~= array(TYPE, DATA) 
+
+      As the table shows, the value of these five simple datatypes are 
+    preserved in their Array Notation. The first array element names 
+    the type of the stored value. 
+    
+      EXAMPLES:
+      
+      (null) NULL  ~= array('null',  (null)  NULL)
+      (float) 22.5 ~= array('float', (float) 22.5)
+      
+  ---- 
+    [*] See note on http://php.net/manual/en/function.serialize.php
+  
+  2 COMPOUND DATATYPES
+  
+    Compound datatypes are such which are complex and consist of one or
+  more simple or compound datatype.
+  
+    In PHP those are Array and Object. Their Array 
+  Notation is done by using array(TYPE, DATA) as well, but the 
+  DATA part will always be an array which has a representation 
+  on it's own. See the following table for a comparison with  
+  simple datatypes so far:
+     
+      # | NATIVE   | TYPE     | DATA  
+    ----+-------- -+----------+---------------------
+      6 | (array)  | 'array'  | (array) array(...) 
+      7 | (object) | 'object' | (array) array(...)
+  
+    TABLE: Compound PHP Datatypes as Array Notation (first level),
+           see below for notation of values.
+           
+    The notation of DATA varies based on the datatype which varies 
+  between array and object. See II-2-1 for array and II-2-2 for 
+  object.
+    
+  2-1 ARRAY
+  
+    array('array', array(...) /* DATA */ )
+   
+    DATA is an array. It consists of one array with two entries per 
+  each native array-entry in form of a key and value pair:
+  
+    NATIVE  ~= array(TYPE, DATA)
+    
+    ARRAY   ~= array('array', DATA)
+    DATA    ~= array(array(KEY, VALUE)*)
+    KEY     ~= (array-notation) [null|string|int]NATIVE
+    VALUE   ~= (array-notation) [*any*]NATIVE
+    
+    Key elements are represented in their simple datatype Array Notation
+  as explained above. Key in PHP arrays can only be NULL, integer or 
+  string[*]. Values are represented in their Array Notation based on 
+  their datatype: SIMPLE, COMPOUND or REFERENCE. 
+  
+    EXAMPLE: Array with string datatypes (simple) in Array Notation
+    
+      Native:
+    
+      array( 
+          (string) 'key' => (string) 'value'
+       )
+      
+      Array Notation:
+      
+      array(
+         (string) 'array',  array(
+		     array(
+                 array((string) 'string', (string) 'key'),  # key   \_ pair
+                 array((string) 'string', (string) 'value') # value /
+			 )
+         )
+      )
+      
+    As the example shows, DATA is an array of one key/value pair of their
+  values own Array Notation.
+  
+    HINT: The library can print out array notations as preformatted and 
+          better readable text for debugging purposes. 
+  
+  2-2 OBJECT
+  
+    array('object', array(...) /* DATA */ )  
+   
+    DATA is an array. It contains two entries per object of which the 
+  first one is representing the class-name and the second entry represents 
+  the class-members.
+  
+    In difference to the notation of arrays, and additional third level is 
+  added. Basically this is the blueprint:
+      
+      NATIVE  ~= array(TYPE, DATA)
+      
+      OBJECT  ~= array('object', DATA)  
+      DATA    ~= array(NAME, MEMBERS)  // compare: array(TYPE, DATA)
+      NAME    ~= array('classname', (string))
+      MEMBERS ~= array(array(MEMBER, VALUE)*)
+      MEMBER  ~= array('member', (string))
+      VALUE   ~= (array-notation) [*any*]NATIVE
+  
+    Class-members is an array of one key/value pair of members and their 
+  values in their own Array Notation comparable to arrays with their keys 
+  and values.
+  
+    EXAMPLE: Object with string member (simple) in Array Notation
+    
+      Native (as pseudo-code):
+  
+      $foo = new stdClass;
+      $foo->membername = 'bar';
+    
+      Array Notation:
+    
+      array(
+          (string) 'object', 
+          array(
+              array((string) 'classname', (string) 'stdClass'),
+              array((string) 'members', (array) array(
+                  array(
+                      array('member', (str) 'membername'), # member \_ pair
+                      array('string', (str) 'bar')         # value  /
+                  )
+              )
+          )
+      )
+    
+    As the example shows, DATA is an array with two entries representing 
+  classname and members.
+     
+    Members is an array of member/value pairs while member names are 
+  type-hinted as 'member' following with the string of their name and
+  values are written in their own Array Notation. Values can be of any
+  type available.
+  
+  3 RECURSION
+  
+    FIXME: This needs to be documented
+    
+		self::TYPE_INVALID => 'invalid',
+		
+		self::TYPE_RECURSION => 'r',
+
+
+## Misc Notes
+The lowercase "r" will be a recursion, 
+while the uppercase "R" will be a recursion by reference.
+
+// serialized recursion - the ABC
+$o = new stdClass;
+
+// recursion
+$o->normal = $o;
+
+// recursion by reference
+$o->reference = &$o;
+
+echo serialize($o);
+// O:8:"stdClass":2:{s:6:"normal";r:1;s:9:"reference";R:1;}
+
+We should focus into r:1; and R:1;.
+
+While the "r", or the "R", means there is a recursion, the unsigned 
+integer indicates the exact object that "caused" that recursion.
+When we perform an unserialize operation, the parser cannot obviously 
+de-serialize as we read, because if we have an instance or an array, 
+internal values should be ready to be assigned already 
+"unserialized".
+This simply means that the number after the R is not sequential, and 
+there is no relation with the length of the string, but only a 
+relation with de-serialization process.
+		
