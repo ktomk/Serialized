@@ -215,38 +215,35 @@
   
   3 RECURSION
   
-    FIXME: This needs to be documented
+    PHP can store recursion and refrenced recursion into serialized data.
+  
+    In Array Notation those are hinted as 'recursion' and 'recursionref'
+  containing the numerical, (un-)serialize-order one-based pointer to the
+  value in question.
+  
+    RECURSION    ~= array('recursion', INDEX)
+    RECURSIONREF ~= array('recursion', INDEX)
     
-		self::TYPE_INVALID => 'invalid',
-		
-		self::TYPE_RECURSION => 'r',
-
-
-## Misc Notes
-The lowercase "r" will be a recursion, 
-while the uppercase "R" will be a recursion by reference.
-
-// serialized recursion - the ABC
-$o = new stdClass;
-
-// recursion
-$o->normal = $o;
-
-// recursion by reference
-$o->reference = &$o;
-
-echo serialize($o);
-// O:8:"stdClass":2:{s:6:"normal";r:1;s:9:"reference";R:1;}
-
-We should focus into r:1; and R:1;.
-
-While the "r", or the "R", means there is a recursion, the unsigned 
-integer indicates the exact object that "caused" that recursion.
-When we perform an unserialize operation, the parser cannot obviously 
-de-serialize as we read, because if we have an instance or an array, 
-internal values should be ready to be assigned already 
-"unserialized".
-This simply means that the number after the R is not sequential, and 
-there is no relation with the length of the string, but only a 
-relation with de-serialization process.
-		
+    Example:
+    
+      $object = new stdClass;
+      $data = array($object, $object);
+    
+      The first value will be the array, the second the first object 
+    inside the array and the third a recursion to it. Index is 2 then.
+    
+      Written in Array Notation:
+      
+      array('array', array(
+          array(
+              array('int', 0),
+              array('object', array(
+                  array('classname', 'stdClass'),
+                  array('members', array())
+              ))              
+          ),
+          array(
+              array('int', 1),
+              array('reference', 2)
+          )
+      ))

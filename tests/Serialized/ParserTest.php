@@ -30,11 +30,6 @@ require_once(__DIR__ . '/../TestCase.php');
 class ParserTest extends TestCase
 {
 	/**
-	 * @var Parser
-	 */
-	# FIXME remove, looks unused protected $object;
-
-	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 */
@@ -102,7 +97,44 @@ class ParserTest extends TestCase
 			$this->assertEquals($expected, $result);
 		}
 	}
-	
+
+	public function testObject()
+	{
+		# test: object with no members
+		
+		$object = new \StdClass;
+		$expected = array('object', array(
+				array('classname', 'stdClass'),
+				array('members', array())				
+		));
+		
+		$serialized = serialize($object);
+		$parser = new Parser($serialized);
+		$actual = $parser->getParsed();
+
+		$this->assertEquals($expected, $actual);
+		
+		# test: object with member
+		
+		$object = new \StdClass;
+		$object->property='test';
+		$expected = array('object', array(
+				array('classname', 'stdClass'),
+				array('members', array(
+					array(
+						array('member', 'property'),
+						array('string', 'test')
+					)
+				))
+		));
+
+		$serialized = serialize($object);
+		$parser = new Parser($serialized);
+		$actual = $parser->getParsed();
+
+		$this->assertEquals($expected, $actual);
+	}
+
 	public function testRecursion()
 	{			
 		$o = new \stdClass;
@@ -149,44 +181,7 @@ class ParserTest extends TestCase
 		$result = $parser->getParsed();
 		$this->assertEquals($expected, $result);
 	}
-
-	public function testObject()
-	{
-		# test: object with no members
-		
-		$object = new \StdClass;
-		$expected = array('object', array(
-				array('classname', 'stdClass'),
-				array('members', array())				
-		));
-		
-		$serialized = serialize($object);
-		$parser = new Parser($serialized);
-		$actual = $parser->getParsed();
-
-		$this->assertEquals($expected, $actual);
-		
-		# test: object with member
-		
-		$object = new \StdClass;
-		$object->property='test';
-		$expected = array('object', array(
-				array('classname', 'stdClass'),
-				array('members', array(
-					array(
-						array('member', 'property'),
-						array('string', 'test')
-					)
-				))
-		));
-
-		$serialized = serialize($object);
-		$parser = new Parser($serialized);
-		$actual = $parser->getParsed();
-
-		$this->assertEquals($expected, $actual);
-	}
-
+	
 	public function testNull()
 	{
 		$serialized = serialize(null);
@@ -266,6 +261,8 @@ class ParserTest extends TestCase
 			'a:+1:{i:1;x:INF;}',
 			's:0:""',
 			's:0:"";overtheend',
+			'r:0;',
+			'O:8:"stdClass":2:{s:6:"normal";r:a-z;s:9:"reference";R:1;}'
 		);
 		foreach($tests as $serialized) {
 			try {
@@ -329,7 +326,7 @@ class ParserTest extends TestCase
 	{
 		$expected = '`-- object:
      +-- classname: stdClass
-     `-- members(4):
+     `-- members(6):
           +-- member: property
           +-- string: "test"
           +-- member: float
@@ -337,13 +334,20 @@ class ParserTest extends TestCase
           +-- member: bool
           +-- bool: TRUE
           +-- member: null
-          `-- null: NULL'."\n";
+          +-- null: NULL
+          +-- member: recursion
+          +-- recursion: 1
+          +-- member: recursionref
+          `-- recursionref: &1'."\n";
 
 		$object = new \stdClass();
 		$object->property = "test";
 		$object->float = (float) 1;
 		$object->bool = TRUE;
 		$object->null = NULL;
+		$object->recursion = $object;
+		$object->recursionref = &$object;
+		
 
 		$serialized = serialize($object);
 		$parser = new Parser($serialized);

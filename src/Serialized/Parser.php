@@ -364,6 +364,10 @@ class Parser {
 				return ': NULL';
 			case self::TYPE_BOOL:
 				return ': ' . ($value ? 'TRUE' : 'FALSE');
+			case self::TYPE_RECURSION:
+				return ': ' . $value;
+			case self::TYPE_RECURSIONREF:
+				return ': &' . $value;				
 			// @codeCoverageIgnoreStart
 			default:
 				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
