@@ -65,7 +65,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 		for($i=0; $i<$len; $i++) {
 			$char = $string[$i];
 			$point = substr('0'.dechex(ord($char)), -2);
-			(strlen($return)) && $return .= ' ';
+			$i && $return .= ' ';
 			$return .= $point;
 		}
 		return $return;
