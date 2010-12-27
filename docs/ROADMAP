@@ -10,7 +10,7 @@
   ROADMAP
   
   0.0.0 - Init.
-  0.1.0 - Parsing of all available sericalized types incl. recursion and 
+  0.1.0 - Parsing of all available serialized types incl. recursion and 
           references.
   0.2.0 - Class Interfaces orchestring the Array Notation.
   0.3.0 - Stable interfaces and classes.
