@@ -1,7 +1,7 @@
- [x] test injection of invalid references serialization
- [x] test dump of references
  [ ] Serialized\Value (Interface)
- [ ] Github external repository
+ [ ] Test examples for error-free execution
+ [ ] Validate class- and member-mame parsing
+  
   
  (?) Any chance to see RECURSION INDECIES numerically validated?
  	- numeric index en parallel to parsing referencing array notations
