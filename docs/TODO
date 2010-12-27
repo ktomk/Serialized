@@ -1,5 +1,3 @@
- [ ] Serialized\Value (Interface)
- [ ] Test examples for error-free execution
  [ ] Validate class- and member-mame parsing
 
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
