@@ -26,9 +26,9 @@
 
 Namespace Serialized;
 
-require_once __DIR__ . '/../src/Serialized.php';
+require_once(__DIR__.'/../src/Serialized.php');
 
-require_once 'PHPUnit/Autoload.php';
+require_once('PHPUnit/Autoload.php');
 
 /**
  * abstract, base test-case class.
