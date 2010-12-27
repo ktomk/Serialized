@@ -81,7 +81,7 @@
     Runtime Configuration "unserialize_callback_func" (PHP Manual)
   http://www.php.net/manual/en/var.configuration.php#unserialize-callback-func
 
-    PHP Serialization And Recursion Demystified (by Andrea Giammarch; 2009-09-07)
+    PHP Serialization And Recursion Demystified (by Andrea Giammarchi; 2009-09-07)
   http://webreflection.blogspot.com/2009/09/php-serialization-and-recursion.html
 
     Recursive Reference Serialize Library (by Nghia Nguyen; 2009-06-01)
