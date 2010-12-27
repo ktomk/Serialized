@@ -31,7 +31,7 @@ Namespace Serialized;
  * 
  * @since 0.0.0
  */
-class Parser {
+class Parser implements Value {
 	const TYPE_INVALID = 1;
 	const TYPE_NULL = 11;	
 	const TYPE_BOOL = 21;
