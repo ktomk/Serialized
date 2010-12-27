@@ -82,8 +82,8 @@ class Serialized {
 	 */
 	public static function loadLibrary() {
 		$classNames = array(
-			'Serialized\\Parser',
 			'Serialized\\ParseException',
+			'Serialized\\Parser',
 		);
 		$resultArray = array_map(get_called_class().'::loadClass', $classNames);
 		$resultCountable = array_map('intval', $resultArray);
@@ -98,9 +98,17 @@ class Serialized {
             return false;
         }
 		$fileName = self::fileNameOfClassName($className);
-		if (false===class_exists($className, false)) {
+		if (self::undefined($className)) {
 			require($fileName);
 		}
 		return true;
+	}
+	/**
+	 * @return bool
+	 */
+	public static function undefined($classOrInterfaceName) {
+		$classExists = class_exists($classOrInterfaceName, false);
+		$interfaceExists = interface_exists($classOrInterfaceName, false);
+		return (bool) (false === $classExists && false === $interfaceExists);
 	}
 }
