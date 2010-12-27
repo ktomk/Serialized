@@ -59,7 +59,7 @@
       For debugging purposes, there is a dump function which prints structure
     and data of a serialized string to standard output:
       
-      $parser = new Serialized/Parser($serialized);
+      $parser = new Serialized\Parser($serialized);
       $parser->dump();
       
       Example: 01-debug-dump
