@@ -52,7 +52,7 @@
       After including the autoloader, auto-loading is enabled and the parser
     can be used:
     
-      $array = Serialized/Parser::Parse($serialized);
+      $array = Serialized\Parser::Parse($serialized);
       
       Example: 00-basic-parsing
       
