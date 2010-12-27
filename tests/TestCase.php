@@ -32,8 +32,6 @@ require_once 'PHPUnit/Autoload.php';
 
 /**
  * abstract, base test-case class.
- * 
- * @since 0.0.0
  */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {	

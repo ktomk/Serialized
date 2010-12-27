@@ -28,8 +28,6 @@ Namespace Serialized;
 
 /**
  * Serialize Parser
- * 
- * @since 0.0.0
  */
 class Parser implements Value {
 	const TYPE_INVALID = 1;

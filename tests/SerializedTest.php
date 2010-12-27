@@ -28,8 +28,6 @@ require_once(__DIR__.'/TestCase.php');
 
 /**
  * Test class for Serialized.
- * 
- * @since 0.0.1
  */
 class SerializedTest extends \Serialized\TestCase
 {
