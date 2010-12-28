@@ -1,4 +1,6 @@
+ [ ] Check serialized array with NULL keys. / Test if those can be serialized.
  [ ] Validate class- and member-mame parsing
+ 
 
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
      es Parser)
