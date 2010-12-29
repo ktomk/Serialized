@@ -85,6 +85,9 @@ class DataTest extends TestCase
 		return array_map(function($file){return substr(basename($file),0,-4);}, glob($path.'/'.$mask));
 	}
 
+	/**
+	 * @group data
+	 */
 	public function testData() {
 		$datas = $this->getData();
 		foreach($datas as $data) {
