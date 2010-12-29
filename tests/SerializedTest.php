@@ -102,10 +102,14 @@ class SerializedTest extends \Serialized\TestCase
 		$result = \Serialized::loadClass($className);
 		$this->assertFalse($result);    	
 		
+		$className = 'Serialized\\Value';
+		$result = \Serialized::loadClass($className);
+		$this->assertTrue($result, 'Could not load interface- result not true.');
+
 		$className = 'Serialized\\Parser';
 		$result = \Serialized::loadClass($className);
 		
-		$this->assertTrue($result, 'Could not load class - restult not true.');
+		$this->assertTrue($result, 'Could not load class - result not true.');
 		   	
 		$testClass = new $className();
 		
