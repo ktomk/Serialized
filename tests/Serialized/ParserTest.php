@@ -97,6 +97,20 @@ class ParserTest extends TestCase
 			$this->assertEquals($expected, $result);
 		}
 	}
+	
+	public function testNullArray() {
+		$data = array(NULL => NULL);
+		$serialized = serialize($data);				
+		$actual = Parser::parse($serialized);
+		$expected = array('array', array(
+			array(
+				array('string', ''),
+				array('null', NULL)
+			)
+		));
+		
+		$this->assertEquals($expected, $actual);
+	}
 
 	public function testObject()
 	{
