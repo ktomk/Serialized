@@ -86,8 +86,8 @@ class Parser implements Value {
 	public function getSerialized() {
 		return $this->data;
 	}
-	public function setSerialized($data) {
-		$this->data = (string) $data;
+	public function setSerialized($serialized) {
+		$this->data = (string) $serialized;
 	}
 	private function typeByChar($char) {
 		$map = array_flip($this->typeChars);
