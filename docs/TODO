@@ -1,3 +1,6 @@
+ [?] Add Static Serialized::parse()
+ [?] Add Static Serialized::dump()
+ [?] Move Dumper into class of it's own (Dumper_Text)
  [ ] Validate class- and member-mame parsing
 
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
