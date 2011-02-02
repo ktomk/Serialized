@@ -1,4 +1,5 @@
  [ ] Move Dumper into class of it's own.
+  [ ] solve typeByName() code duplication (taken from Parser)
  [ ] Do Nice-Printing ASCII 7bit safe
  [ ] Dumper Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)  
  [?] Add Static Serialized::parse()
