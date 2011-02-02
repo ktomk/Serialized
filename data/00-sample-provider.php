@@ -26,6 +26,9 @@
 
 /**
  * Just return an array full of serialized values.
+ *
+ * Add your own files with a similar naming into the same directory and
+ * they will become automatically part of the \Serialized\DataTest.
  */
 return array(
   "a:1:{i:0;s:47:\"yellowsunshineshinesyellowoverthebridgeandthen?\";}",
