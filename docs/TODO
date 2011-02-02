@@ -1,10 +1,11 @@
  [x] Move Dumper into class of it's own.
-  [ ] solve typeByName() code duplication (taken from Parser)
- [ ] Do Nice-Printing ASCII 7bit safe
- [ ] Dumper Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)  
+ [ ] Dumper: solve typeByName() code duplication (taken from Parser)
+ [ ] Dumper: Do Nice-Printing ASCII 7bit safe
+ [ ] Dumper: Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)  
  [?] Add Static Serialized::parse()
  [?] Add Static Serialized::dump()
  [ ] Validate class- and member-mame parsing
+ [ ] Tests for Serialized::loadLibrary() - all classes covered?
 
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
      es Parser)
