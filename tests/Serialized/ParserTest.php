@@ -335,69 +335,27 @@ class ParserTest extends TestCase
 		$actual = $object->getType();
 		$this->assertEquals($expected, $actual);
 	}
-
-	public function testDumpOutput()
-	{
-		$expected = '`-- object:
-     +-- classname: stdClass
-     `-- members(6):
-          +-- member: property
-          +-- string: "test"
-          +-- member: float
-          +-- float: 1
-          +-- member: bool
-          +-- bool: TRUE
-          +-- member: null
-          +-- null: NULL
-          +-- member: recursion
-          +-- recursion: 1
-          +-- member: recursionref
-          `-- recursionref: &1'."\n";
-
-		$object = new \stdClass();
-		$object->property = "test";
-		$object->float = (float) 1;
-		$object->bool = TRUE;
-		$object->null = NULL;
-		$object->recursion = $object;
-		$object->recursionref = &$object;
-		
-
-		$serialized = serialize($object);
+	public function testDumpEmpty() {
+		$serialized = serialize(NULL);
 		$parser = new Parser($serialized);
-
+		$expected = "`-- null: NULL\n";
 		ob_start();
 		$parser->dump();
 		$actual = ob_get_clean();
-
 		$this->assertEquals($expected, $actual);
 	}
-
 	public function testDumpParameterException() {
 		$parser = new Parser();
+		$this->addToAssertionCount(1);
 		try {
-			$this->addToAssertionCount(1);
+			ob_start();
 			$parser->dump(null, array('illegal option'));
-		} catch(\InvalidArgumentException $e) {
-			return;
-		}
-		$this->fail(sprintf('An expected Exception has not been raised for "%s".', $serialized));
-	}
-
-	public function testUnkownValueTypeNameExceptionViaDump() {
-		$parsed = array('foo', '42');
-		$parser = new Parser();
-
-		ob_start();
-		try {
-			$parser->dump($parsed);
-		} catch(\InvalidArgumentException $e) {
 			ob_end_clean();
-			$this->addToAssertionCount(1);
+		} catch (Exception $e) {
+			$this->fail(sprintf('An unexpected Exception has been raised "%s".', get_class($e)));
 			return;
 		}
-		ob_end_clean();
-		$this->fail('An expected exception was not thrown.');
+		$this->assertTrue(true);
+		return;
 	}
 }
-

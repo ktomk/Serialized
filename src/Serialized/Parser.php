@@ -88,7 +88,9 @@ class Parser implements Value {
 	private function typeByName($name) {
 		$map = array_flip($this->typeNames);
 		if (!isset($map[$name])) {
+			// @codeCoverageIgnoreStart
 			throw new \InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype.', $name));
+			// @codeCoverageIgnoreEnd
 		}
 		return $map[$name];
 	}
@@ -321,91 +323,14 @@ class Parser implements Value {
 		$this->expectEof($len-1);
 		return $value;
 	}
-	private function dumpStringNice($string) {
-		$replace = array(
-			array(chr(0), "\n", "\t", "\"",),
-			array('\x00', '\n', '\t', '\"',),
-		);
-		$string = str_replace($replace[0], $replace[1], $string);
-		return $string;
-	}
-	private function dumpValue($type, $value) {
-		switch($type) {
-			case self::TYPE_ARRAY:
-			case self::TYPE_MEMBERS:
-				return sprintf('(%d):', count($value));
-			case self::TYPE_CLASSNAME:
-				return ': '. $value;
-			case self::TYPE_MEMBER:
-				return ': '. $this->dumpStringNice($value);
-			case self::TYPE_STRING:
-				return sprintf(': "%s"', $this->dumpStringNice($value));
-			case self::TYPE_INT:
-			case self::TYPE_FLOAT:
-				return ': '.$value;
-			case self::TYPE_OBJECT:
-				return ':';
-			case self::TYPE_NULL:
-				return ': NULL';
-			case self::TYPE_BOOL:
-				return ': ' . ($value ? 'TRUE' : 'FALSE');
-			case self::TYPE_RECURSION:
-				return ': ' . $value;
-			case self::TYPE_RECURSIONREF:
-				return ': &' . $value;				
-			// @codeCoverageIgnoreStart
-			default:
-				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
-		}
-	}
-	// @codeCoverageIgnoreEnd
 	/**
 	 * print serialized array notation
-	 *  
+	 *
 	 * @param array $parsed (optional) serialized array notation data or empty to use this objects data.
-	 * @param array $context (optional) illegal on global calls.
 	 */
-	public function dump(array $parsed = null, array $context = null) {
-		static $level = 0;
-		static $printInset = '';
-		$printInsetStarts = '| ';
-		$printInsetSpace = '    ';
-		$printPointStarts = '+`';
-		$printPoint = '*--';
+	public function dump(array $parsed = null) {
 		(null === $parsed) && $parsed = $this->getParsed();
-		if (0 === $level) {
-			if (null !== $context) {
-				throw new \InvalidArgumentException('Providing Context is illegal. Use a single argument only.');
-			}
-			$context = array(1,1); 
-		}
-		list($index, $count) = $context;
-		
-		if (($parsedCount = count($parsed)-1) && is_array($parsed[0])) {
-			foreach($parsed as $arrayIndex => $element) {
-				$this->dump($element, array($index-($arrayIndex==$parsedCount?0:1), $count));
-			}
-		} else {
-			list($typeName, $value) = $parsed;
-			$type = $this->typeByName($typeName);
-		
-			$printPoint[0] = $printPointStarts[(int)($index===$count)];
-			$valueString = $this->dumpValue($type, $value);
-			printf("%s%s %s%s\n", $printInset, $printPoint, $typeName, $valueString);
-			$isComposite =  self::TYPE_OBJECT===$type || self::TYPE_ARRAY===$type || self::TYPE_MEMBERS===$type; 
-			if ($isComposite) {
-				$level++;
-				$printStack = $printInset;
-				$printInset .= $printInsetStarts[(int)($index===$count)].$printInsetSpace;
-				$countChildren = count($value);
-				$indexChildren = 0;
-				foreach($value as $element) {
-					$indexChildren++;
-					$this->dump($element, array($indexChildren, $countChildren));
-				}
-				$printInset = $printStack;
-				$level--;
-			}
-		}
+		$dumper = new Dumper();
+		$dumper->dump($parsed);
 	}
 }
