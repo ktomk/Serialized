@@ -1,0 +1,17 @@
+  Serialized - PHP Library for Serialized Data
+  
+  Copyright (C) 2010 Tom Klingenberg, some rights reserved
+  
+  CHANGES
+  
+  This file contains notable changes incl. information for developers 
+  that make use of the library in a previous version.
+  
+  For all changes please refer to the Serialized SCM.
+  
+
+  0.1.2
+  
+  NEW: Dumper Class.
+  UPD: Serialized\Parser->dump() signature changed. Should not conflict 
+      existing code as previous version did throw an exception already.
