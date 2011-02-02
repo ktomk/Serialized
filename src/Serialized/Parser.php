@@ -30,19 +30,6 @@ Namespace Serialized;
  * Serialize Parser
  */
 class Parser implements Value {
-	const TYPE_INVALID = 1;
-	const TYPE_NULL = 11;	
-	const TYPE_BOOL = 21;
-	const TYPE_INT = 22;
-	const TYPE_FLOAT = 23;
-	const TYPE_STRING = 24;
-	const TYPE_RECURSION = 31;
-	const TYPE_RECURSIONREF = 32;
-	const TYPE_ARRAY = 41;
-	const TYPE_OBJECT = 42;
-	const TYPE_CLASSNAME = 101;
-	const TYPE_MEMBERS = 102;
-	const TYPE_MEMBER = 103;
 	private $typeNames = array(
 		self::TYPE_INVALID => 'invalid',
 		self::TYPE_BOOL => 'bool',
