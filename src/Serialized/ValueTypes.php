@@ -20,19 +20,24 @@
  * author.
  * 
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.1
+ * @version 0.1.2
  * @package Serialized
  */
 
 Namespace Serialized;
 
-interface Value extends ValueTypes {
-	/** @return string datatype */
-	public function getType();
-	/** @return array */
-	public function getParsed();
-	/** @return string */
-	public function getSerialized();
-	/** @param string $serialized */
-	public function setSerialized($serialized);
+interface ValueTypes {
+	const TYPE_INVALID = 1;
+	const TYPE_NULL = 11;	
+	const TYPE_BOOL = 21;
+	const TYPE_INT = 22;
+	const TYPE_FLOAT = 23;
+	const TYPE_STRING = 24;
+	const TYPE_RECURSION = 31;
+	const TYPE_RECURSIONREF = 32;
+	const TYPE_ARRAY = 41;
+	const TYPE_OBJECT = 42;
+	const TYPE_CLASSNAME = 101;
+	const TYPE_MEMBERS = 102;
+	const TYPE_MEMBER = 103;
 }
