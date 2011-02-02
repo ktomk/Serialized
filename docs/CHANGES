@@ -14,4 +14,5 @@
   
   NEW: Dumper Class.
   UPD: Serialized\Parser->dump() signature changed. Should not conflict 
-      existing code as previous version did throw an exception already.
+       existing code as previous version did throw an exception already.
+       New variant doesn't have the illegal second parameter any longer.
