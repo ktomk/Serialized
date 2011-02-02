@@ -7,6 +7,10 @@
  [ ] Validate class- and member-mame parsing
  [ ] Tests for Serialized::loadLibrary() - all classes covered?
 
+ (?) It should be helpful to have a token stream with byte offsets and
+     to not rely on strucutre and data only as this is with the current
+     parser. Additionally this is helpful if confronted with broken se-
+     rialized data (and yes, we hate to run over that in practice).
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
      es Parser)
  (?) Any chance to see RECURSION INDECIES numerically validated?
