@@ -9,7 +9,11 @@
   
   For all changes please refer to the public Serialized SCM:
     <https://github.com/ktomk/Serialized>
+
+  0.1.x
   
+  IMP: The output of the default Dumper is more readable for array and
+       object members.  
 
   0.1.2
   
