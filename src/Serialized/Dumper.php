@@ -32,6 +32,36 @@ Namespace Serialized;
  * @todo solve typeByName() code duplication (taken from Parser)  
  */
 class Dumper implements ValueTypes {
+	/**
+	 * dumper state
+	 * @var stdClass
+	 */
+	private $state;
+	/**
+	 * stack of states
+	 * @var array
+	 */
+	private $stack = array();
+	/**
+	 * master be be used as datasource (two bytes)
+	 * @var string
+	 */
+	private $printInsetStarts = '| ';
+	/**
+	 * inset configuration
+	 * @var string
+	 */
+	private $printInsetSpace = '    ';
+	/**
+	 * master to be used as datasource (two bytes)
+	 * @var string
+	 */
+	private $printPointStarts = '+`';
+	/**
+	 * pattern to be modified
+	 * @var string
+	 */
+	private $printPoint = '*--';
 	private $typeNames = array(
 		self::TYPE_INVALID => 'invalid',
 		self::TYPE_BOOL => 'bool',
@@ -47,6 +77,25 @@ class Dumper implements ValueTypes {
 		self::TYPE_MEMBERS => 'members',
 		self::TYPE_MEMBER => 'member',
 	);
+	private function stateInit() {
+		$state = new \stdClass();
+		$state->level = 0;
+		$state->inset = '';
+		$this->state = $state;
+	}
+	public function __construct() {
+		$this->stateInit();
+	}
+	/**
+	 * push the current state onto the stack
+	 */
+	private function statePush() {
+		array_push($this->stack, clone $this->state);
+		$this->state->level++;
+	}
+	private function statePop() {
+		$this->state = array_pop($this->stack);
+	}
 	private function typeByName($name) {
 		$map = array_flip($this->typeNames);
 		if (!isset($map[$name])) {
@@ -66,18 +115,15 @@ class Dumper implements ValueTypes {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
-				return sprintf('(%d):', count($value));
-			case self::TYPE_CLASSNAME:
-				return ': '. $value;
-			case self::TYPE_MEMBER:
-				return ': '. $this->dumpStringNice($value);
+				return sprintf('(%d)%s', count($value), count($value)?':':'.');
 			case self::TYPE_STRING:
-				return sprintf(': "%s"', $this->dumpStringNice($value));
+				return sprintf('(%d): "%s"', strlen($value), $this->dumpStringNice($value));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
 				return ': '.$value;
 			case self::TYPE_OBJECT:
-				return ':';
+				$count = count($value[1][1]);
+				return sprintf('(%s) (%d)%s', $value[0][1], $count, $count?':':'.');
 			case self::TYPE_NULL:
 				return ': NULL';
 			case self::TYPE_BOOL:
@@ -92,53 +138,108 @@ class Dumper implements ValueTypes {
 		}
 	}
 	// @codeCoverageIgnoreEnd
-	/**
-	 * print serialized array notation
-	 *  
-	 * @param array $parsed serialized array notation data.
-	 * @param array $context dumpp context, unused on first call, needed for recursion only.
-	 */
-	private function dumpImpl(array $parsed, array $context = null) {
-		static $level = 0;
-		static $printInset = '';
-		$printInsetStarts = '| ';
-		$printInsetSpace = '    ';
-		$printPointStarts = '+`';
-		$printPoint = '*--';
-		if (0 === $level) {
-			if (null !== $context) {
-				throw new \InvalidArgumentException('Providing Context is illegal. Use a single argument only.');
-			}
-			$context = array(1,1); 
-		}
-		list($index, $count) = $context;
-		
-		if (($parsedCount = count($parsed)-1) && is_array($parsed[0])) {
-			foreach($parsed as $arrayIndex => $element) {
-				$this->dumpImpl($element, array($index-($arrayIndex==$parsedCount?0:1), $count));
-			}
+	private function printInset($isLast) {
+		$printPoint = $this->printPoint;
+		$printPoint[0] = $this->printPointStarts[(int) $isLast];
+		printf("%s%s", $this->state->inset, $printPoint);
+	}
+	private function dumpArrayElement(array $element) {
+		list(list($keyType, $keyValue)) = $element;
+		// list($keyType, $keyValue)
+		if($keyType === 'int') {
+			$keyValue = (int) $keyValue;
+		} elseif ($keyType === 'string') {
+			;
 		} else {
-			list($typeName, $value) = $parsed;
+			// @codeCoverageIgnoreStart
+			throw new \InvalidArgumentException(sprintf('Invalid type for array key #%d: "%s".', $index, $keyType));
+		} 	// @codeCoverageIgnoreEnd
+		$keyValue = sprintf('[%s]', $keyValue);
+		return $keyValue;
+	}
+	private function dumpArray($value) {
+		$count = count($value);
+		if (!$count--)
+			return;
+
+		foreach($value as $index => $element) {
+			$isLast = $index === $count;
+			$keyValue = $this->dumpArrayElement($element);
+
+			list($typeName, $valueValue) = $element[1];
 			$type = $this->typeByName($typeName);
-		
-			$printPoint[0] = $printPointStarts[(int)($index===$count)];
-			$valueString = $this->dumpValue($type, $value);
-			printf("%s%s %s%s\n", $printInset, $printPoint, $typeName, $valueString);
-			$isComposite =  self::TYPE_OBJECT===$type || self::TYPE_ARRAY===$type || self::TYPE_MEMBERS===$type; 
-			if ($isComposite) {
-				$level++;
-				$printStack = $printInset;
-				$printInset .= $printInsetStarts[(int)($index===$count)].$printInsetSpace;
-				$countChildren = count($value);
-				$indexChildren = 0;
-				foreach($value as $element) {
-					$indexChildren++;
-					$this->dumpImpl($element, array($indexChildren, $countChildren));
-				}
-				$printInset = $printStack;
-				$level--;
+			$valueString = $this->dumpValue($type, $valueValue);
+
+			$this->printInset($isLast);
+			printf(" %s => %s%s\n", $keyValue, $typeName, $valueString);
+			$this->dumpSubValue($type, $valueValue, $isLast);
+		}
+	}
+	private function dumpObjectMember(array $member) {
+			list(list(, $memberName)) = $member;
+			$memberAccess = '';
+			if("\x00"==$memberName[0]) {
+				if ("\x00*\x00"==substr($memberName, 0, 3)) {
+					$memberName = substr($memberName, 3);
+					$memberAccess = ' (protected)';
+				} elseif (false !== $pos = strpos($memberName, "\x00", 1)) {
+					$memberAccess = ' ('.substr($memberName,1, $pos-1).':private)';
+					$memberName = substr($memberName, $pos+1);
+				} else {
+					// @codeCoverageIgnoreStart
+					throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
+				} 	// @codeCoverageIgnoreEnd
 			}
-		}	
+			$memberName = sprintf('[%s]%s', $memberName, $memberAccess);
+			return $memberName;
+	}
+	private function dumpObject($value) {
+		$classname = $value[0][1];
+		$members = $value[1][1];
+		$count = count($members);
+		if (!$count--)
+			return;
+
+		foreach($members as $index => $element) {
+			$isLast = $index === $count;
+			$memberName = $this->dumpObjectMember($element);
+			list(, $valueArray) = $element;
+
+			list($typeName, $valueValue) = $valueArray;
+			$type = $this->typeByName($typeName);
+			$valueString = $this->dumpValue($type, $valueValue);
+
+			$this->printInset($isLast);
+			printf(" %s -> %s%s\n", $memberName, $typeName, $valueString);
+			$this->dumpSubValue($type, $valueValue, $isLast);
+		}
+	}
+	private function dumpSubValue($type, $value, $isLast) {
+		$subDumpMap = array(
+			self::TYPE_ARRAY => 'dumpArray',
+			self::TYPE_OBJECT => 'dumpObject',
+		);
+		if (false === array_key_exists($type, $subDumpMap))
+			return;
+
+		$this->statePush();
+		$this->state->inset .= $this->printInsetStarts[(int) $isLast] . $this->printInsetSpace;
+		
+		$method = $subDumpMap[$type];
+		$this->$method($value);
+		$this->statePop();
+	}
+	private function dumpAny(array $parsed) {
+		if (count($parsed) != 2) {
+			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
+		}
+		// @todo replace with subroutine
+		list($typeName, $valueValue) = $parsed;
+		$type = $this->typeByName($typeName);
+		$valueString = $this->dumpValue($type, $valueValue);
+		$this->printInset(1);
+		printf(" %s%s\n", $typeName, $valueString);
+		$this->dumpSubValue($type, $valueValue, true);
 	}
 	/**
 	 * print serialized array notation
@@ -146,6 +247,6 @@ class Dumper implements ValueTypes {
 	 * @param array $parsed serialized array notation data.
 	 */
 	public function dump(array $parsed) {
-		$this->dumpImpl($parsed);
+		$this->dumpAny($parsed);
 	}
 }

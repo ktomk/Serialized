@@ -44,24 +44,49 @@ class DumperTest extends TestCase
 	protected function tearDown()
 	{
 	}
+	
+	/**
+	 * test dump output
+	 *  
+	 * @param mixed $value
+	 * @return dump
+	 */
+	private function getDump($value) {
+		$serialized = serialize($value);		
+		$parser = new Parser($serialized);
+		$parsed = $parser->getParsed();
+		$dumper = new Dumper();
+		ob_start();
+		$dumper->dump($parsed);
+		return ob_get_clean();
+	}
+	
+	public function testArrayDumpOutput() {
+		$expected = '`-- array(3):
+     +-- [user] => string(9): "user-name"
+     +-- [network] => array(1):
+     |    `-- [localip] => string(7): "1.2.3.4"
+     `-- [language] => string(6): "german"'."\n";
+
+		$array = array();
+		$array["user"] = "user-name";
+		$array["network"] = array( "localip" => "1.2.3.4");
+		$array["language"] = "german";
+
+		$actual = $this->getDump($array);
+
+		$this->assertEquals($expected, $actual);
+	}
 
 	public function testDumpOutput()
 	{
-		$expected = '`-- object:
-     +-- classname: stdClass
-     `-- members(6):
-          +-- member: property
-          +-- string: "test"
-          +-- member: float
-          +-- float: 1
-          +-- member: bool
-          +-- bool: TRUE
-          +-- member: null
-          +-- null: NULL
-          +-- member: recursion
-          +-- recursion: 1
-          +-- member: recursionref
-          `-- recursionref: &1'."\n";
+		$expected = '`-- object(stdClass) (6):
+     +-- [property] -> string(4): "test"
+     +-- [float] -> float: 1
+     +-- [bool] -> bool: TRUE
+     +-- [null] -> null: NULL
+     +-- [recursion] -> recursion: 1
+     `-- [recursionref] -> recursionref: &1'."\n";
 
 		$object = new \stdClass();
 		$object->property = "test";
@@ -71,51 +96,32 @@ class DumperTest extends TestCase
 		$object->recursion = $object;
 		$object->recursionref = &$object;
 		
-
-		$serialized = serialize($object);
-		$parser = new Parser($serialized);
-		$parsed = $parser->getParsed();
-		$dumper = new Dumper();
-
-		ob_start();
-		$dumper->dump($parsed);
-		$actual = ob_get_clean();
+		$actual = $this->getDump($object);
 
 		$this->assertEquals($expected, $actual);
 	}
 
+	/**
+     * @expectedException \InvalidArgumentException
+     */
 	public function testUnkownValueTypeNameExceptionViaDump() {
 		$parsed = array('foo', '42');
 		$dumper = new Dumper();
-
-		ob_start();
-		try {
-			$dumper->dump($parsed);
-		} catch(\InvalidArgumentException $e) {
-			ob_end_clean();
-			$this->addToAssertionCount(1);
-			return;
-		}
-		ob_end_clean();
-		$this->fail('An expected exception was not thrown.');
+		$dumper->dump($parsed);
 	}
     /**
      * @expectedException \PHPUnit_Framework_Error
      */
 	public function testDumpParameterException() {
 		$dumper = new Dumper();
-		$dumper->dump(array(), array('illegal option'));		
+		$dumper->dump(array(array(), array('illegal option')));		
 		return;
 	}
-	/**
+    /**
      * @expectedException \InvalidArgumentException
      */
-	public function testDumpImplParameterException() {
+	public function testDumpParameterException2() {
 		$dumper = new Dumper();
-		$name = 'dumpImpl';
-		$class = new \ReflectionClass(get_class($dumper));
-		$method = $class->getMethod($name);
-		$method->setAccessible(true);
-		$method->invokeArgs($dumper, array(array(), array('invalid')));
-	}
-}
+		$dumper->dump(array());		
+		return;
+	}}
