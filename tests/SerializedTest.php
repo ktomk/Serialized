@@ -53,6 +53,16 @@ class SerializedTest extends \Serialized\TestCase
 	{
 	}
 
+	/**
+	 * NOTE: if run in a setup with global auto-loaders, then it will fail.
+	 */
+	public function testAutoloadIsDisabled() {
+		$className = 'Serialized\\Parser';
+		$expected = false;
+		$actual = class_exists($className, $autoload = true);
+		$this->assertSame($expected, $actual, 'Autoloader is not disabled but must be.');
+	}
+
 	public function testFileNameOfClassName()
 	{
 		$tests = array(
