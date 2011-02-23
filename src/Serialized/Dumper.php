@@ -115,9 +115,7 @@ class Dumper implements ValueTypes {
 	        $c = $string[$i++],
 	        $o = ord($c),
 	        ($f = $o > 0x08 && $o < 0x0E) && $c = $seq[$o],
-	        $g = false,
-	        ($b = ($o > 31 && $o < 127) || $f) && $g = ($o === 34 || $o === 36 || $o === 92),
-	        ($f || $g) && $c = '\\'.$c,   
+	        ($b = ($o > 0x1F && $o < 0x7F) || $f) && ($f || $o === 0x22 || $o === 0x24 || $o === 0x5C) && $c = '\\'.$c,	        
 	        $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
 	    );
 	    return $r;
