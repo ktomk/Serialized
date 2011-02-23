@@ -118,7 +118,7 @@ class Dumper implements ValueTypes {
 		    ($b = $f || (0x1F < $o && $o < 0x7F)) && ($f || 0x22 === $o || 0x24 === $o || 0x5C === $o) && $c = '\\'.$c,
 		    $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
 		);
-	return $r;
+		return $r;
 	}
 	private function dumpValue($type, $value) {
 		switch($type) {
