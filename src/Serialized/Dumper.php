@@ -105,20 +105,20 @@ class Dumper implements ValueTypes {
 	}
 	private function dumpStringNice($string) {
 		static $seq = array(0x09 => 't', 0x0A => 'n', 0x0B => 'v', 0x0C => 'f',  0x0D => 'r');
-	    for(
-	        $r = '',
-	        $l = strlen($string),
-	        $i = 0
-	        ;
-	        $i < $l
-	        ;
-	        $c = $string[$i++],
-	        $o = ord($c),
-	        ($f = $o > 0x08 && $o < 0x0E) && $c = $seq[$o],
-	        ($b = ($o > 0x1F && $o < 0x7F) || $f) && ($f || $o === 0x22 || $o === 0x24 || $o === 0x5C) && $c = '\\'.$c,	        
-	        $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
-	    );
-	    return $r;
+		for(
+		    $r = '',
+		    $l = strlen($string),
+		    $i = 0
+		    ;
+		    $i < $l
+		    ;
+		    $c = $string[$i++],
+		    $o = ord($c),
+		    ($f = $o > 0x08 && $o < 0x0E) && $c = $seq[$o],
+		    ($b = ($o > 0x1F && $o < 0x7F) || $f) && ($f || $o === 0x22 || $o === 0x24 || $o === 0x5C) && $c = '\\'.$c,
+		    $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
+		);
+	return $r;
 	}
 	private function dumpValue($type, $value) {
 		switch($type) {
