@@ -13,16 +13,16 @@
   
     Serialized is a set of classes that can parse serialized data into a 
   normalized representation.
-
+  
     The base service is to parse serialized data into a so called Array 
-  Notation which represents both structure and the value(s) of some
+  Notation which represents both structure and the value(s) of PHP
   serialized data. See ARRAYNOT.
   
     Can be used to validate serialized data w/o the need to unserialise 
   it first. 
   
     Potential field of use is static data analysis.
-       
+  
     Right now, the library works "read-only" which means it can only 
   parse but not build a serialized string. See ROADMAP.
   
@@ -35,7 +35,7 @@
   serialized data for regression testing.
   
     Requirements:
-    
+  
     PHP 5.3.3 or higher
     PHPUNIT 3.5.5 or higher (for the test-suite)
   
@@ -48,42 +48,48 @@
     library require the base file:
     
       require_once('library/Serialized.php');
-      
+    
       After including the autoloader, auto-loading is enabled and the parser
     can be used:
     
       $array = Serialized\Parser::Parse($serialized);
-      
+    
       Example: 00-basic-parsing
-      
+    
+      In case autoloading fails on your PHP configuration (which has been 
+    reported that it could happen), the library can always be manually loaded 
+    as well:
+    
+      require_once('library/Serialized.php');
+      Serialized::loadLibrary();
+    
       For debugging purposes, there is a dump function which prints structure
     and data of a serialized string to standard output:
-      
+    
       $parser = new Serialized\Parser($serialized);
       $parser->dump();
-      
+    
       Example: 01-debug-dump
-      
+  
     Resources:
-
+  
     PHP Serialize Function (PHP Manual)
   http://php.net/manual/en/function.serialize.php
-
+  
     PHP Unserialize Function (PHP Manual)
   http://php.net/manual/en/function.unserialize.php
-
+  
     Object Serialization (PHP Manual)
   http://php.net/manual/en/language.oop5.serialization.php
-
+  
     The Serializable interface (PHP Manual)
   http://php.net/manual/en/class.serializable.php
-
+  
     Runtime Configuration "unserialize_callback_func" (PHP Manual)
   http://www.php.net/manual/en/var.configuration.php#unserialize-callback-func
-
+  
     PHP Serialization And Recursion Demystified (by Andrea Giammarchi; 2009-09-07)
   http://webreflection.blogspot.com/2009/09/php-serialization-and-recursion.html
-
+  
     Recursive Reference Serialize Library (by Nghia Nguyen; 2009-06-01)
   http://www.phpclasses.org/package/5336-PHP-Serialize-objects-with-cyclic-references.html
-    
