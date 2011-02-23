@@ -55,6 +55,9 @@ class SerializedTest extends \Serialized\TestCase
 
 	/**
 	 * NOTE: if run in a setup with global auto-loaders, then it will fail.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function testAutoloadIsDisabled() {
 		$className = 'Serialized\\Parser';
