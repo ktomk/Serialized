@@ -17,6 +17,10 @@
   IMP: Control and non-printable characters in strings are dumped in 
        their escape sequence.
 
+  0.1.4
+  
+  UPD: Value does not extend any longer from ValueTypes.
+
   0.1.2
   
   NEW: Dumper Class.
