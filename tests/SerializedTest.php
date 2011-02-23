@@ -92,34 +92,36 @@ class SerializedTest extends \Serialized\TestCase
 		$this->assertSame(FALSE, $result);
 	}
 
-	/**
-	 * @todo Implement testLoadClass().
-	 */
 	public function testLoadClass()
 	{
 		$className = 'JagTalaSvenskaJaJa';
 		$result = \Serialized::loadClass($className);
 		$this->assertFalse($result);
 
+		$className = 'Serialized\\ValueTypes';
+		$result = \Serialized::loadClass($className);
+		$this->assertTrue($result, 'Could not load interface - result not true.');
+
 		$className = 'Serialized\\Value';
 		$result = \Serialized::loadClass($className);
-		$this->assertTrue($result, 'Could not load interface- result not true.');
+		$this->assertTrue($result, 'Could not load interface - result not true.');
 
 		$className = 'Serialized\\Parser';
 		$result = \Serialized::loadClass($className);
-
 		$this->assertTrue($result, 'Could not load class - result not true.');
 
 		$testClass = new $className();
-
 		$this->assertInstanceOf($className, $testClass);
 	}
 
 	/**
-	 * @todo Implement testLoadLibrary().
+	 * NOTE: this test is lame, use process-isolation and
+	 *       always check \Serialized::loadLibrary().
 	 */
 	public function testLoadLibrary()
 	{
-		\Serialized::loadLibrary();
+		$expected = 5;
+		$actual = \Serialized::loadLibrary();
+		$this->assertSame($expected, $actual, sprintf('loadLibrary failed to load %d classes/interfaces (result was: %d).', $expected, $actual));
 	}
 }
