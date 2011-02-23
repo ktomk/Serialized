@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.2
+ * @version 0.1.3
  * @package Tests
  */
 Namespace Serialized;
