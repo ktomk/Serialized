@@ -13,7 +13,9 @@
   0.1.x
   
   IMP: The output of the default Dumper is more readable for array and
-       object members.  
+       object members.
+  IMP: Control and non-printable characters in strings are dumped in 
+       their escape sequence.
 
   0.1.2
   
