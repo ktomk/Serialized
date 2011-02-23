@@ -95,7 +95,7 @@
   2 COMPOUND DATATYPES
   
     Compound datatypes are such which are complex and consist of one or
-  more simple or compound datatype.
+  more simple or compound datatype(s).
   
     In PHP those are Array and Object. Their Array 
   Notation is done by using array(TYPE, DATA) as well, but the 
@@ -126,13 +126,13 @@
     
     ARRAY   ~= array('array', DATA)
     DATA    ~= array(array(KEY, VALUE)*)
-    KEY     ~= (array-notation) [null|string|int]NATIVE
+    KEY     ~= (array-notation) [int|string]NATIVE
     VALUE   ~= (array-notation) [*any*]NATIVE
     
     Key elements are represented in their simple datatype Array Notation
-  as explained above. Key in PHP arrays can only be NULL, integer or 
-  string[*]. Values are represented in their Array Notation based on 
-  their datatype: SIMPLE, COMPOUND or REFERENCE. 
+  as explained above. Key in PHP arrays can only be integer or string[*].
+  Values are represented in their Array Notation based on their
+  datatype: SIMPLE, COMPOUND or REFERENCE.
   
     EXAMPLE: Array with string datatypes (simple) in Array Notation
     
@@ -158,6 +158,9 @@
   
     HINT: The library can print out array notations as preformatted and 
           better readable text for debugging purposes. 
+  
+  ----
+    [*] See http://php.net/manual/en/language.types.array.php
   
   2-2 OBJECT
   
