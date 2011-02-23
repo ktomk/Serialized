@@ -26,7 +26,7 @@
 
 Namespace Serialized;
 
-interface Value extends ValueTypes {
+interface Value {
 	/** @return string datatype */
 	public function getType();
 	/** @return array */

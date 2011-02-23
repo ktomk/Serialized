@@ -29,7 +29,7 @@ Namespace Serialized;
 /**
  * Serialize Parser
  */
-class Parser implements Value {
+class Parser implements Value, ValueTypes {
 	private $typeNames = array(
 		self::TYPE_INVALID => 'invalid',
 		self::TYPE_BOOL => 'bool',
