@@ -112,6 +112,6 @@ class Serialized {
 	public static function undefined($classOrInterfaceName) {
 		$classExists = class_exists($classOrInterfaceName, false);
 		$interfaceExists = interface_exists($classOrInterfaceName, false);
-		return (bool) (false === $classExists && false === $interfaceExists);
+		return (bool) !($classExists || $interfaceExists);
 	}
 }
