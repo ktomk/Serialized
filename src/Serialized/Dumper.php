@@ -104,12 +104,23 @@ class Dumper implements ValueTypes {
 		return $map[$name];
 	}
 	private function dumpStringNice($string) {
-		$replace = array(
-			array(chr(0), "\n", "\t", "\"",),
-			array('\x00', '\n', '\t', '\"',),
-		);
-		$string = str_replace($replace[0], $replace[1], $string);
-		return $string;
+		static $seq = array(0x09 => 't', 0x0A => 'n', 0x0B => 'v', 0x0C => 'f',  0x0D => 'r');
+	    for(
+	        $r = '',
+	        $l = strlen($string),
+	        $i = 0
+	        ;
+	        $i < $l
+	        ;
+	        $c = $string[$i++],
+	        $o = ord($c),
+	        ($f = $o > 0x08 && $o < 0x0E) && $c = $seq[$o],
+	        $g = false,
+	        ($b = ($o > 31 && $o < 127) || $f) && $g = ($o === 34 || $o === 36 || $o === 92),
+	        ($f || $g) && $c = '\\'.$c,   
+	        $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
+	    );
+	    return $r;
 	}
 	private function dumpValue($type, $value) {
 		switch($type) {
