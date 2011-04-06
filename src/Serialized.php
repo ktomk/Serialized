@@ -20,7 +20,7 @@
  * author.
  * 
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.4
+ * @version 0.1.5
  * @package Serialized
  */
 
@@ -56,7 +56,6 @@ class Serialized {
 	    }
 	    $lineup[] = str_replace($classNameSeparator, DIRECTORY_SEPARATOR, $nonNamespacedClassName);
 	    $fileName = implode(DIRECTORY_SEPARATOR, $lineup) . $fileSuffix;
-	
 	    return $fileName;
 	}
 	public static function autoloadCallback() {
@@ -74,7 +73,8 @@ class Serialized {
 	public static function autoloadRegistered() {
 		$autoloadCallback = self::autoloadCallback();
 		$autoloadFunctions = spl_autoload_functions();
-		$registered = in_array($autoloadCallback, $autoloadFunctions, true);
+		$registered = in_array($autoloadCallback, $autoloadFunctions, true)
+		              || in_array(get_called_class().'::loadClass', $autoloadFunctions, true);
 		return $registered;
 	}
 	/**
