@@ -84,6 +84,7 @@ class Serialized {
 		$classNames = array(
 			'Serialized\\ValueTypes',
 			'Serialized\\Dumper',
+			'Serialized\\Dumper\\Text',
 			'Serialized\\Value',
 			'Serialized\\ParseException',
 			'Serialized\\Parser',
