@@ -1,24 +1,24 @@
 <?php
 /**
  * Serialized - PHP Library for Serialized Data
- * 
+ *
  * Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program in a file called COPYING. If not, see
  * <http://www.gnu.org/licenses/> and please report back to the original
  * author.
- * 
+ *
  * @author Tom Klingenberg <http://lastflood.com/>
  * @version 0.1.4
  * @package Serialized
@@ -68,7 +68,7 @@ class Parser implements Value, ValueTypes {
 	 */
 	public function getType() {
 		$parsed = $this->getParsed();
-		return $parsed[0];				
+		return $parsed[0];
 	}
 	public function getSerialized() {
 		return $this->data;
@@ -208,10 +208,10 @@ class Parser implements Value, ValueTypes {
 		$build .= sprintf('[%s]', $this->data[$offset]);
 		$build .= substr($this->data, $end, $after);
 		$build .= ($after === $delta ? '...' : '');
-		
-		return $build;	
+
+		return $build;
 	}
-	private function parseInvalidValue($offset) {		
+	private function parseInvalidValue($offset) {
 		throw new ParseException(sprintf('Invalid ("%s") at offset %d.', $this->extract($offset), $offset));
 	}
 	private function parseFloatValue($offset) {
@@ -285,13 +285,13 @@ class Parser implements Value, ValueTypes {
 			list(list($typeSpec)) = $member;
 			if ('string' !== $typeSpec)
 				throw new ParseException(sprintf('Unexpected type %s, expected string on offset %d.', $typeSpec, $offset));
-			$classMembers[$index][0][0] = $this->typeNameByType(self::TYPE_MEMBER); 
+			$classMembers[$index][0][0] = $this->typeNameByType(self::TYPE_MEMBER);
 		}
 		$totalLen += $len;
-		
+
 		$count = count($classMembers);
-		
-		
+
+
 		$value = array(array($this->typeNameByType(self::TYPE_CLASSNAME), $className), array($this->typeNameByType(self::TYPE_MEMBERS), $classMembers));
 		return array($value, $totalLen);
 	}

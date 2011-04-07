@@ -34,10 +34,10 @@ require_once('PHPUnit/Autoload.php');
  * abstract, base test-case class.
  */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
-{	
+{
 	/**
 	 * assert the last error
-	 * 
+	 *
 	 * @param string $message of error or notice
 	 * @param string $file where to expect that message
 	 */
@@ -46,14 +46,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 		$lastError = error_get_last();
 		$condition = NULL === $lastError;
 		$this->assertFalse($condition);
-		
+
 		extract($lastError, EXTR_PREFIX_ALL, 'last');
 		$this->assertEquals($message, $last_message);
 		$this->assertEquals(basename($file), basename($last_file));
 	}
 	/**
 	 * hexdump of string
-	 *  
+	 *
 	 * @param string $string
 	 * @return string hexdump
 	 */

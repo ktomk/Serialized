@@ -23,12 +23,15 @@
  * @version 0.1.4
  * @package Tests
  */
+
 Namespace Serialized;
 
 require_once(__DIR__.'/../TestCase.php');
 
-class DumperTest extends TestCase
+abstract class DumperTest extends TestCase
 {
+	protected $dumper = '';
+
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
@@ -44,50 +47,39 @@ class DumperTest extends TestCase
 	protected function tearDown()
 	{
 	}
-	
+
 	/**
 	 * test dump output
-	 *  
+	 *
 	 * @param mixed $value
 	 * @return dump
 	 */
-	private function getDump($value) {
-		$serialized = serialize($value);		
+	protected function getDump($value) {
+		$serialized = serialize($value);
 		$parser = new Parser($serialized);
 		$parsed = $parser->getParsed();
-		$dumper = new Dumper();
+		$class = __NAMESPACE__."\\Dumper\\{$this->dumper}";
+		$dumper = new $class();
 		ob_start();
 		$dumper->dump($parsed);
 		return ob_get_clean();
 	}
-	
-	public function testArrayDumpOutput() {
-		$expected = '`-- array(3):
-     +-- [user] => string(9): "user-name"
-     +-- [network] => array(1):
-     |    `-- [localip] => string(7): "1.2.3.4"
-     `-- [language] => string(6): "german"'."\n";
 
+	abstract protected function expectedArrayDumpOutput();
+	abstract protected function expectedDumpOutput();
+	abstract protected function expectedObjectDumpOutput();
+
+	final public function getDataArray() {
 		$array = array();
 		$array["user"] = "user-name";
 		$array["network"] = array( "localip" => "1.2.3.4");
+		$array[2] = "Zwei";
 		$array["language"] = "german";
 
-		$actual = $this->getDump($array);
-
-		$this->assertEquals($expected, $actual);
+		return $array;
 	}
 
-	public function testDumpOutput()
-	{
-		$expected = '`-- object(stdClass) (6):
-     +-- [property] -> string(4): "test"
-     +-- [float] -> float: 1
-     +-- [bool] -> bool: TRUE
-     +-- [null] -> null: NULL
-     +-- [recursion] -> recursion: 1
-     `-- [recursionref] -> recursionref: &1'."\n";
-
+	final public function &getDataObject() {
 		$object = new \stdClass();
 		$object->property = "test";
 		$object->float = (float) 1;
@@ -95,16 +87,51 @@ class DumperTest extends TestCase
 		$object->null = NULL;
 		$object->recursion = $object;
 		$object->recursionref = &$object;
-		
+
+		return $object;
+
+		return array(&$object);
+	}
+
+	final public function getDataObjectInherited() {
+		require_once(__DIR__.'/Dumper/testObjects.php');
+		return new Dumper\testObjectChild();
+	}
+
+	final public function testArrayDumpOutput()
+	{
+		$expected = $this->expectedArrayDumpOutput();
+		$array = $this->getDataArray();
+
+		$actual = $this->getDump($array);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	final public function testDumpOutput()
+	{
+		$expected = $this->expectedDumpOutput();
+		$object = &$this->getDataObject();
+
 		$actual = $this->getDump($object);
 
 		$this->assertEquals($expected, $actual);
 	}
 
+	final public function testObjectDumpOutput()
+	{
+		$expected = $this->expectedObjectDumpOutput();
+		$object = $this->getDataObjectInherited();
+
+		$actual = $this->getDump($object);
+		$this->assertEquals($expected, $actual);
+	}
+
+
 	/**
      * @expectedException \InvalidArgumentException
      */
-	public function testUnkownValueTypeNameExceptionViaDump() {
+	final public function testUnkownValueTypeNameExceptionViaDump() {
 		$parsed = array('foo', '42');
 		$dumper = new Dumper();
 		$dumper->dump($parsed);
@@ -112,16 +139,16 @@ class DumperTest extends TestCase
     /**
      * @expectedException \PHPUnit_Framework_Error
      */
-	public function testDumpParameterException() {
+	final public function testDumpParameterException() {
 		$dumper = new Dumper();
-		$dumper->dump(array(array(), array('illegal option')));		
+		$dumper->dump(array(array(), array('illegal option')));
 		return;
 	}
     /**
      * @expectedException \InvalidArgumentException
      */
-	public function testDumpParameterException2() {
+	final public function testDumpParameterException2() {
 		$dumper = new Dumper();
-		$dumper->dump(array());		
+		$dumper->dump(array());
 		return;
 	}}

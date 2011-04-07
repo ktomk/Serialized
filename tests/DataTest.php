@@ -23,6 +23,7 @@
  * @version 0.1.4
  * @package Tests
  */
+
 Namespace Serialized;
 
 require_once(__DIR__.'/TestCase.php');
@@ -46,7 +47,7 @@ class DataTest extends TestCase
 		$datas = require $fileName;
 
 		$parser = new \Serialized\Parser();
-		printf("%s:\n", basename($fileName));		
+		printf("%s:\n", basename($fileName));
 		foreach($datas as $index => $serialized) {
 			printf(' % 2d ... ', $index + 1);
 			$start = microtime(true);

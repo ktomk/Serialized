@@ -20,18 +20,17 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.4
- * @package Examples
+ * @version 0.1.5
+ * @package Tests
  */
 
-  Namespace Serialized;
+$config = array();
 
-  require_once(__DIR__.'/../src/Serialized.php');
+$config['user'][0]['id'][] = 0;
+$config['user'][0]['name'][] = 'John Doe';
+$config['user'][0]['pass'][] = 'ncveohf09o&%$m(i/8';
+$config['user'][1]['id'][] = 1;
+$config['user'][1]['name'][] = 'Max Pd';
+$config['user'][1]['pass'][] = 'f824-c3948.309';
 
-  $data = 'fooBar';
-
-  $serialized = serialize($data);
-
-  $arrayNotation = Parser::Parse($serialized);
-
-  var_dump($arrayNotation);
+return array(serialize($config));

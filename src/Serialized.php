@@ -1,24 +1,24 @@
 <?php
 /**
  * Serialized - PHP Library for Serialized Data
- * 
+ *
  * Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program in a file called COPYING. If not, see
  * <http://www.gnu.org/licenses/> and please report back to the original
  * author.
- * 
+ *
  * @author Tom Klingenberg <http://lastflood.com/>
  * @version 0.1.5
  * @package Serialized
@@ -29,15 +29,15 @@ return Serialized::registerAutoload();
 
 /**
  * Serialized autoloader
- * 
+ *
  * PSR-0 compatbile autoloader in form of a collection of static class functions.
  */
 class Serialized {
 	/**
 	 * get filename of a classname
-	 * 
+	 *
 	 * classname to filename mapping as in PSR-0
-	 * 
+	 *
 	 * @param string $className
 	 * @return string filename
 	 */
@@ -45,7 +45,7 @@ class Serialized {
 		$nameSpaceSeparator = '\\';
 		$classNameSeparator = '_';
 		$fileSuffix = '.php';
-		
+
 	    $lineup = explode($nameSpaceSeparator, $className);
 	    if(!count($lineup) || !$lineup[0]) {
 	    	throw new \InvalidArgumentException(sprintf('%s is not a valid classname.', $className));
@@ -85,6 +85,7 @@ class Serialized {
 			'Serialized\\ValueTypes',
 			'Serialized\\Dumper',
 			'Serialized\\Dumper\\Text',
+			'Serialized\\Dumper\\XML',
 			'Serialized\\Value',
 			'Serialized\\ParseException',
 			'Serialized\\Parser',
@@ -95,7 +96,7 @@ class Serialized {
 		return isset($resultCount[1]) ? $resultCount[1] : 0;
 	}
 	/**
-	 * @return bool did require(class) 
+	 * @return bool did require(class)
 	 */
 	public static function loadClass($className) {
 	     if (strpos($className, get_called_class().'\\') !== 0) {

@@ -23,126 +23,43 @@
  * @version 0.1.5
  * @package Tests
  */
+
 Namespace Serialized\Dumper;
-Use Serialized\TestCase;
+Use Serialized\DumperTest;
 Use Serialized\Parser;
 
-require_once(__DIR__.'/../../TestCase.php');
+require_once(__DIR__.'/../DumperTest.php');
 
-class TextTest extends TestCase
+class TextTest extends DumperTest
 {
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-	}
+	protected $dumper = 'Text';
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-	}
-
-	/**
-	 * test dump output
-	 *
-	 * @param mixed $value
-	 * @return dump
-	 */
-	private function getDump($value) {
-		$serialized = serialize($value);
-		$parser = new Parser($serialized);
-		$parsed = $parser->getParsed();
-		$dumper = new Text();
-		ob_start();
-		$dumper->dump($parsed);
-		return ob_get_clean();
-	}
-
-	public function testArrayDumpOutput() {
-		$expected = '`-- array(4):
+	protected function expectedArrayDumpOutput() {
+		return '`-- array(4):
      +-- [user] => string(9): "user-name"
      +-- [network] => array(1):
      |    `-- [localip] => string(7): "1.2.3.4"
      +-- [2] => string(4): "Zwei"
      `-- [language] => string(6): "german"'."\n";
-
-		$array = array();
-		$array["user"] = "user-name";
-		$array["network"] = array( "localip" => "1.2.3.4");
-		$array[2] = "Zwei";
-		$array["language"] = "german";
-
-		$actual = $this->getDump($array);
-
-		$this->assertEquals($expected, $actual);
 	}
 
-	public function testDumpOutput()
-	{
-		$expected = '`-- object(stdClass) (6):
+	protected function expectedDumpOutput() {
+		return '`-- object(stdClass) (6):
      +-- [property] -> string(4): "test"
      +-- [float] -> float: 1
      +-- [bool] -> bool: TRUE
      +-- [null] -> null: NULL
      +-- [recursion] -> recursion: 1
      `-- [recursionref] -> recursionref: &1'."\n";
-
-		$object = new \stdClass();
-		$object->property = "test";
-		$object->float = (float) 1;
-		$object->bool = TRUE;
-		$object->null = NULL;
-		$object->recursion = $object;
-		$object->recursionref = &$object;
-
-		$actual = $this->getDump($object);
-
-		$this->assertEquals($expected, $actual);
 	}
 
-	public function testObjectDumpOutput() {
-		require_once('testObjects.php');
-
-		$expected = '`-- object(Serialized\Dumper\testObjectChild) (6):
+	protected function expectedObjectDumpOutput() {
+		return '`-- object(Serialized\Dumper\testObjectChild) (6):
      +-- [ca] (Serialized\Dumper\testObjectChild:private) -> string(7): "private"
      +-- [cb] (protected) -> string(9): "protected"
      +-- [cc] -> string(6): "public"
      +-- [pa] (Serialized\Dumper\testObjectParent:private) -> string(15): "private, parent"
      +-- [pb] (protected) -> string(17): "protected, parent"
-     `-- [pc] -> string(14): "public, parent"
-';
-
-		$object = new testObjectChild();
-		$actual = $this->getDump($object);
-		$this->assertEquals($expected, $actual);
+     `-- [pc] -> string(14): "public, parent"'."\n";
 	}
-
-	/**
-     * @expectedException \InvalidArgumentException
-     */
-	public function testUnkownValueTypeNameExceptionViaDump() {
-		$parsed = array('foo', '42');
-		$dumper = new Text();
-		$dumper->dump($parsed);
-	}
-    /**
-     * @expectedException \PHPUnit_Framework_Error
-     */
-	public function testDumpParameterException() {
-		$dumper = new Text();
-		$dumper->dump(array(array(), array('illegal option')));
-		return;
-	}
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-	public function testDumpParameterException2() {
-		$dumper = new Text();
-		$dumper->dump(array());
-		return;
-	}}
+}

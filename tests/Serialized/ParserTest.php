@@ -23,6 +23,7 @@
  * @version 0.1.4
  * @package Tests
  */
+
 Namespace Serialized;
 
 require_once(__DIR__.'/../TestCase.php');
@@ -88,7 +89,7 @@ class ParserTest extends TestCase
 			$serialized = serialize($value);
 			$expected = $this->parseArray($value);
 			$object = new Parser($serialized);
-				
+
 			try {
 				$result = $object->getParsed();
 			} catch (Exception $e) {
@@ -97,10 +98,10 @@ class ParserTest extends TestCase
 			$this->assertEquals($expected, $result);
 		}
 	}
-	
+
 	public function testNullArray() {
 		$data = array(NULL => NULL);
-		$serialized = serialize($data);				
+		$serialized = serialize($data);
 		$actual = Parser::parse($serialized);
 		$expected = array('array', array(
 			array(
@@ -108,28 +109,28 @@ class ParserTest extends TestCase
 				array('null', NULL)
 			)
 		));
-		
+
 		$this->assertEquals($expected, $actual);
 	}
 
 	public function testObject()
 	{
 		# test: object with no members
-		
+
 		$object = new \StdClass;
 		$expected = array('object', array(
 				array('classname', 'stdClass'),
-				array('members', array())				
+				array('members', array())
 		));
-		
+
 		$serialized = serialize($object);
 		$parser = new Parser($serialized);
 		$actual = $parser->getParsed();
 
 		$this->assertEquals($expected, $actual);
-		
+
 		# test: object with member
-		
+
 		$object = new \StdClass;
 		$object->property='test';
 		$expected = array('object', array(
@@ -150,7 +151,7 @@ class ParserTest extends TestCase
 	}
 
 	public function testRecursion()
-	{			
+	{
 		$o = new \stdClass;
 		$o->normal = $o;
 		$o->reference = &$o;
@@ -172,7 +173,7 @@ class ParserTest extends TestCase
 		$parser = new Parser($serialized);
 		$result = $parser->getParsed();
 		$this->assertEquals($expected, $result);
-		
+
 		$o = new \stdClass;
 		$data = array($o, $o);
 		$serialized = serialize($data);
@@ -181,21 +182,21 @@ class ParserTest extends TestCase
 							array('int', 0),
 							array('object', array(
 								array('classname', 'stdClass'),
-								array('members', array())	
+								array('members', array())
 							))
-							
+
 						),
 						array(
 							array('int', 1),
 							array('recursion', 2)
 						)
-						
+
 		));
 		$parser->setSerialized($serialized);
 		$result = $parser->getParsed();
 		$this->assertEquals($expected, $result);
 	}
-	
+
 	public function testNull()
 	{
 		$serialized = serialize(null);

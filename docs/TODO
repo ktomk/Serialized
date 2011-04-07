@@ -2,7 +2,9 @@
  [x] Dumper: Do Nice-Printing ASCII 7bit safe
  [x] Tests for Serialized::loadLibrary() - all classes covered?
  [/] Dumper: Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)
- [ ] Dumper: Prepare merge with DumperXML
+     [/] Prepare merge with DumperXML
+     [ ] Generalized option handling for dumpers
+     [ ] Dumper Interface
  [ ] Dumper: solve typeByName() code duplication (taken from Parser) 
  [?] Add Static Serialized::parse()
  [?] Add Static Serialized::dump()

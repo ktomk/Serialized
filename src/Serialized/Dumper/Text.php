@@ -61,7 +61,6 @@ class Text extends Dumper {
 	}
 	private function dumpArrayElement(array $element) {
 		list(list($keyType, $keyValue)) = $element;
-		// list($keyType, $keyValue)
 		if($keyType === 'int') {
 			$keyValue = (int) $keyValue;
 		} elseif ($keyType === 'string') {

@@ -23,6 +23,7 @@
  * @version 0.1.4
  * @package Tests
  */
+
 Namespace Serialized;
 
 require_once(__DIR__.'/TestCase.php');

@@ -20,18 +20,32 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.4
+ * @version 0.1.5
  * @package Examples
  */
 
-  Namespace Serialized;
+Namespace Serialized\Example05;
+Use Serialized\Parser;
+Use Serialized\Dumper\XML as DumperXml;
 
-  require_once(__DIR__.'/../src/Serialized.php');
+require_once(__DIR__.'/../src/Serialized.php');
 
-  $data = 'fooBar';
+class parentClass {
+	private $privee = 'parent';
+}
 
-  $serialized = serialize($data);
+class exampleClass extends parentClass {
+	private $privee = 'example';
+	protected $str = 'test';
+}
 
-  $arrayNotation = Parser::Parse($serialized);
+$object = new exampleClass();
+$object->array = array();
+$object->test = null;
 
-  var_dump($arrayNotation);
+$serialized = serialize($object);
+$parser = new Parser($serialized);
+$parsed = $parser->getParsed();
+
+$dumper = new DumperXml();
+$dumper->dump($parsed);
