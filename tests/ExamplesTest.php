@@ -28,6 +28,13 @@ Namespace Serialized;
 
 require_once(__DIR__.'/TestCase.php');
 
+/**
+ * Test Examples Class
+ *
+ * The exmaples test iterates over all
+ * examples that are shipping with the library,
+ * asserting lints and execution.
+ */
 class ExamplesTest extends TestCase
 {
 	/**
