@@ -129,8 +129,8 @@ class XMLTest extends DumperTest
 
 		$this->assertSame($expected, $actual);
 	}
-	
-	private function assertDTD($xml, $dtd) {
+
+	private function assertDTD($xml, $dtd, $message='') {
 		$root = 'serialized';
 		$version = '1.0';
 		$encoding = 'utf-8';
@@ -148,9 +148,9 @@ class XMLTest extends DumperTest
 		
 		$expected = true;
 		$actual = $aDoc->validate();
-		$this->assertSame($expected, $actual);
+		$this->assertSame($expected, $actual, $message);
 	}
-	
+
 	public function testDTDValidity()
 	{
 		$name = 'serialized.dtd';
