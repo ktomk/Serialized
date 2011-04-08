@@ -12,10 +12,15 @@
 
   0.1.x
   
+  NEW: XML Dumper and Serialized-XML.
   IMP: The output of the default Dumper is more readable for array and
        object members.
   IMP: Control and non-printable characters in strings are dumped in 
        their escape sequence.
+
+  0.1.5
+  
+  NEW: XML Dumper and Serialized-XML.
 
   0.1.4
   

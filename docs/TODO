@@ -3,12 +3,15 @@
  [x] Tests for Serialized::loadLibrary() - all classes covered?
  [/] Dumper: Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)
      [/] Prepare merge with DumperXML
-     [ ] Generalized option handling for dumpers
+     [ ] Generalized option handling for dumpers (option/config array)
+     [ ] Dump into buffer.
      [ ] Dumper Interface
- [ ] Dumper: solve typeByName() code duplication (taken from Parser) 
- [?] Add Static Serialized::parse()
- [?] Add Static Serialized::dump()
+     [ ] XML correct string value=""/encoding
+     [ ] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
+ [ ] Parse session data / var / var types in array notation
+ [ ] Dumper: solve typeByName() code duplication (taken from Parser)
  [ ] Validate class- and member-mame parsing
+ [ ] Add Static Serialized::parse() / Serialized::dump()
 
 
  (?) It should be helpful to have a token stream with byte offsets and
