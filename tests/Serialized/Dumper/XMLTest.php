@@ -129,5 +129,40 @@ class XMLTest extends DumperTest
 
 		$this->assertSame($expected, $actual);
 	}
+	
+	private function assertDTD($xml, $dtd) {
+		$root = 'serialized';
+		$version = '1.0';
+		$encoding = 'utf-8';
+		
+		$lDoc = new \DOMDocument($version, $encoding);
+		$lDoc->loadXML($xml);
+		$lNode = $lDoc->getElementsByTagName($root)->item(0);
+		
+		$aImp = new \DOMImplementation;
+		$aDocType = $aImp->createDocumentType($root, '', $dtd);		
+		$aDoc = $aImp->createDocument('', '', $aDocType);
+		$aDoc->encoding = $encoding;
+		$aNode = $aDoc->importNode($lNode, true);
+		$aDoc->appendChild($aNode);
+		
+		$expected = true;
+		$actual = $aDoc->validate();
+		$this->assertSame($expected, $actual);
+	}
+	
+	public function testDTDValidity()
+	{
+		$name = 'serialized.dtd';
+		$path = __DIR__.'/../../../examples/'.$name;
+		$data = file_get_contents($path);
+		$dtd = 'data://text/plain;base64,'.base64_encode($data);
+		
+		foreach( array('ArrayDump', 'Dump', 'ObjectDump') as $proc) {
+			$func = sprintf('expected%sOutput', $proc);
+			$xml = $this->$func();
+			$this->assertDTD($xml, $dtd, sprintf('DTD in %s.', $proc));	
+		}
+	}
 
 }
