@@ -131,16 +131,16 @@ class Dumper implements ValueTypes {
 		static $base = '';
 		foreach ($add as $key => $value) {
 			$path = $base.'/'.$key;
-			if (is_int($value)) {
+			if (is_int($key)) {
 				continue;
 			}
 			if (true === is_array($value)) {
 				$value = $this->config_merge_deep(array(), $value, false); // merge with yourself, will trigger lot of errors
 			}
 			if (!array_key_exists($key, $source)) {
-				$noticeUndefined &&
-					trigger_error(sprintf('Configuration "%s" was not defined.', $path), E_USER_NOTICE)
-					;
+				if ($noticeUndefined ) {
+					trigger_error(sprintf('Configuration "%s" was not defined.', $path), E_USER_NOTICE);
+				}
 				$source[$key] = $value;
 				continue;
 			}

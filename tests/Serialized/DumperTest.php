@@ -151,4 +151,5 @@ abstract class DumperTest extends TestCase
 		$dumper = new Dumper();
 		$dumper->dump(array());
 		return;
-	}}
+	}
+}
