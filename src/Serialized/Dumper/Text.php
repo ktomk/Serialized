@@ -175,9 +175,7 @@ class Text extends Dumper implements Concrete {
 		if (count($parsed) != 2) {
 			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
 		}
-		// @todo replace with subroutine
-		list($typeName, $valueValue) = $parsed;
-		$type = $this->typeByName($typeName);
+		list($type, $typeName, $valueValue) = $this->typeExport($parsed);
 		$valueString = $this->dumpValue($type, $valueValue);
 		$this->printInset(1);
 		printf(" %s%s\n", $typeName, $valueString);

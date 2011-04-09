@@ -179,9 +179,7 @@ class XML extends Dumper implements Concrete {
 		}
 	}
 	private function dumpNode(array $parsed) {
-		// @todo replace with subroutine
-		list($typeName, $valueValue) = $parsed;
-		$type = $this->typeByName($typeName);
+		list($type, $typeName, $valueValue) = $this->typeExport($parsed);
 
 		$valueString = $this->dumpValue($type, $valueValue);
 		$xmlElement = $typeName;
@@ -207,11 +205,6 @@ class XML extends Dumper implements Concrete {
 			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
 		}
 
-		// FIXME keeping this here for some debugging and exception throwing prior duming...
-		// @todo replace with subroutine
-		list($typeName, $valueValue) = $parsed;
-		$type = $this->typeByName($typeName);
-
 		$xmlRoot = $this->config['tags']['root'];
 
 		$doctype = null;
@@ -229,7 +222,7 @@ class XML extends Dumper implements Concrete {
 	 * print serialized array notation
 	 *
 	 * @param array $parsed serialized array notation data.
-	 * @param string $doctype (optional) FIXME drop and/or add general configuraiton/option interface for dumpers
+	 * @param array $config (optional) dumper configuration
 	 */
 	public function dump(array $parsed, array $config=array()) {
 		$config && $this->setConfig($config);

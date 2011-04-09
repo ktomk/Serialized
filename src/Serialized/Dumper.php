@@ -93,6 +93,9 @@ class Dumper implements ValueTypes {
 		}
 		return $map[$name];
 	}
+	protected function typeExport(array $parsed) {
+		return array_merge((array) $this->typeByName($parsed[0]), $parsed);
+	}
 	/**
 	 * utility function
 	 *
@@ -117,20 +120,20 @@ class Dumper implements ValueTypes {
 		return $r;
 	}
 	/**
-	 * @todo problems with integer keys, I normally should not process them
+	 * config/ini (n-depth) array_merge
 	 *
-	 * config is an array without any numerical keys and with an n-depth but
-	 * there never ever must be any numerical keys.
+	 * config is an array without numerical keys and with an n-depth but
 	 *
 	 * if a non-array is to be set to an array, it will fail. the definition
-	 * is by default, overwriters will get killed.
+	 * is by default ($source), overwriters (sub or superset of $add) will get killed.
 	 */
 	protected function config_merge_deep(array $source, array $add, $noticeUndefined = true) {
 		static $base = '';
 		foreach ($add as $key => $value) {
 			$path = $base.'/'.$key;
-			if (is_int($value))
+			if (is_int($value)) {
 				continue;
+			}
 			if (true === is_array($value)) {
 				$value = $this->config_merge_deep(array(), $value, false); // merge with yourself, will trigger lot of errors
 			}
