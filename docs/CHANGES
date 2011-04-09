@@ -1,34 +1,34 @@
   Serialized - PHP Library for Serialized Data
-  
+
   Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-  
+
   CHANGES
-  
-  This file contains notable changes incl. information for developers 
+
+  This file contains notable changes incl. information for developers
   that make use of the library in a previous version.
-  
+
   For all changes please refer to the public Serialized SCM:
     <https://github.com/ktomk/Serialized>
 
   0.1.x
-  
+
   NEW: XML Dumper and Serialized-XML.
   IMP: The output of the default Dumper is more readable for array and
        object members.
-  IMP: Control and non-printable characters in strings are dumped in 
+  IMP: Control and non-printable characters in strings are dumped in
        their escape sequence.
 
   0.1.5
-  
+
   NEW: XML Dumper and Serialized-XML.
 
   0.1.4
-  
+
   UPD: Value does not extend any longer from ValueTypes.
 
   0.1.2
-  
+
   NEW: Dumper Class.
-  UPD: Serialized\Parser->dump() signature changed. Should not conflict 
+  UPD: Serialized\Parser->dump() signature changed. Should not conflict
        existing code as previous version did throw an exception already.
        New variant doesn't have the illegal second parameter any longer.

@@ -1,95 +1,95 @@
   Serialized - PHP Library for Serialized Data
 
   Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
-    
+
     See COPYING.
-    
+
   README
-  
-    Serialized is a set of classes that can parse serialized data into a 
+
+    Serialized is a set of classes that can parse serialized data into a
   normalized representation.
-  
-    The base service is to parse serialized data into a so called Array 
+
+    The base service is to parse serialized data into a so called Array
   Notation which represents both structure and the value(s) of PHP
   serialized data. See ARRAYNOT.
-  
-    Can be used to validate serialized data w/o the need to unserialise 
-  it first. 
-  
+
+    Can be used to validate serialized data w/o the need to unserialise
+  it first.
+
     Potential field of use is static data analysis.
-  
-    Right now, the library works "read-only" which means it can only 
+
+    Right now, the library works "read-only" which means it can only
   parse but not build a serialized string. See ROADMAP.
-  
+
     The library sources contain a test-suite to guarantee a certain level
   of confidence and strictness.
-  
-    If you run into any problems with serialized data on your end, please 
-  report back and provide this data. This will help to break the parser 
-  on our end so to reproduce and extend the test-suite with abstracted 
+
+    If you run into any problems with serialized data on your end, please
+  report back and provide this data. This will help to break the parser
+  on our end so to reproduce and extend the test-suite with abstracted
   serialized data for regression testing.
-  
+
     Requirements:
-  
+
     PHP 5.3.3 or higher
     PHPUNIT 3.5.5 or higher (for the test-suite)
-  
+
     Use:
-    
-      To make use of the library, copy over the src directory into your 
-    library folder. 
-    
+
+      To make use of the library, copy over the src directory into your
+    library folder.
+
       Serialized ships with a PSR-0 compatbile autoloader. To make use of the
     library require the base file:
-    
+
       require_once('library/Serialized.php');
-    
+
       After including the autoloader, auto-loading is enabled and the parser
     can be used:
-    
+
       $array = Serialized\Parser::Parse($serialized);
-    
+
       Example: 00-basic-parsing
-    
-      In case autoloading fails on your PHP configuration (which has been 
-    reported that it could happen), the library can always be manually loaded 
+
+      In case autoloading fails on your PHP configuration (which has been
+    reported that it could happen), the library can always be manually loaded
     as well:
-    
+
       require_once('library/Serialized.php');
       Serialized::loadLibrary();
-    
+
       For debugging purposes, there is a dump function which prints structure
     and data of a serialized string to standard output:
-    
+
       $parser = new Serialized\Parser($serialized);
       $parser->dump();
-    
+
       Example: 01-debug-dump
-  
+
     Resources:
-  
+
     PHP Serialize Function (PHP Manual)
   http://php.net/manual/en/function.serialize.php
-  
+
     PHP Unserialize Function (PHP Manual)
   http://php.net/manual/en/function.unserialize.php
-  
+
     Object Serialization (PHP Manual)
   http://php.net/manual/en/language.oop5.serialization.php
-  
+
     The Serializable interface (PHP Manual)
   http://php.net/manual/en/class.serializable.php
-  
+
     Runtime Configuration "unserialize_callback_func" (PHP Manual)
   http://www.php.net/manual/en/var.configuration.php#unserialize-callback-func
-  
+
     PHP Serialization And Recursion Demystified (by Andrea Giammarchi; 2009-09-07)
   http://webreflection.blogspot.com/2009/09/php-serialization-and-recursion.html
-  
+
     Recursive Reference Serialize Library (by Nghia Nguyen; 2009-06-01)
   http://www.phpclasses.org/package/5336-PHP-Serialize-objects-with-cyclic-references.html

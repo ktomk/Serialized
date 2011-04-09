@@ -1,22 +1,22 @@
   Serialized - PHP Library for Serialized Data
-  
+
   Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
-    
+
   DATATYPES
-  
+
     This document lists various types of data the library deals with.
-    
-    Serialized - often referring to serialized data. That's a string. It 
+
+    Serialized - often referring to serialized data. That's a string. It
   can contain nullchars (x00).
-  
-    Serialized data contains PHP native typed values. The following PHP 
+
+    Serialized data contains PHP native typed values. The following PHP
   datatypes can be serialized:
-  
+
     * Boolean (bool)
     * Float (float)
     * Integer (int)
@@ -24,22 +24,22 @@
     * String (string)
     * Array (array)
     * Object (object)
-    
+
     Next to these types, serialized data can contain recursion to re-
-  present circular references and referenced recursions. Recursion and 
+  present circular references and referenced recursions. Recursion and
   references are not native PHP datatypes, both exist for serialization
   only (references exist in PHP as well, but recursion weights higher,
   as there is no reference in serialized data w/o recursion).
-  
-    Recursion and referenced recursion do not contain any values but a 
-  numerical index refererring to the value. The index is a one-based, 
+
+    Recursion and referenced recursion do not contain any values but a
+  numerical index refererring to the value. The index is a one-based,
   non-negative integer referencing the value in (un-)serialized order.
-  
+
   SERIALIZED TYPE NAMES
-  
+
     The following is a list of all string identifiers used in Serialized
   for various datatypes:
-  
+
     * bool
     * null
     * float
@@ -52,12 +52,12 @@
     * member
     * recursion
     * recursionref
-  
+
   SERIALIZE TYPE IDENTIFICATION CHARS
-  
+
     In a serialized string, each chunk of data is prefixed by a single
   character (case sensitive) signalling the type (a-z):
-  
+
     * a - Array
     * b - Boolean
     * d - Float
@@ -66,5 +66,4 @@
     * O - Object
     * r - Recursion
     * R - Recursion by Reference
-    * s - String  
-  
+    * s - String

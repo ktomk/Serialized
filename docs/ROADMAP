@@ -1,16 +1,16 @@
   Serialized - PHP Library for Serialized Data
 
   Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
-    
+
   ROADMAP
-  
+
   0.0.0 - Init. (done)
-  0.1.0 - Parsing of all available serialized types incl. recursion and 
+  0.1.0 - Parsing of all available serialized types incl. recursion and
           references. (done)
   0.2.0 - Parsing of serialized variables (session data).
   0.3.0 - Service release.

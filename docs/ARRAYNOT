@@ -1,50 +1,50 @@
   Serialized - PHP Library for Serialized Data
 
   Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
-    
+
   ARRAY NOTATION
-  
+
   CONTENTS
-  	
+
     Introduction
     1 Single Datatypes
     2 Compound Datatypes
     2-1 Array
     2-2 Object
     3 Recursion
-  
+
   INTRODUCTION
 
-    The Array Notation represents _all_ content of a serialized string in 
+    The Array Notation represents _all_ content of a serialized string in
   form of a standard PHP array with two values:
-  
+
     NATIVE  ~= array(TYPE, DATA)
-  
+
     Of which the two elements are numerically indexed:
-  
+
       First Element  (0): TYPE (always string)
       Second Element (1): DATA (of mixed type: NULL, scalar or array)
-    
+
     All possible forms in PHP pseudo code are therefore:
-    
+
             array((string) TYPE, NULL);
       -or-  array((string) TYPE, (int) DATA);
       -or-  array((string) TYPE, (float) DATA);
       -or-  array((string) TYPE, (string) DATA);
       -or-  array((string) TYPE, (bool) DATA);
       -or-  array((string) TYPE, (array) DATA);
-      
+
     The Array Notation has been chosen to represent parsed data in form
   of a parse-tree. Next to the Array Notation, a object based represenation
   is planned. See ROADMAP.
-  
+
     DATA varies based on TYPE which can be grouped in SINGLE, COMPOUND and
-  RECURSION. See the tree for grouping and association to PHP datatypes. 
+  RECURSION. See the tree for grouping and association to PHP datatypes.
 
                              TYPE
                               |
@@ -58,92 +58,92 @@
 
     The Array Notation is quite complex to explain in written form. See
   ARRAYNOT.pdf or ARRAYNOT.odg for a graphical representation.
-  
+
   ----
-    [*] recursion and reference in the tree do not represent a native PHP 
+    [*] recursion and reference in the tree do not represent a native PHP
         datatype but a serialized one. They are (un)serialisation-ordered
         sequence-based non-negative integer indices starting at one.
-    
+
   1 SINGLE DATATYPES
-    
+
     Single datatypes are NULL and scalars (Resources can not be seria-
   lized[*]) have their value stored natively as the following table shows:
-  
-      # | NATIVE         | TYPE     | DATA 
+
+      # | NATIVE         | TYPE     | DATA
     ----+----------------+----------+--------------
       1 | (null) NULL    | 'null'   | (null) NULL
       2 | (bool) TRUE    | 'bool'   | (bool) TRUE
-      3 | (int) 1        | 'int'    | (int) 1 
-      4 | (float) 22.5   | 'float'  | (float) 22.5  
+      3 | (int) 1        | 'int'    | (int) 1
+      4 | (float) 22.5   | 'float'  | (float) 22.5
       5 | (string) 'foo' | 'string' | (string) 'foo'
-      
-    TABLE: Single or simple PHP datatypes as Array Notation as
-           NATIVE ~= array(TYPE, DATA) 
 
-      As the table shows, the value of these five simple datatypes are 
-    preserved in their Array Notation. The first array element names 
-    the type of the stored value. 
-    
+    TABLE: Single or simple PHP datatypes as Array Notation as
+           NATIVE ~= array(TYPE, DATA)
+
+      As the table shows, the value of these five simple datatypes are
+    preserved in their Array Notation. The first array element names
+    the type of the stored value.
+
       EXAMPLES:
-      
+
       (null) NULL  ~= array('null',  (null)  NULL)
       (float) 22.5 ~= array('float', (float) 22.5)
-      
-  ---- 
+
+  ----
     [*] See note on http://php.net/manual/en/function.serialize.php
-  
+
   2 COMPOUND DATATYPES
-  
+
     Compound datatypes are such which are complex and consist of one or
   more simple or compound datatype(s).
-  
-    In PHP those are Array and Object. Their Array 
-  Notation is done by using array(TYPE, DATA) as well, but the 
-  DATA part will always be an array which has a representation 
-  on it's own. See the following table for a comparison with  
+
+    In PHP those are Array and Object. Their Array
+  Notation is done by using array(TYPE, DATA) as well, but the
+  DATA part will always be an array which has a representation
+  on it's own. See the following table for a comparison with
   simple datatypes so far:
-     
-      # | NATIVE   | TYPE     | DATA  
+
+      # | NATIVE   | TYPE     | DATA
     ----+-------- -+----------+---------------------
-      6 | (array)  | 'array'  | (array) array(...) 
+      6 | (array)  | 'array'  | (array) array(...)
       7 | (object) | 'object' | (array) array(...)
-  
+
     TABLE: Compound PHP Datatypes as Array Notation (first level),
            see below for notation of values.
-           
-    The notation of DATA varies based on the datatype which varies 
-  between array and object. See 2-1 for array and 2-2 for 
+
+    The notation of DATA varies based on the datatype which varies
+  between array and object. See 2-1 for array and 2-2 for
   object.
-    
+
   2-1 ARRAY
-  
+
     array('array', array(...) /* DATA */ )
-   
-    DATA is an array. It consists of one array with two entries per 
+
+    DATA is an array. It consists of one array with two entries per
   each native array-entry in form of a key and value pair:
-  
+
     NATIVE  ~= array(TYPE, DATA)
-    
+
     ARRAY   ~= array('array', DATA)
     DATA    ~= array(array(KEY, VALUE)*)
     KEY     ~= (array-notation) [int|string]NATIVE
     VALUE   ~= (array-notation) [*any*]NATIVE
-    
+
     Key elements are represented in their simple datatype Array Notation
   as explained above. Key in PHP arrays can only be integer or string[*].
   Values are represented in their Array Notation based on their
   datatype: SIMPLE, COMPOUND or REFERENCE.
-  
+
     EXAMPLE: Array with string datatypes (simple) in Array Notation
-    
+
       Native:
-    
-      array( 
+
+      array(
           (string) 'key' => (string) 'value'
        )
-      
+
       Array Notation:
-      
+
       array(
          (string) 'array',  array(
              array(
@@ -152,51 +152,51 @@
              )
          )
       )
-      
+
     As the example shows, DATA is an array of one key/value pair of their
   values own Array Notation.
-  
-    HINT: The library can print out array notations as preformatted and 
-          better readable text for debugging purposes. 
-  
+
+    HINT: The library can print out array notations as preformatted and
+          better readable text for debugging purposes.
+
   ----
     [*] See http://php.net/manual/en/language.types.array.php
-  
+
   2-2 OBJECT
-  
-    array('object', array(...) /* DATA */ )  
-   
-    DATA is an array. It contains two entries per object of which the 
-  first one is representing the class-name and the second entry represents 
+
+    array('object', array(...) /* DATA */ )
+
+    DATA is an array. It contains two entries per object of which the
+  first one is representing the class-name and the second entry represents
   the class-members.
-  
-    In difference to the notation of arrays, and additional third level is 
+
+    In difference to the notation of arrays, and additional third level is
   added. Basically this is the blueprint:
-      
+
       NATIVE  ~= array(TYPE, DATA)
-      
-      OBJECT  ~= array('object', DATA)  
+
+      OBJECT  ~= array('object', DATA)
       DATA    ~= array(NAME, MEMBERS)  // compare: array(TYPE, DATA)
       NAME    ~= array('classname', (string))
       MEMBERS ~= array(array(MEMBER, VALUE)*)
       MEMBER  ~= array('member', (string))
       VALUE   ~= (array-notation) [*any*]NATIVE
-  
-    Class-members is an array of one key/value pair of members and their 
-  values in their own Array Notation comparable to arrays with their keys 
+
+    Class-members is an array of one key/value pair of members and their
+  values in their own Array Notation comparable to arrays with their keys
   and values.
-  
+
     EXAMPLE: Object with string member (simple) in Array Notation
-    
+
       Native (as pseudo-code):
-  
+
       $foo = new stdClass;
       $foo->membername = 'bar';
-    
+
       Array Notation:
-    
+
       array(
-          (string) 'object', 
+          (string) 'object',
           array(
               array((string) 'classname', (string) 'stdClass'),
               array((string) 'members', (array) array(
@@ -207,43 +207,43 @@
               )
           )
       )
-    
-    As the example shows, DATA is an array with two entries representing 
+
+    As the example shows, DATA is an array with two entries representing
   classname and members.
-     
-    Members is an array of member/value pairs while member names are 
+
+    Members is an array of member/value pairs while member names are
   type-hinted as 'member' following with the string of their name and
   values are written in their own Array Notation. Values can be of any
   type available.
-  
+
   3 RECURSION
-  
+
     PHP can store recursion and refrenced recursion into serialized data.
-  
+
     In Array Notation those are hinted as 'recursion' and 'recursionref'
   containing the numerical, (un-)serialize-order one-based pointer to the
   value in question.
-  
+
     RECURSION    ~= array('recursion', INDEX)
     RECURSIONREF ~= array('recursion', INDEX)
-    
+
     Example:
-    
+
       $object = new stdClass;
       $data = array($object, $object);
-    
-      The first value will be the array, the second the first object 
+
+      The first value will be the array, the second the first object
     inside the array and the third a recursion to it. Index is 2 then.
-    
+
       Written in Array Notation:
-      
+
       array('array', array(
           array(
               array('int', 0),       // key
               array('object', array( // value
                   array('classname', 'stdClass'),
                   array('members', array())
-              ))              
+              ))
           ),
           array(
               array('int', 1),       // key

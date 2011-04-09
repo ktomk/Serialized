@@ -1,39 +1,39 @@
 <!--
 
     Serialized - PHP Library for Serialized Data
-     
+
     Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-     
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
-     
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Affero General Public License for more details.
-     
+
     You should have received a copy of the GNU Affero General Public License
     along with this program in a file called COPYING. If not, see
     <http://www.gnu.org/licenses/> and please report back to the original
     author.
- 
+
  	============
 
     This is Serialized DTD.
-    
+
     Serialized includes the superset of PHP serialized
     types and their values.
-    
-        Draft: 0.1.5 alpha 
-        
+
+        Draft: 0.1.5 alpha
+
         Authors:
         	Tom Klingenberg
             Patrick C. Engel
-            
+
      Further information about Serialized is available at:
-     
+
          https://github.com/ktomk/Serialized
 
 -->
@@ -52,7 +52,7 @@
 
 <!ENTITY % AbsInt "%Int;" >
 	<!-- a positive integer value or 0 -->
-	
+
 <!ENTITY % PositiveInt "%Int;" >
 	<!-- a positive integer value greater 0 -->
 
@@ -83,18 +83,18 @@
 <!ELEMENT null EMPTY >
 
 <!ELEMENT bool EMPTY >
-<!ATTLIST bool 
-  value %Bool; #REQUIRED 
+<!ATTLIST bool
+  value %Bool; #REQUIRED
   >
 
 <!ELEMENT int EMPTY >
-<!ATTLIST int 
+<!ATTLIST int
   value %Int; #REQUIRED
   >
 
 <!ELEMENT float EMPTY >
-<!ATTLIST float 
-  value %Float; #REQUIRED 
+<!ATTLIST float
+  value %Float; #REQUIRED
   >
 
 <!ELEMENT string EMPTY >
@@ -111,13 +111,13 @@
   >
 
 <!ELEMENT item ( %type.all; ) >
-<!ATTLIST item 
+<!ATTLIST item
   name CDATA     #REQUIRED
   type %KeyType; #REQUIRED
   >
 
 <!ELEMENT object ( property* ) >
-<!ATTLIST object 
+<!ATTLIST object
   class   CDATA   #REQUIRED
   members NMTOKEN #REQUIRED
   >
@@ -132,11 +132,11 @@
 <!--====== recursion ======-->
 
 <!ELEMENT recursion EMPTY >
-<!ATTLIST recursion 
+<!ATTLIST recursion
   value %Ref; #REQUIRED
   >
 
 <!ELEMENT recursionref EMPTY >
-<!ATTLIST recursionref 
+<!ATTLIST recursionref
   value %Ref; #REQUIRED
   >

@@ -1,9 +1,9 @@
   Serialized - PHP Library for Serialized Data
-  
+
   Copyright (C) 2010-2011 Tom Klingenberg, some rights reserved
-  
+
   THANKS
-  
+
   Sven Kiera - Continued Eclipse IDE PHP Tool Integration support.
   Sebastian Bergmann - Making PHPUnit support assertion of triggered notices
     and errors in 3.5.5.
