@@ -140,7 +140,7 @@ class XMLTest extends DumperTest
 		$lNode = $lDoc->getElementsByTagName($root)->item(0);
 		
 		$aImp = new \DOMImplementation;
-		$aDocType = $aImp->createDocumentType($root, '', $dtd);		
+		$aDocType = $aImp->createDocumentType($root, '', $dtd);
 		$aDoc = $aImp->createDocument('', '', $aDocType);
 		$aDoc->encoding = $encoding;
 		$aNode = $aDoc->importNode($lNode, true);
