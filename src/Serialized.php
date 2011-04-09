@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Serialized
  */
 
@@ -84,6 +84,7 @@ class Serialized {
 		$classNames = array(
 			'Serialized\\ValueTypes',
 			'Serialized\\Dumper',
+			'Serialized\\Dumper\\Concrete',
 			'Serialized\\Dumper\\Text',
 			'Serialized\\Dumper\\XML',
 			'Serialized\\Value',

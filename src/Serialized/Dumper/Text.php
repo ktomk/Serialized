@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Serialized
  */
 
@@ -33,7 +33,7 @@ Use \Exception;
  *
  * Default dumper, works in the shell.
  */
-class Text extends Dumper {
+class Text extends Dumper implements Concrete {
 	/**
 	 * master be be used as datasource (two bytes)
 	 * @var string

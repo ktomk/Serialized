@@ -33,59 +33,30 @@ Use \Exception;
  *
  * XML Markup of serialized data.
  */
-class XML extends Dumper {
+class XML extends Dumper implements Concrete {
 	/**
-	 * default tagnames
+	 * configuration local store
 	 * @var array
 	 */
-	private $tags = array(
-		'root' => 'serialized',
-		'array'  => 'array',
-		'array/item'  => 'item',
-		'object' => 'object',
-		'object/property' => 'property',
+	protected $config = array(
+		'declaration' => '<?xml version="1.0"?>',
+		'doctype' => '',
+		'newline' => "\n",
+		'indent' => '  ',
+		'tags' => array(
+			'root' => 'serialized',
+			'array'  => 'array',
+			'array/item'  => 'item',
+			'object' => 'object',
+			'object/property' => 'property',
+		),
 	);
-	/**
-	 * inset characaters
-	 * @var string
-	 */
-	private $inset = '  ';
-
-	/**
-	 * newline char
-	 * @var string
-	 */
-	private $newline = "\n";
-	/**
-	 * set optional tagnames
-	 *
-	 * @param array $tags
-	 */
-	public function setTags(array $tags) {
-		$this->tags = array_merge($this->tags, $tags);
-	}
-	/**
-	 * newline char(s) or empty string
-	 *
-	 * @param string $newline
-	 */
-	public function setNewline($newline) {
-		$this->newline = $newline;
-	}
-	/**
-	 * inset char(s) or empty string to not inset
-	 *
-	 * @param string $inset
-	 */
-	public function setInset($inset) {
-		$this->inset = $inset;
-	}
 	/**
 	 * push the current state onto the stack
 	 */
 	protected function statePush() {
 		parent::statePush();
-		$this->state->inset .= $this->inset;
+		$this->state->inset .= $this->config('indent');
 	}
 	private function dumpArrayElement(array $element) {
 		list(list($keyType, $keyValue)) = $element;
@@ -104,9 +75,9 @@ class XML extends Dumper {
 		$count = count($value);
 		if (!$count--)
 			return;
-		$xmlElement = $this->tags['array/item'];
+		$xmlElement = $this->config['tags']['array/item'];
 		$inset = $this->state->inset;
-		$NL = $this->newline;
+		$NL = $this->config('newline');
 
 		foreach($value as $index => $element) {
 			$keyValue = $this->dumpArrayElement($element);
@@ -142,8 +113,8 @@ class XML extends Dumper {
 			return;
 
 		$inset = $this->state->inset;
-		$NL = $this->newline;
-		$xmlElement = $this->tags['object/property'];
+		$NL = $this->config('newline');
+		$xmlElement = $this->config['tags']['object/property'];
 
 		foreach($members as $index => $element) {
 			$xmlAttributes = $this->dumpObjectMember($element);
@@ -218,16 +189,20 @@ class XML extends Dumper {
 		$this->statePush();
 
 		if ($this->hasInnerElements($type)) {
-			printf('%s<%s%s>%s', $this->state->inset, $xmlElement, $valueString, $this->newline);
+			printf('%s<%s%s>%s', $this->state->inset, $xmlElement, $valueString, $this->config('newline'));
 			$this->dumpSubValue($type, $valueValue);
-			printf("%s</%s>%s", $this->state->inset, $xmlElement, $this->newline);
+			printf("%s</%s>%s", $this->state->inset, $xmlElement, $this->config('newline'));
 		} else {
-			echo $this->state->inset, '<', $xmlElement, $valueString, '/>', $this->newline;
+			echo $this->state->inset, '<', $xmlElement, $valueString, '/>', $this->config('newline');
 		}
 
 		$this->statePop();
 	}
-	private function dumpAny(array $parsed, $doctype) {
+	private function config($name, $addnewline = false) {
+		$NL = $addnewline ? $this->config['newline'] : '';
+		return empty($this->config[$name]) ? '' : $this->config[$name].$NL;
+	}
+	private function dumpAny(array $parsed) {
 		if (count($parsed) != 2) {
 			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
 		}
@@ -237,15 +212,18 @@ class XML extends Dumper {
 		list($typeName, $valueValue) = $parsed;
 		$type = $this->typeByName($typeName);
 
-		$xmlRoot = $this->tags['root'];
+		$xmlRoot = $this->config['tags']['root'];
 
-		echo '<?xml version="1.0"?>', $this->newline;
-		echo $doctype?:'', $doctype?$this->newline:'';
-		echo '<', $xmlRoot, '>', $this->newline;
+		$doctype = null;
+
+		echo $this->config('declaration', true);
+		echo $this->config('doctype', true);
+
+		echo '<', $xmlRoot, '>', $this->config('newline');
 
 		$this->dumpNode($parsed);
 
-		echo '</', $xmlRoot, '>', $this->newline;
+		echo '</', $xmlRoot, '>', $this->config('newline');
 	}
 	/**
 	 * print serialized array notation
@@ -253,7 +231,8 @@ class XML extends Dumper {
 	 * @param array $parsed serialized array notation data.
 	 * @param string $doctype (optional) FIXME drop and/or add general configuraiton/option interface for dumpers
 	 */
-	public function dump(array $parsed, $doctype=null) {
-		$this->dumpAny($parsed, $doctype);
+	public function dump(array $parsed, array $config=array()) {
+		$config && $this->setConfig($config);
+		$this->dumpAny($parsed);
 	}
 }

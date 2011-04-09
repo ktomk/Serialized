@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Tests
  */
 
@@ -133,7 +133,7 @@ class SerializedTest extends \Serialized\TestCase
 	 */
 	public function testLoadLibrary()
 	{
-		$expected = 7;
+		$expected = 8;
 		$actual = \Serialized::loadLibrary();
 		$this->assertSame($expected, $actual, sprintf('loadLibrary failed to load %d classes/interfaces (result was: %d).', $expected, $actual));
 	}

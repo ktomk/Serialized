@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Examples
  */
 
@@ -66,7 +66,9 @@ $doctypeInline = '<!DOCTYPE serialized [
 
 ]>';
 $dumper = new DumperXml();
-$doctypeLinked = '<!DOCTYPE serialized SYSTEM "serialized.dtd">';
-$doctype = $doctypeInline;
 
-$dumper->dump($parsed, $doctype);
+$config = array(
+	'doctype' => $doctypeLinked = '<!DOCTYPE serialized SYSTEM "serialized.dtd">',
+);
+
+$dumper->dump($parsed, $config);

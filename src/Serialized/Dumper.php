@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Serialized
  */
 
@@ -33,6 +33,12 @@ Use \Exception;
  * @todo solve typeByName() code duplication (taken from Parser)
  */
 class Dumper implements ValueTypes {
+	/**
+	 * configuration local store
+	 * @var array
+	 */
+	protected $config = array();
+
 	/**
 	 * dumper state
 	 * @var stdClass
@@ -111,13 +117,63 @@ class Dumper implements ValueTypes {
 		return $r;
 	}
 	/**
+	 * @todo problems with integer keys, I normally should not process them
+	 *
+	 * config is an array without any numerical keys and with an n-depth but
+	 * there never ever must be any numerical keys.
+	 *
+	 * if a non-array is to be set to an array, it will fail. the definition
+	 * is by default, overwriters will get killed.
+	 */
+	protected function config_merge_deep(array $source, array $add, $noticeUndefined = true) {
+		static $base = '';
+		foreach ($add as $key => $value) {
+			$path = $base.'/'.$key;
+			if (is_int($value))
+				continue;
+			if (true === is_array($value)) {
+				$value = $this->config_merge_deep(array(), $value, false); // merge with yourself, will trigger lot of errors
+			}
+			if (!array_key_exists($key, $source)) {
+				$noticeUndefined &&
+					trigger_error(sprintf('Configuration "%s" was not defined.', $path), E_USER_NOTICE)
+					;
+				$source[$key] = $value;
+				continue;
+			}
+			if (!is_array($source[$key]) && !is_array($value)) {
+				$source[$key] = $value;
+				continue;
+			}
+			if (!is_array($source[$key]) && is_array($value)) {
+				trigger_error(sprintf('Can not merge array (key: "%s") into a non-array config entry.', $key), E_USER_WARNING);
+				continue;
+			}
+			if (is_array($source[$key]) && !is_array($value)) {
+				trigger_error(sprintf('Can not overwrite existing array (key: "%s") with a value ("%s").', $key, $value), E_USER_WARNING);
+				continue;
+			}
+			list($save, $base) = array($base, $path);
+			$source[$key] = $this->config_merge_deep($source[$key], $value);
+			$base = $save;
+		}
+		return $source;
+	}
+	public function setConfig(array $config) {
+		$this->config = $this->config_merge_deep($this->config, $config);
+	}
+	private function dumpAs($type, array $parsed, array $config) {
+		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, ucfirst(strtolower($type)));
+		$dumper = new $class();
+		$config && $dumper->setConfig($config);
+		$dumper->dump($parsed);
+	}
+	/**
 	 * print serialized array notation
 	 *
 	 * @param array $parsed serialized array notation data.
 	 */
-	public function dump(array $parsed) {
-		$class = __NAMESPACE__.'\Dumper\Text';
-		$dumper = new $class();
-		$dumper->dump($parsed);
+	public function dump(array $parsed, array $config = array()) {
+		$this->dumpAs('text', $parsed,  $config);
 	}
 }

@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Tests
  */
 
@@ -112,19 +112,46 @@ class XMLTest extends DumperTest
 	}
 
 	public function testOptions() {
-		$tags = array('root' => 'dig');
-
 		$dumper = new XML();
-		$dumper->setTags($tags);
-		$dumper->setNewline('');
-		$dumper->setInset('');
+		$config = array(
+			'newline' => '',
+			'indent' => '',
+			'tags' => array(
+				'root' => 'dig',
+			),
+		);
 
 		$parsed = array('null', NULL);
 
 		$expected = '<?xml version="1.0"?><dig><null/></dig>';
 
 		ob_start();
-		$dumper->dump($parsed);
+		$dumper->dump($parsed, $config);
+		$actual = ob_get_clean();
+
+		$this->assertSame($expected, $actual);
+	}
+
+	public function testConfig() {
+		$config = array(
+			'declaration' => '<?xml version="1.0" encoding="UTF-8" ?>',
+			'newline' => "\n",
+			'indent' => "\t",
+			'tags' => array(
+				'root' => 'dig',
+			),
+		);
+
+		$parsed = array('null', NULL);
+		$expected = '<?xml version="1.0" encoding="UTF-8" ?>
+<dig>
+	<null/>
+</dig>
+';
+
+		$dumper = new XML();
+		ob_start();
+		$dumper->dump($parsed, $config);
 		$actual = ob_get_clean();
 
 		$this->assertSame($expected, $actual);
@@ -134,18 +161,18 @@ class XMLTest extends DumperTest
 		$root = 'serialized';
 		$version = '1.0';
 		$encoding = 'utf-8';
-		
+
 		$lDoc = new \DOMDocument($version, $encoding);
 		$lDoc->loadXML($xml);
 		$lNode = $lDoc->getElementsByTagName($root)->item(0);
-		
+
 		$aImp = new \DOMImplementation;
 		$aDocType = $aImp->createDocumentType($root, '', $dtd);
 		$aDoc = $aImp->createDocument('', '', $aDocType);
 		$aDoc->encoding = $encoding;
 		$aNode = $aDoc->importNode($lNode, true);
 		$aDoc->appendChild($aNode);
-		
+
 		$expected = true;
 		$actual = $aDoc->validate();
 		$this->assertSame($expected, $actual, $message);
@@ -157,11 +184,11 @@ class XMLTest extends DumperTest
 		$path = __DIR__.'/../../../examples/'.$name;
 		$data = file_get_contents($path);
 		$dtd = 'data://text/plain;base64,'.base64_encode($data);
-		
+
 		foreach( array('ArrayDump', 'Dump', 'ObjectDump') as $proc) {
 			$func = sprintf('expected%sOutput', $proc);
 			$xml = $this->$func();
-			$this->assertDTD($xml, $dtd, sprintf('DTD in %s.', $proc));	
+			$this->assertDTD($xml, $dtd, sprintf('DTD in %s.', $proc));
 		}
 	}
 
