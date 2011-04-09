@@ -29,5 +29,5 @@ Use Serialized\Dumper;
 
 Interface Concrete {
 	public function setConfig(array $config);
-	public function dump(array $parsed);
+	public function dump(array $parsed, array $config=array());
 }

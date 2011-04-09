@@ -186,7 +186,7 @@ class Text extends Dumper implements Concrete {
 	 *
 	 * @param array $parsed serialized array notation data.
 	 */
-	public function dump(array $parsed) {
+	public function dump(array $parsed, array $config=array()) {
 		$this->dumpAny($parsed);
 	}
 }

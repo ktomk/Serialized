@@ -32,7 +32,7 @@ Use \Exception;
  *
  * @todo solve typeByName() code duplication (taken from Parser)
  */
-class Dumper implements ValueTypes {
+abstract class Dumper implements ValueTypes {
 	/**
 	 * configuration local store
 	 * @var array
@@ -166,8 +166,7 @@ class Dumper implements ValueTypes {
 		$this->config = $this->config_merge_deep($this->config, $config);
 	}
 	private function dumpAs($type, array $parsed, array $config) {
-		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, ucfirst(strtolower($type)));
-		$dumper = new $class();
+		$dumper = self::factory($type);
 		$config && $dumper->setConfig($config);
 		$dumper->dump($parsed);
 	}
@@ -176,7 +175,14 @@ class Dumper implements ValueTypes {
 	 *
 	 * @param array $parsed serialized array notation data.
 	 */
-	public function dump(array $parsed, array $config = array()) {
-		$this->dumpAs('text', $parsed,  $config);
+	public function dump(array $parsed, array $config = array(), $dumper = 'text') {
+		$this->dumpAs($dumper, $parsed, $config);
+	}
+	/**
+	 * @return Dumper\Concrete
+	 */
+	public static function factory($dumper) {
+		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, ucfirst(strtolower($dumper)));
+		return new $class();
 	}
 }

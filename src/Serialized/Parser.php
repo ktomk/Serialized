@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Serialized
  */
 
@@ -330,7 +330,8 @@ class Parser implements Value, ValueTypes {
 	 */
 	public function dump(array $parsed = null) {
 		(null === $parsed) && $parsed = $this->getParsed();
-		$dumper = new Dumper();
+		// $dumper = new Dumper();
+		$dumper = Dumper::factory('text');
 		$dumper->dump($parsed);
 	}
 }
