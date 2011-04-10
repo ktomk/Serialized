@@ -10,7 +10,7 @@
      [ ] Run XSLT tests
      [ ] XML correct string value=""/encoding
      [ ] XML: <?xml version="1.0" encoding="UTF-8" ?> per default
- [ ] Arrange exmaples in directories.
+ [ ] Arrange examples in directories.
  [ ] Parse session data / var / var types in array notation
  [ ] Dump into buffer.
  [ ] Dumper: solve typeByName() code duplication (taken from Parser)
