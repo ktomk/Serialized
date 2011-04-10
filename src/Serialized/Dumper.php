@@ -165,24 +165,13 @@ abstract class Dumper implements ValueTypes {
 	public function setConfig(array $config) {
 		$this->config = $this->config_merge_deep($this->config, $config);
 	}
-	private function dumpAs($type, array $parsed, array $config) {
-		$dumper = self::factory($type);
-		$config && $dumper->setConfig($config);
-		$dumper->dump($parsed);
-	}
-	/**
-	 * print serialized array notation
-	 *
-	 * @param array $parsed serialized array notation data.
-	 */
-	public function dump(array $parsed, array $config = array(), $dumper = 'text') {
-		$this->dumpAs($dumper, $parsed, $config);
-	}
 	/**
 	 * @return Dumper\Concrete
 	 */
-	public static function factory($dumper) {
+	public static function factory($dumper, array $config = array()) {
 		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, ucfirst(strtolower($dumper)));
-		return new $class();
+		$dumper = new $class();
+		$config && $config->setConfig($config);
+		return $dumper;
 	}
 }

@@ -328,10 +328,10 @@ class Parser implements Value, ValueTypes {
 	 *
 	 * @param array $parsed (optional) serialized array notation data or empty to use this objects data.
 	 */
-	public function dump(array $parsed = null) {
+	public function dump(array $parsed = null, array $options = array()) {
 		(null === $parsed) && $parsed = $this->getParsed();
-		// $dumper = new Dumper();
-		$dumper = Dumper::factory('text');
+		$options = array_merge(array('type'=>'text', 'config'=>array()));
+		$dumper = Dumper::factory($options['type'], $options['config']);
 		$dumper->dump($parsed);
 	}
 }

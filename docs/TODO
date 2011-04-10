@@ -1,22 +1,25 @@
  [x] Move Dumper into class of it's own.
  [x] Dumper: Do Nice-Printing ASCII 7bit safe
  [x] Tests for Serialized::loadLibrary() - all classes covered?
- [/] Dumper: Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)
+ [x] Dumper: Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)
      [x] Prepare merge with DumperXML
      [x] Generalized option handling for dumpers (option/config array)
      [x] Dumper Interface
-     [ ] Dump into buffer.
-     [ ] XML correct string value=""/encoding
+ [ ] XML Dumper finalisation
      [ ] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
+     [ ] Run XSLT tests
+     [ ] XML correct string value=""/encoding
      [ ] XML: <?xml version="1.0" encoding="UTF-8" ?> per default
+ [ ] Arrange exmaples in directories.
  [ ] Parse session data / var / var types in array notation
+ [ ] Dump into buffer.
  [ ] Dumper: solve typeByName() code duplication (taken from Parser)
  [ ] Validate class- and member-mame parsing
  [ ] Add Static Serialized::parse() / Serialized::dump()
 
 
  (?) It should be helpful to have a token stream with byte offsets and
-     to not rely on strucutre and data only as this is with the current
+     to not rely on structure and data only as it is with the current
      parser. Additionally this is helpful if confronted with broken se-
      rialized data (and yes, we hate to run over that in practice).
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
