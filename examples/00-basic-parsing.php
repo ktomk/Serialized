@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Examples
  */
 
@@ -34,4 +34,4 @@
 
   $arrayNotation = Parser::Parse($serialized);
 
-  var_dump($arrayNotation);
+  var_export($arrayNotation);
