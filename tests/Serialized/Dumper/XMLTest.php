@@ -64,22 +64,22 @@ class XMLTest extends DumperTest
 		return '<?xml version="1.0"?>
 <serialized>
   <object class="stdClass" members="6">
-    <property name="property" access="public">
+    <property name="property">
       <string len="4" value="test"/>
     </property>
-    <property name="float" access="public">
+    <property name="float">
       <float value="1"/>
     </property>
-    <property name="bool" access="public">
+    <property name="bool">
       <bool value="true"/>
     </property>
-    <property name="null" access="public">
+    <property name="null">
       <null/>
     </property>
-    <property name="recursion" access="public">
+    <property name="recursion">
       <recursion value="1"/>
     </property>
-    <property name="recursionref" access="public">
+    <property name="recursionref">
       <recursionref value="1"/>
     </property>
   </object>
@@ -96,7 +96,7 @@ class XMLTest extends DumperTest
     <property name="cb" access="protected">
       <string len="9" value="protected"/>
     </property>
-    <property name="cc" access="public">
+    <property name="cc">
       <string len="6" value="public"/>
     </property>
     <property class="Serialized\Dumper\testObjectParent" name="pa" access="private">
@@ -105,7 +105,7 @@ class XMLTest extends DumperTest
     <property name="pb" access="protected">
       <string len="17" value="protected, parent"/>
     </property>
-    <property name="pc" access="public">
+    <property name="pc">
       <string len="14" value="public, parent"/>
     </property>
   </object>

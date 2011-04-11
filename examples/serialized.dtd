@@ -74,6 +74,9 @@
 <!ENTITY % KeyType "(string|int)" >
 	<!-- Array keys can be either string or integer  -->
 
+<!ENTITY % PropAccess "(public|protected|private)" >
+	<!-- Property Access can either be public, protected or private -->
+
 <!--====== root ======-->
 
 <!ELEMENT serialized (%type.simple;|%type.complex;)>
@@ -124,9 +127,9 @@
 
 <!ELEMENT property ( %type.all; ) >
 <!ATTLIST property
-  class  CDATA   #IMPLIED
-  access CDATA   #REQUIRED
-  name   NMTOKEN #REQUIRED
+  class  CDATA        #IMPLIED
+  access %PropAccess; "public"
+  name   NMTOKEN      #REQUIRED
   >
 
 <!--====== recursion ======-->

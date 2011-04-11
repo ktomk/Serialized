@@ -88,7 +88,7 @@ class XML extends Dumper implements Concrete {
 	}
 	private function dumpObjectMember(array $member) {
 			list(list(, $memberName)) = $member;
-			$memberAccess = 'public';
+			$memberAccess = '';
 			$memberClass = '';
 			if("\x00"==$memberName[0]) {
 				if ("\x00*\x00"==substr($memberName, 0, 3)) {
@@ -103,7 +103,10 @@ class XML extends Dumper implements Concrete {
 					throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
 				} 	// @codeCoverageIgnoreEnd
 			}
-			return sprintf('%s name="%s" access="%s"', $memberClass, $memberName, $memberAccess);
+			$memberAccess &&
+				$memberAccess = sprintf(' access="%s"', $memberAccess)
+				;
+			return sprintf('%s name="%s"%s', $memberClass, $memberName, $memberAccess);
 	}
 	private function dumpObject($value) {
 		$classname = $value[0][1];
