@@ -164,10 +164,10 @@ abstract class Dumper implements ValueTypes {
 	public function setConfig(array $config) {
 		$this->config = $this->configMergeDeep($this->config, $config);
 	}
-	public function string(array $parsed, array $config=array()) {
+	public function getDump(array $parsed, array $config=array()) {
 		ob_start();
 		try {
-			$this->dump($parsed);
+			$this->dump($parsed, $config);
 		} catch(Exception $e) {
 			ob_end_clean();
 			$class = get_class($e);

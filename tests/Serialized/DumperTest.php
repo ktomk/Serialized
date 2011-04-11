@@ -60,9 +60,7 @@ abstract class DumperTest extends TestCase
 		$parsed = $parser->getParsed();
 		$class = __NAMESPACE__."\\Dumper\\{$this->dumper}";
 		$dumper = new $class();
-		ob_start();
-		$dumper->dump($parsed);
-		return ob_get_clean();
+		return $dumper->getDump($parsed);
 	}
 
 	abstract protected function expectedArrayDumpOutput();
@@ -134,14 +132,14 @@ abstract class DumperTest extends TestCase
 	final public function testUnkownValueTypeNameExceptionViaDump() {
 		$parsed = array('foo', '42');
 		$dumper = Dumper::factory($this->dumper);
-		$dumper->string($parsed);
+		$dumper->getDump($parsed);
 	}
     /**
      * @expectedException \PHPUnit_Framework_Error
      */
 	final public function testDumpParameterException() {
 		$dumper = Dumper::factory($this->dumper);
-		$dumper->string(array(array(), array('illegal option')));
+		$dumper->getDump(array(array(), array('illegal option')));
 		return;
 	}
     /**
@@ -149,7 +147,7 @@ abstract class DumperTest extends TestCase
      */
 	final public function testDumpParameterException2() {
 		$dumper = Dumper::factory($this->dumper);
-		$dumper->string(array());
+		$dumper->getDump(array());
 		return;
 	}
 }

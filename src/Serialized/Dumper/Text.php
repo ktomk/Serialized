@@ -113,27 +113,6 @@ class Text extends Dumper implements Concrete {
 		);
 		return $r;
 	}
-	/**
-	 * us-ascii, no control chars, encoding as hex into <>
-	 *
-	 * @param string $string
-	 * @return string encoded
-	 */
-	private function shellEncodeString($string) {
-		for(
-		    $r = '',
-		    $l = strlen($string),
-		    $i = 0
-		    ;
-		    $i < $l
-		    ;
-		    $c = $string[$i++],
-		    $o = ord($c),
-		    ($f = 0x08 > $o || $o > 0x7F) && $c = '<'.strtoupper(substr('0'.dechex($o),-2)).'>',
-		    $r.= $c
-		);
-		return $r;
-	}
 	private function dumpObjectMember(array $member) {
 			list(list(, $memberName)) = $member;
 			list($name, $class, $access) = $this->parseMemberName($memberName);
