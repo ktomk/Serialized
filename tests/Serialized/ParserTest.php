@@ -83,7 +83,6 @@ class ParserTest extends TestCase
 			array('a'=>array('aa'=>array('aaa'=>array('aaaa'=>'string value')))),
 			array(new \StdClass),
 		);
-		$i = 0;
 		foreach($tests as $test) {
 			$value = $test;
 			$serialized = serialize($value);
@@ -283,7 +282,7 @@ class ParserTest extends TestCase
 			try {
 				$object = new Parser($serialized);
 				$this->addToAssertionCount(1);
-				$result = $object->getParsed();
+				$object->getParsed();
 			} catch(ParseException $e) {
 				continue;
 			}
@@ -306,7 +305,7 @@ class ParserTest extends TestCase
 		$this->assertSame(false, $result);
 		$this->addToAssertionCount(1);
 		try {
-			$catch = Parser::parse($serialized);
+			Parser::parse($serialized);
 		} catch(\PHPUnit_Framework_Error $e) {
 			return;
 		}

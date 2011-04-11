@@ -35,10 +35,16 @@ class testObjectParent {
 	private $pa = 'private, parent';
 	protected $pb = 'protected, parent';
 	public $pc = 'public, parent';
+	public function getPa() {
+		return $this->pa;
+	}
 }
 
 class testObjectChild extends testObjectParent {
 	private $ca = 'private';
 	protected $cb = 'protected';
 	public $cc = 'public';
+	public function getCa() {
+		return $this->ca;
+	}
 }

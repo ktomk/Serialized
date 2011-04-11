@@ -32,11 +32,17 @@ require_once(__DIR__.'/../src/Serialized.php');
 
 class parentClass {
 	private $privee = 'parent';
+	protected function getPrivee() {
+		return $this->privee;
+	}
 }
 
 class exampleClass extends parentClass {
 	private $privee = 'example';
 	protected $str = 'test';
+	protected function getPrivee() {
+		return $this->privee;
+	}
 }
 
 $object = new exampleClass();

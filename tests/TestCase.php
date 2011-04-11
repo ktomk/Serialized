@@ -47,7 +47,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 		$condition = NULL === $lastError;
 		$this->assertFalse($condition);
 
-		extract($lastError, EXTR_PREFIX_ALL, 'last');
+		$last_message = $lastError['message'];
+		$last_file = $lastError['file'];
+
 		$this->assertEquals($message, $last_message);
 		$this->assertEquals(basename($file), basename($last_file));
 	}

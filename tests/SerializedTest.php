@@ -62,7 +62,7 @@ class SerializedTest extends \Serialized\TestCase
 	public function testAutoloadIsDisabled() {
 		$className = 'Serialized\\Parser';
 		$expected = false;
-		$actual = class_exists($className, $autoload = true);
+		$actual = class_exists($className, true);
 		$this->assertSame($expected, $actual, 'Autoloader is not disabled but must be.');
 	}
 

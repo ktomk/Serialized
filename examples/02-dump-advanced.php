@@ -31,6 +31,9 @@ require_once(__DIR__.'/../src/Serialized.php');
 
 class parentClass {
 	private $privee = 'parent';
+	public function getPrivee() {
+		return $this->privee;
+	}
 }
 
 class exampleClass extends parentClass {
