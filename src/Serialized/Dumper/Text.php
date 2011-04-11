@@ -144,13 +144,36 @@ class Text extends Dumper implements Concrete {
 		$this->$method($value);
 		$this->statePop();
 	}
+	/**
+	 * us-ascii, no control chars, encoding as in PHP
+	 *
+	 * @param string $string
+	 * @return string encoded
+	 */
+	private function phpEncodeString($string) {
+		static $seq = array(0x09 => 't', 0x0A => 'n', 0x0B => 'v', 0x0C => 'f',  0x0D => 'r');
+		for(
+		    $r = '',
+		    $l = strlen($string),
+		    $i = 0
+		    ;
+		    $i < $l
+		    ;
+		    $c = $string[$i++],
+		    $o = ord($c),
+		    ($f = 0x08 < $o && $o < 0x0E) && $c = $seq[$o],
+		    ($b = $f || (0x1F < $o && $o < 0x7F)) && ($f || 0x22 === $o || 0x24 === $o || 0x5C === $o) && $c = '\\'.$c,
+		    $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
+		);
+		return $r;
+	}
 	private function dumpValue($type, $value) {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
 				return sprintf('(%d)%s', count($value), count($value)?':':'.');
 			case self::TYPE_STRING:
-				return sprintf('(%d): "%s"', strlen($value), $this->dumpStringNice($value));
+				return sprintf('(%d): "%s"', strlen($value), $this->phpEncodeString($value));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
 				return ': '.$value;

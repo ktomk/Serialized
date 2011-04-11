@@ -25,6 +25,7 @@
  */
 
 Namespace Serialized\Dumper;
+Use Serialized\Dumper;
 Use Serialized\DumperTest;
 Use Serialized\Parser;
 
@@ -155,6 +156,37 @@ class XMLTest extends DumperTest
 		$actual = ob_get_clean();
 
 		$this->assertSame($expected, $actual);
+	}
+
+	private function callEncoding($string) {
+		static $selfObject;
+		empty($selfObject) &&
+			$selfObject = Dumper::factory('xml')
+			;
+		$object = new \ReflectionObject($selfObject);
+		$method = $object->getMethod('xmlAttributeEncode');
+		$method->setAccessible(true);
+
+		$args = array($string);
+		return $method->invokeArgs($selfObject, $args);
+	}
+
+	public function testAttributeEncoding() {
+		$data = array(
+			"" => "",
+			"\0" => "&#x0;",
+			"\t" => "&#x9;",
+			'"' => "&quot;",
+			'&' => "&amp;",
+			'<' => "&lt;",
+			'>' => "&gt;",
+			"1 & 2 are < 3 and > 0 \n" => "1 &amp; 2 are &lt; 3 and &gt; 0 &#xA;",
+			"Strings are expressed \"within double quotes\" in many computer languages." => "Strings are expressed &quot;within double quotes&quot; in many computer languages.",
+		);
+		foreach($data as $string => $expected) {
+			$actual = $this->callEncoding($string);
+			$this->assertSame($expected, $actual);
+		}
 	}
 
 	private function assertDTD($xml, $dtd, $message='') {

@@ -140,14 +140,30 @@ class XML extends Dumper implements Concrete {
 
 		$this->statePop();
 	}
+	private function xmlAttributeEncode($string) {
+		static $seq = array(0x22 => 'quot', 0x26 => 'amp', 0x3c => 'lt', 0x3e => 'gt');
+		for(
+		    $r = '',
+		    $l = strlen($string),
+		    $i = 0
+		    ;
+		    $i < $l
+		    ;
+		    $c = $string[$i++],
+		    $o = ord($c),
+		    $h = dechex($o),
+		    ($f = (0x22 === $o || 0x26 === $o || 0x3c === $o || 0x3e  === $o)) && $c = '&'.$seq[$o].';',
+		    $r.= ($f || (0x1F < $o && $o < 0x7F)) ? $c : '&#x'.strtoupper(dechex($o)).';'
+		);
+		return $r;
+	}
 	private function dumpValue($type, $value) {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
 				return sprintf(' members="%s"', count($value));
 			case self::TYPE_STRING:
-				// TODO imagine some propper CDATA for strings
-				return sprintf(' len="%d" value="%s"', strlen($value), htmlspecialchars($this->dumpStringNice($value)));
+				return sprintf(' len="%d" value="%s"', strlen($value), $this->xmlAttributeEncode($value));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
 				return sprintf(' value="%s"', $value);
@@ -166,14 +182,16 @@ class XML extends Dumper implements Concrete {
 			default:
 				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
 		}
-	}
+	} // @codeCoverageIgnoreEnd
 	private function hasInnerElements($type) {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_OBJECT:
 				return true;
-			case self::TYPE_MEMBERS:
+			// @codeCoverageIgnoreStart
+			case self::TYPE_MEMBERS: // pre-caution: should not happen, but if don't return false for those.
 				throw new \InvalidArgumentException('TYPE_MEMBERS not wanted for the moment');
+			// @codeCoverageIgnoreEnd
 			default:
 				return false;
 		}
