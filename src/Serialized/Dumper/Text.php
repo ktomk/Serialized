@@ -90,23 +90,59 @@ class Text extends Dumper implements Concrete {
 			$this->dumpSubValue($type, $valueValue, $isLast);
 		}
 	}
+	/**
+	 * us-ascii, no control chars, encoding as in PHP
+	 *
+	 * @param string $string
+	 * @return string encoded
+	 */
+	private function phpEncodeString($string) {
+		static $seq = array(0x09 => 't', 0x0A => 'n', 0x0B => 'v', 0x0C => 'f',  0x0D => 'r');
+		for(
+		    $r = '',
+		    $l = strlen($string),
+		    $i = 0
+		    ;
+		    $i < $l
+		    ;
+		    $c = $string[$i++],
+		    $o = ord($c),
+		    ($f = 0x08 < $o && $o < 0x0E) && $c = $seq[$o],
+		    ($b = $f || (0x1F < $o && $o < 0x7F)) && ($f || 0x22 === $o || 0x24 === $o || 0x5C === $o) && $c = '\\'.$c,
+		    $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
+		);
+		return $r;
+	}
+	/**
+	 * us-ascii, no control chars, encoding as hex into <>
+	 *
+	 * @param string $string
+	 * @return string encoded
+	 */
+	private function shellEncodeString($string) {
+		for(
+		    $r = '',
+		    $l = strlen($string),
+		    $i = 0
+		    ;
+		    $i < $l
+		    ;
+		    $c = $string[$i++],
+		    $o = ord($c),
+		    ($f = 0x08 > $o || $o > 0x7F) && $c = '<'.strtoupper(substr('0'.dechex($o),-2)).'>',
+		    $r.= $c
+		);
+		return $r;
+	}
 	private function dumpObjectMember(array $member) {
 			list(list(, $memberName)) = $member;
+			list($name, $class, $access) = $this->parseMemberName($memberName);
 			$memberAccess = '';
-			if("\x00"==$memberName[0]) {
-				if ("\x00*\x00"==substr($memberName, 0, 3)) {
-					$memberName = substr($memberName, 3);
-					$memberAccess = ' (protected)';
-				} elseif (false !== $pos = strpos($memberName, "\x00", 1)) {
-					$memberAccess = ' ('.substr($memberName,1, $pos-1).':private)';
-					$memberName = substr($memberName, $pos+1);
-				} else {
-					// @codeCoverageIgnoreStart
-					throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
-				}	// @codeCoverageIgnoreEnd
+			switch($access) {
+				case 1: $memberAccess = ' (protected)'; break;
+				case 2: $memberAccess = ' ('.$class.':private)';
 			}
-			$memberName = sprintf('[%s]%s', $memberName, $memberAccess);
-			return $memberName;
+			return sprintf('[%s]%s', $name, $memberAccess);
 	}
 	private function dumpObject($value) {
 		$classname = $value[0][1];
@@ -143,29 +179,6 @@ class Text extends Dumper implements Concrete {
 		$method = $subDumpMap[$type];
 		$this->$method($value);
 		$this->statePop();
-	}
-	/**
-	 * us-ascii, no control chars, encoding as in PHP
-	 *
-	 * @param string $string
-	 * @return string encoded
-	 */
-	private function phpEncodeString($string) {
-		static $seq = array(0x09 => 't', 0x0A => 'n', 0x0B => 'v', 0x0C => 'f',  0x0D => 'r');
-		for(
-		    $r = '',
-		    $l = strlen($string),
-		    $i = 0
-		    ;
-		    $i < $l
-		    ;
-		    $c = $string[$i++],
-		    $o = ord($c),
-		    ($f = 0x08 < $o && $o < 0x0E) && $c = $seq[$o],
-		    ($b = $f || (0x1F < $o && $o < 0x7F)) && ($f || 0x22 === $o || 0x24 === $o || 0x5C === $o) && $c = '\\'.$c,
-		    $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
-		);
-		return $r;
 	}
 	private function dumpValue($type, $value) {
 		switch($type) {

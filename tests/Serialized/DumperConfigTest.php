@@ -49,7 +49,7 @@ class DumperConfigTest extends TestCase
 	private function callMerge($args) {
 		$selfObject = Dumper::factory('Text');
 		$object = new \ReflectionObject($selfObject);
-		$method = $object->getMethod('config_merge_deep');
+		$method = $object->getMethod('configMergeDeep');
 		$method->setAccessible(true);
 
 		return $method->invokeArgs($selfObject, $args);

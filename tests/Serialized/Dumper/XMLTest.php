@@ -36,7 +36,7 @@ class XMLTest extends DumperTest
 	protected $dumper = 'XML';
 
 	public function expectedArrayDumpOutput() {
-		return '<?xml version="1.0"?>
+		return '<?xml version="1.0" encoding="us-ascii"?>
 <serialized>
   <array members="4">
     <item name="user" type="string">
@@ -61,7 +61,7 @@ class XMLTest extends DumperTest
 
 	public function expectedDumpOutput()
 	{
-		return '<?xml version="1.0"?>
+		return '<?xml version="1.0" encoding="us-ascii"?>
 <serialized>
   <object class="stdClass" members="6">
     <property name="property">
@@ -87,9 +87,9 @@ class XMLTest extends DumperTest
 	}
 
 	public function expectedObjectDumpOutput() {
-		return '<?xml version="1.0"?>
+		return '<?xml version="1.0" encoding="us-ascii"?>
 <serialized>
-  <object class="Serialized\Dumper\testObjectChild" members="6">
+  <object class="Serialized\Dumper\testObjectChild" members="7">
     <property class="Serialized\Dumper\testObjectChild" name="ca" access="private">
       <string len="7" value="private"/>
     </property>
@@ -108,6 +108,9 @@ class XMLTest extends DumperTest
     <property name="pc">
       <string len="14" value="public, parent"/>
     </property>
+    <property class="Serialized\Dumper\test&#xC3;&#x89;nc&#xC3;&#xB6;d&#xC3;&#xAF;ng" name="&#xC3;&#x89;nc&#xC3;&#xB6;d&#xC3;&#xAF;ng" access="private">
+      <bool value="true"/>
+    </property>
   </object>
 </serialized>'."\n";
 	}
@@ -124,7 +127,7 @@ class XMLTest extends DumperTest
 
 		$parsed = array('null', NULL);
 
-		$expected = '<?xml version="1.0"?><dig><null/></dig>';
+		$expected = '<?xml version="1.0" encoding="us-ascii"?><dig><null/></dig>';
 
 		ob_start();
 		$dumper->dump($parsed, $config);

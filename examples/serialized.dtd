@@ -129,7 +129,7 @@
 <!ATTLIST property
   class  CDATA        #IMPLIED
   access %PropAccess; "public"
-  name   NMTOKEN      #REQUIRED
+  name   CDATA        #REQUIRED
   >
 
 <!--====== recursion ======-->

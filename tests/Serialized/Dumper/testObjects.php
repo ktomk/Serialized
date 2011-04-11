@@ -31,7 +31,14 @@ Namespace Serialized\Dumper;
  * test.
  */
 
-class testObjectParent {
+class testÉncödïng {
+	private $Éncödïng = true;
+	public function getÉncödïng() {
+		return $this->Éncödïng;
+	}
+}
+
+class testObjectParent extends testÉncödïng {
 	private $pa = 'private, parent';
 	protected $pb = 'protected, parent';
 	public $pc = 'public, parent';

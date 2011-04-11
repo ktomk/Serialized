@@ -39,7 +39,7 @@ class XML extends Dumper implements Concrete {
 	 * @var array
 	 */
 	protected $config = array(
-		'declaration' => '<?xml version="1.0"?>',
+		'declaration' => '<?xml version="1.0" encoding="us-ascii"?>',
 		'doctype' => '',
 		'newline' => "\n",
 		'indent' => '  ',
@@ -58,17 +58,34 @@ class XML extends Dumper implements Concrete {
 		parent::statePush();
 		$this->state->inset .= $this->config('indent');
 	}
+	private function xmlAttributeEncode($string) {
+		static $seq = array(0x22 => 'quot', 0x26 => 'amp', 0x3c => 'lt', 0x3e => 'gt');
+		for(
+		    $r = '',
+		    $l = strlen($string),
+		    $i = 0
+		    ;
+		    $i < $l
+		    ;
+		    $c = $string[$i++],
+		    $o = ord($c),
+		    $h = dechex($o),
+		    ($f = (0x22 === $o || 0x26 === $o || 0x3c === $o || 0x3e  === $o)) && $c = '&'.$seq[$o].';',
+		    $r.= ($f || (0x1F < $o && $o < 0x7F)) ? $c : '&#x'.strtoupper(dechex($o)).';'
+		);
+		return $r;
+	}
 	private function dumpArrayElement(array $element) {
 		list(list($keyType, $keyValue)) = $element;
 		if($keyType === 'int') {
-			$keyValue = (int) $keyValue;
+			$keyValue = (string) (int) $keyValue;
 		} elseif ($keyType === 'string') {
 			;
 		} else {
 			// @codeCoverageIgnoreStart
 			throw new \InvalidArgumentException(sprintf('Invalid type for array key #%d: "%s".', $index, $keyType));
 		} 	// @codeCoverageIgnoreEnd
-		$keyValue = sprintf(' name="%s" type="%s"', htmlspecialchars($keyValue), $keyType);
+		$keyValue = sprintf(' name="%s" type="%s"', $this->xmlAttributeEncode($keyValue), $keyType);
 		return $keyValue;
 	}
 	private function dumpArray($value) {
@@ -88,25 +105,19 @@ class XML extends Dumper implements Concrete {
 	}
 	private function dumpObjectMember(array $member) {
 			list(list(, $memberName)) = $member;
+			list($name, $class, $access) = $this->parseMemberName($memberName);
 			$memberAccess = '';
-			$memberClass = '';
-			if("\x00"==$memberName[0]) {
-				if ("\x00*\x00"==substr($memberName, 0, 3)) {
-					$memberName = substr($memberName, 3);
-					$memberAccess = 'protected';
-				} elseif (false !== $pos = strpos($memberName, "\x00", 1)) {
-					$memberAccess = 'private';
-					$memberClass = sprintf(' class="%s"', substr($memberName,1, $pos-1));
-					$memberName = substr($memberName, $pos+1);
-				} else {
-					// @codeCoverageIgnoreStart
-					throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
-				} 	// @codeCoverageIgnoreEnd
+			switch($access) {
+				case 1: $memberAccess = 'protected'; break;
+				case 2: $memberAccess = 'private';
 			}
+			$class &&
+				$class = sprintf(' class="%s"', $this->xmlAttributeEncode($class))
+				;
 			$memberAccess &&
 				$memberAccess = sprintf(' access="%s"', $memberAccess)
 				;
-			return sprintf('%s name="%s"%s', $memberClass, $memberName, $memberAccess);
+			return sprintf('%s name="%s"%s', $class, $this->xmlAttributeEncode($name), $memberAccess);
 	}
 	private function dumpObject($value) {
 		$classname = $value[0][1];
@@ -142,23 +153,6 @@ class XML extends Dumper implements Concrete {
 		$this->$method($value);
 
 		$this->statePop();
-	}
-	private function xmlAttributeEncode($string) {
-		static $seq = array(0x22 => 'quot', 0x26 => 'amp', 0x3c => 'lt', 0x3e => 'gt');
-		for(
-		    $r = '',
-		    $l = strlen($string),
-		    $i = 0
-		    ;
-		    $i < $l
-		    ;
-		    $c = $string[$i++],
-		    $o = ord($c),
-		    $h = dechex($o),
-		    ($f = (0x22 === $o || 0x26 === $o || 0x3c === $o || 0x3e  === $o)) && $c = '&'.$seq[$o].';',
-		    $r.= ($f || (0x1F < $o && $o < 0x7F)) ? $c : '&#x'.strtoupper(dechex($o)).';'
-		);
-		return $r;
 	}
 	private function dumpValue($type, $value) {
 		switch($type) {

@@ -97,6 +97,28 @@ abstract class Dumper implements ValueTypes {
 		return array_merge((array) $this->typeByName($parsed[0]), $parsed);
 	}
 	/**
+	 * @return array $name, $class, $access (0:public,1:protected,2:private)
+	 */
+	protected function parseMemberName($memberName) {
+		$name = (string) $memberName;
+		$class = '';
+		$access = 0;
+		if("\x00"==$name[0]) {
+			if ("\x00*\x00"==substr($name, 0, 3)) {
+				$name = substr($name, 3);
+				$access = 1;
+			} elseif (false !== $pos = strpos($name, "\x00", 1)) {
+				$access = 2;
+				$class = substr($name,1, $pos-1);
+				$name = substr($name, $pos+1);
+			} else {
+				// @codeCoverageIgnoreStart
+				throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
+			}	// @codeCoverageIgnoreEnd
+		}
+		return array($name, $class, $access);
+	}
+	/**
 	 * config/ini (n-depth) array_merge
 	 *
 	 * config is an array without numerical keys and with an n-depth but
@@ -104,7 +126,7 @@ abstract class Dumper implements ValueTypes {
 	 * if a non-array is to be set to an array, it will fail. the definition
 	 * is by default ($source), overwriters (sub or superset of $add) will get killed.
 	 */
-	protected function config_merge_deep(array $source, array $add, $noticeUndefined = true) {
+	protected function configMergeDeep(array $source, array $add, $noticeUndefined = true) {
 		static $base = '';
 		foreach ($add as $key => $value) {
 			$path = $base.'/'.$key;
@@ -112,7 +134,7 @@ abstract class Dumper implements ValueTypes {
 				continue;
 			}
 			if (true === is_array($value)) {
-				$value = $this->config_merge_deep(array(), $value, false); // merge with yourself, will trigger lot of errors
+				$value = $this->configMergeDeep(array(), $value, false); // merge with yourself, will trigger lot of errors
 			}
 			if (!array_key_exists($key, $source)) {
 				if ($noticeUndefined ) {
@@ -134,13 +156,24 @@ abstract class Dumper implements ValueTypes {
 				continue;
 			}
 			list($save, $base) = array($base, $path);
-			$source[$key] = $this->config_merge_deep($source[$key], $value);
+			$source[$key] = $this->configMergeDeep($source[$key], $value);
 			$base = $save;
 		}
 		return $source;
 	}
 	public function setConfig(array $config) {
-		$this->config = $this->config_merge_deep($this->config, $config);
+		$this->config = $this->configMergeDeep($this->config, $config);
+	}
+	public function string(array $parsed, array $config=array()) {
+		ob_start();
+		try {
+			$this->dump($parsed);
+		} catch(Exception $e) {
+			ob_end_clean();
+			$class = get_class($e);
+			throw new $class($e->getMessage(),$e->getCode(), $e);
+		}
+		return ob_get_clean();
 	}
 	/**
 	 * @return Dumper\Concrete

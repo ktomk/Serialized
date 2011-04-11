@@ -7,12 +7,15 @@
      [x] Dumper Interface
  [/] XML Dumper finalisation
      [x] XML correct string value=""/encoding
-     [ ] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
+     [x] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
+     [x] XML: CDATA Encode attribute values of Array-Keys, Object-Member and Class-Names.
+     [x] XML: <?xml version="1.0" encoding="us-ascii" ?> per default
      [ ] Run XSLT tests
-     [ ] XML: <?xml version="1.0" encoding="UTF-8" ?> per default (?)
+ [/] Dump into buffer.
  [ ] Arrange examples in directories.
+ [ ] Create a validator for array notation data.
+     [ ] When done, remove deep-redundant code from dumpers.
  [ ] Parse session data / var / var types in array notation
- [ ] Dump into buffer.
  [ ] Dumper: solve typeByName() code duplication (taken from Parser)
  [ ] Validate class- and member-mame parsing
  [ ] Add Static Serialized::parse() / Serialized::dump()

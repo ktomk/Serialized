@@ -54,12 +54,13 @@ class TextTest extends DumperTest
 	}
 
 	protected function expectedObjectDumpOutput() {
-		return '`-- object(Serialized\Dumper\testObjectChild) (6):
+		return '`-- object(Serialized\Dumper\testObjectChild) (7):
      +-- [ca] (Serialized\Dumper\testObjectChild:private) -> string(7): "private"
      +-- [cb] (protected) -> string(9): "protected"
      +-- [cc] -> string(6): "public"
      +-- [pa] (Serialized\Dumper\testObjectParent:private) -> string(15): "private, parent"
      +-- [pb] (protected) -> string(17): "protected, parent"
-     `-- [pc] -> string(14): "public, parent"'."\n";
+     +-- [pc] -> string(14): "public, parent"
+     `-- [Éncödïng] (Serialized\Dumper\testÉncödïng:private) -> bool: TRUE'."\n";
 	}
 }
