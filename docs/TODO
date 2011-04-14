@@ -6,19 +6,19 @@
      [x] Generalized option handling for dumpers (option/config array)
      [x] Dumper Interface
  [x] Arrange examples in directories.
- [/] XML Dumper finalisation
+ [x] XML Dumper finalisation
      [x] XML correct string value=""/encoding
      [x] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
      [x] XML: CDATA Encode attribute values of Array-Keys, Object-Member and Class-Names.
      [x] XML: <?xml version="1.0" encoding="us-ascii" ?> per default
-     [ ] Run XSLT tests
  [/] Dump into buffer.
+ [ ] Add XSLT example.
+ [ ] Validate class- and member-mame parsing.
  [ ] Create a validator for array notation data.
      [ ] When done, remove deep-redundant code from dumpers.
- [ ] Parse session data / var / var types in array notation
- [ ] Dumper: solve typeByName() code duplication (taken from Parser)
- [ ] Validate class- and member-mame parsing
- [ ] Add Static Serialized::parse() / Serialized::dump()
+ [ ] Parse session data / var / var types in array notation.
+ [ ] Dumper: solve typeByName() code duplication (taken from Parser).
+ [ ] Add Static Serialized::parse() / Serialized::dump().
 
 
  (?) It should be helpful to have a token stream with byte offsets and

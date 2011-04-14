@@ -82,6 +82,7 @@ class ExamplesTest extends TestCase
 		}
 		$this->addToAssertionCount(1);
 		$this->runExampleFile($fileName);
+		return true;
 	}
 
 	private function getExamplesPath() {
@@ -94,11 +95,22 @@ class ExamplesTest extends TestCase
 		return array_map(function($file){return basename(dirname($file)) . '/' . substr(basename($file),0,-4);},$examples);
 	}
 
+	public function examplesProvider() {
+		return array_map(function($entry){return array($entry);}, $this->getExamples());
+	}
+
+	/**
+	 * @dataProvider examplesProvider
+	 */
+	public function testExample($example) {
+		$expected = true;
+		$actual = $this->exampleTest($example);
+		$this->assertSame($expected, $actual);
+	}
+
 	public function testExamples() {
 		$examples = $this->getExamples();
-		$this->assertGreaterThan(0, count($examples), 'Expected examples to test.');
-		foreach($examples as $example) {
-			$this->exampleTest($example);
-		}
+		$this->assertInternalType('array', $examples, 'Expected examples to test.');
+		$this->assertGreaterThan(0, count($examples), 'Expected at least one example to test.');
 	}
 }
