@@ -5,6 +5,7 @@
      [x] Prepare merge with DumperXML
      [x] Generalized option handling for dumpers (option/config array)
      [x] Dumper Interface
+ [x] Arrange examples in directories.
  [/] XML Dumper finalisation
      [x] XML correct string value=""/encoding
      [x] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
@@ -12,7 +13,6 @@
      [x] XML: <?xml version="1.0" encoding="us-ascii" ?> per default
      [ ] Run XSLT tests
  [/] Dump into buffer.
- [ ] Arrange examples in directories.
  [ ] Create a validator for array notation data.
      [ ] When done, remove deep-redundant code from dumpers.
  [ ] Parse session data / var / var types in array notation

@@ -35,6 +35,9 @@ class parentClass {
 	protected function getPrivee() {
 		return $this->privee;
 	}
+	public function __construct() {
+		$testAccess = self::getPrivee();
+	}
 }
 
 class exampleClass extends parentClass {
@@ -42,6 +45,10 @@ class exampleClass extends parentClass {
 	protected $str = 'test';
 	protected function getPrivee() {
 		return $this->privee;
+	}
+	public function __construct() {
+		parent::__construct();
+		$testAccess = $this->getPrivee();
 	}
 }
 

@@ -37,6 +37,9 @@ class parentClass {
 }
 
 class exampleClass extends parentClass {
+	public function __construct() {
+		$testAccess = $this->getPrivee();
+	}
 	protected $str = 'test';
 }
 
