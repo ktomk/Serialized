@@ -90,12 +90,13 @@ class ExamplesTest extends TestCase
 
 	private function getExamples() {
 		$path = $this->getExamplesPath();
-		$mask = '??-*.php';
-		return array_map(function($file){return substr(basename($file),0,-4);}, glob($path.'/'.$mask));
+		$examples = glob("{$path}/[0-9][0-9]-?*/example-?*.php", GLOB_NOSORT);
+		return array_map(function($file){return basename(dirname($file)) . '/' . substr(basename($file),0,-4);},$examples);
 	}
 
 	public function testExamples() {
 		$examples = $this->getExamples();
+		$this->assertGreaterThan(0, count($examples), 'Expected examples to test.');
 		foreach($examples as $example) {
 			$this->exampleTest($example);
 		}
