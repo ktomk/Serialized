@@ -24,25 +24,20 @@
  * @package Examples
  */
 
-Namespace Serialized\Example05;
+Namespace Serialized\Example02;
 Use Serialized\Parser;
-Use Serialized\Dumper\XML as DumperXml;
 
-require_once(__DIR__.'/../src/Serialized.php');
+require_once(__DIR__.'/../../src/Serialized.php');
 
 class parentClass {
 	private $privee = 'parent';
-	protected function getPrivee() {
+	public function getPrivee() {
 		return $this->privee;
 	}
 }
 
 class exampleClass extends parentClass {
-	private $privee = 'example';
 	protected $str = 'test';
-	protected function getPrivee() {
-		return $this->privee;
-	}
 }
 
 $object = new exampleClass();
@@ -51,7 +46,4 @@ $object->test = null;
 
 $serialized = serialize($object);
 $parser = new Parser($serialized);
-$parsed = $parser->getParsed();
-
-$dumper = new DumperXml();
-$dumper->dump($parsed);
+$parser->dump();

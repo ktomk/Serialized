@@ -24,27 +24,34 @@
  * @package Examples
  */
 
-  Namespace Serialized;
+Namespace Serialized\Example05;
+Use Serialized\Parser;
+Use Serialized\Dumper\XML as DumperXml;
 
-  require_once(__DIR__.'/../src/Serialized.php');
+require_once(__DIR__.'/../../src/Serialized.php');
 
-  $data = array(
-  	'foo' => 1,
-  	'bar' => range(2,20,3),
-    'baz' => new Parser
-  );
+class parentClass {
+	private $privee = 'parent';
+	protected function getPrivee() {
+		return $this->privee;
+	}
+}
 
-  $serialized = serialize($data);
+class exampleClass extends parentClass {
+	private $privee = 'example';
+	protected $str = 'test';
+	protected function getPrivee() {
+		return $this->privee;
+	}
+}
 
-  $parser = new Parser($serialized);
+$object = new exampleClass();
+$object->array = array();
+$object->test = null;
 
-  $parser->dump();
+$serialized = serialize($object);
+$parser = new Parser($serialized);
+$parsed = $parser->getParsed();
 
-  // on array notation
-  $parser->dump(
-  	Parser::parse(
-  		serialize(
-  			range(1,10)
-  		)
-  	)
-  );
+$dumper = new DumperXml();
+$dumper->dump($parsed);

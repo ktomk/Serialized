@@ -27,7 +27,7 @@
 Namespace Serialized;
 Use Serialized\Dumper\XML as DumperXml;
 
-require_once(__DIR__.'/../src/Serialized.php');
+require_once(__DIR__.'/../../src/Serialized.php');
 
 $string = array(
 		'fistArrayItem-index-0' => "TestString",

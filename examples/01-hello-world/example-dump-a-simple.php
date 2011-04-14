@@ -20,18 +20,31 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.6
+ * @version 0.1.5
  * @package Examples
  */
 
   Namespace Serialized;
 
-  require_once(__DIR__.'/../src/Serialized.php');
+  require_once(__DIR__.'/../../src/Serialized.php');
 
-  $data = 'fooBar';
+  $data = array(
+  	'foo' => 1,
+  	'bar' => range(2,20,3),
+    'baz' => new Parser
+  );
 
   $serialized = serialize($data);
 
-  $arrayNotation = Parser::Parse($serialized);
+  $parser = new Parser($serialized);
 
-  var_export($arrayNotation);
+  $parser->dump();
+
+  // on array notation
+  $parser->dump(
+  	Parser::parse(
+  		serialize(
+  			range(1,10)
+  		)
+  	)
+  );

@@ -20,30 +20,18 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.5
+ * @version 0.1.6
  * @package Examples
  */
 
-Namespace Serialized\Example02;
-Use Serialized\Parser;
+  Namespace Serialized;
 
-require_once(__DIR__.'/../src/Serialized.php');
+  require_once(__DIR__.'/../../src/Serialized.php');
 
-class parentClass {
-	private $privee = 'parent';
-	public function getPrivee() {
-		return $this->privee;
-	}
-}
+  $data = 'fooBar';
 
-class exampleClass extends parentClass {
-	protected $str = 'test';
-}
+  $serialized = serialize($data);
 
-$object = new exampleClass();
-$object->array = array();
-$object->test = null;
+  $arrayNotation = Parser::Parse($serialized);
 
-$serialized = serialize($object);
-$parser = new Parser($serialized);
-$parser->dump();
+  var_export($arrayNotation);

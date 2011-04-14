@@ -26,7 +26,7 @@
 
   Namespace Serialized;
 
-  require_once(__DIR__.'/../src/Serialized.php');
+  require_once(__DIR__.'/../../src/Serialized.php');
 
   $string = "Harder to read binary data: \x00\x01\t\n\r\v ".'"'." \\x0A (<- not a newline) utf8: äüöß";
 
