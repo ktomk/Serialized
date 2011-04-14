@@ -11,8 +11,8 @@
      [x] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
      [x] XML: CDATA Encode attribute values of Array-Keys, Object-Member and Class-Names.
      [x] XML: <?xml version="1.0" encoding="us-ascii" ?> per default
+ [.] Add XSLT example.
  [/] Dump into buffer.
- [ ] Add XSLT example.
  [ ] Validate class- and member-mame parsing.
  [ ] Create a validator for array notation data.
      [ ] When done, remove deep-redundant code from dumpers.
