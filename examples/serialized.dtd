@@ -80,7 +80,7 @@
 
 <!--====== root ======-->
 
-<!ELEMENT serialized ( variables|%type.simple;|%type.complex; )>
+<!ELEMENT serialized ( variables|%type.base; )>
 
 <!--====== simple/simple ======-->
 
@@ -152,7 +152,7 @@
   count %Count; #IMPLIED
   >
 
-<!ELEMENT var ( %type.simple;|%type.complex; )  >
+<!ELEMENT var ( %type.base; )  >
 <!ATTLIST var
   name CDATA #REQUIRED
   >
