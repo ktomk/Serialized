@@ -179,7 +179,9 @@ abstract class Dumper implements ValueTypes {
 	 * @return Dumper\Concrete
 	 */
 	public static function factory($dumper, array $config = array()) {
-		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, ucfirst(strtolower($dumper)));
+		$dumperClass = ucfirst(strtolower($dumper));
+		if ($dumperClass === 'Xml') $dumperClass = 'XML'; // Dumper\XML is all caps
+		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, $dumperClass);
 		$dumper = new $class();
 		$config && $config->setConfig($config);
 		return $dumper;
