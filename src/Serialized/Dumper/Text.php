@@ -90,6 +90,24 @@ class Text extends Dumper implements Concrete {
 			$this->dumpSubValue($type, $valueValue, $isLast);
 		}
 	}
+	private function dumpVariables($value) {
+		$count = count($value);
+		if (!$count--)
+			return;
+
+		foreach($value as $index => $element) {
+			$isLast = $index === $count;
+			$keyValue = sprintf('[%s]', $element[0][1]);
+
+			list($typeName, $valueValue) = $element[1];
+			$type = $this->typeByName($typeName);
+			$valueString = $this->dumpValue($type, $valueValue);
+
+			$this->printInset($isLast);
+			printf(" %s => %s%s\n", $keyValue, $typeName, $valueString);
+			$this->dumpSubValue($type, $valueValue, $isLast);
+		}
+	}
 	/**
 	 * us-ascii, no control chars, encoding as in PHP
 	 *
@@ -148,6 +166,7 @@ class Text extends Dumper implements Concrete {
 		$subDumpMap = array(
 			self::TYPE_ARRAY => 'dumpArray',
 			self::TYPE_OBJECT => 'dumpObject',
+			self::TYPE_VARIABLES => 'dumpVariables',
 		);
 		if (false === array_key_exists($type, $subDumpMap))
 			return;
@@ -163,6 +182,7 @@ class Text extends Dumper implements Concrete {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
+			case self::TYPE_VARIABLES:
 				return sprintf('(%d)%s', count($value), count($value)?':':'.');
 			case self::TYPE_STRING:
 				return sprintf('(%d): "%s"', strlen($value), $this->phpEncodeString($value));

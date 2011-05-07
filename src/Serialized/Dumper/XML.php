@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.1.6
+ * @version 0.2.0
  * @package Serialized
  */
 
@@ -49,6 +49,8 @@ class XML extends Dumper implements Concrete {
 			'array/item'  => 'item',
 			'object' => 'object',
 			'object/property' => 'property',
+			'variables' => 'variables',
+			'variables/variable' => 'var'
 		),
 	);
 	/**
@@ -88,20 +90,34 @@ class XML extends Dumper implements Concrete {
 		$keyValue = sprintf(' name="%s" type="%s"', $this->xmlAttributeEncode($keyValue), $keyType);
 		return $keyValue;
 	}
-	private function dumpArray($value) {
-		$count = count($value);
+	private function dumpVariable(array $variable) {
+		list(list(, $varName)) = $variable;
+		return sprintf(' name="%s"', $this->xmlAttributeEncode($varName));
+	}
+	private function dumpChildren(array $children, $xmlElement, $callbackElement) {
+		$count = count($children);
 		if (!$count--)
 			return;
-		$xmlElement = $this->config['tags']['array/item'];
+
 		$inset = $this->state->inset;
 		$NL = $this->config('newline');
 
-		foreach($value as $index => $element) {
-			$keyValue = $this->dumpArrayElement($element);
+		foreach($children as $index => $child) {
+			$keyValue = $this->$callbackElement($child);
 			echo $inset, '<', $xmlElement, $keyValue, '>', $NL;
-			$this->dumpNode($element[1]);
+			$this->dumpNode($child[1]);
 			echo $inset, '</', $xmlElement, '>', $NL;
 		}
+	}
+	private function dumpArray(array $value) {
+		$xmlElement = $this->config['tags']['array/item'];
+		$callbackElement = 'dumpArrayElement';
+		$this->dumpChildren($value, $xmlElement, $callbackElement);
+	}
+	private function dumpVariables(array $variables) {
+		$xmlElement = $this->config['tags']['array/item'];
+		$callbackElement = 'dumpVariable';
+		$this->dumpChildren($variables, $xmlElement, $callbackElement);
 	}
 	private function dumpObjectMember(array $member) {
 			list(list(, $memberName)) = $member;
@@ -120,28 +136,17 @@ class XML extends Dumper implements Concrete {
 			return sprintf('%s name="%s"%s', $class, $this->xmlAttributeEncode($name), $memberAccess);
 	}
 	private function dumpObject($value) {
-		$classname = $value[0][1];
 		$members = $value[1][1];
-		$count = count($members);
-		if (!$count--)
-			return;
-
-		$inset = $this->state->inset;
-		$NL = $this->config('newline');
 		$xmlElement = $this->config['tags']['object/property'];
-
-		foreach($members as $index => $element) {
-			$xmlAttributes = $this->dumpObjectMember($element);
-
-			echo $inset, '<', $xmlElement, $xmlAttributes, '>', $NL;
-			$this->dumpNode($element[1]);
-			echo $inset, '</', $xmlElement, '>', $NL;
-		}
+		$callbackElement = 'dumpObjectMember';
+		$this->dumpChildren($members, $xmlElement, $callbackElement);
+		return;
 	}
 	private function dumpSubValue($type, $value) {
 		$subDumpMap = array(
 			self::TYPE_ARRAY => 'dumpArray',
 			self::TYPE_OBJECT => 'dumpObject',
+			self::TYPE_VARIABLES => 'dumpVariables',
 		);
 
 		if (false === array_key_exists($type, $subDumpMap))
@@ -159,6 +164,8 @@ class XML extends Dumper implements Concrete {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
 				return sprintf(' members="%s"', count($value));
+			case self::TYPE_VARIABLES:
+				return sprintf(' count="%s"', count($value));
 			case self::TYPE_STRING:
 				return sprintf(' len="%d" value="%s"', strlen($value), $this->xmlAttributeEncode($value));
 			case self::TYPE_INT:
@@ -184,6 +191,7 @@ class XML extends Dumper implements Concrete {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_OBJECT:
+			case self::TYPE_VARIABLES:
 				return true;
 			// @codeCoverageIgnoreStart
 			case self::TYPE_MEMBERS: // pre-caution: should not happen, but if don't return false for those.

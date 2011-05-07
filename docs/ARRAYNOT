@@ -17,6 +17,7 @@
     2-1 Array
     2-2 Object
     3 Recursion
+    4 Session
 
   INTRODUCTION
 
@@ -130,7 +131,7 @@
     VALUE   ~= (array-notation) [*any*]NATIVE
 
     Key elements are represented in their simple datatype Array Notation
-  as explained above. Key in PHP arrays can only be integer or string[*].
+  as explained above. Keys in PHP arrays can only be integer or string[*].
   Values are represented in their Array Notation based on their
   datatype: SIMPLE, COMPOUND or REFERENCE.
 
@@ -250,3 +251,38 @@
               array('reference', 2)  // value
           )
       ))
+
+  4 SESSION
+
+    In sessions, PHP stores multiple named serialized values ("variables")
+  as a string.
+
+    Since version 0.2.0 the Serialized library can deal with these strings
+  as well and extends the Array Notation therefore:
+
+    NATIVE    ~= array(TYPE, DATA)
+
+    VARIABLES ~= array('variables', LIST)
+    LIST      ~= array(array(VARNAME, VALUE)*)
+    VARNAME   ~= array('varname', (string))
+    VALUE     ~= (array-notation) [*any*]NATIVE
+
+    In array notation this is comparable with an array. Instead of keys,
+  variable names are used. Values are identical.
+
+    Example: Array Notation of a session with one integer variable $t = 2:
+
+      Serialized Session Data:
+
+      't|i:2;'
+
+      Array Notation:
+
+      array(
+         (string) 'variables',  array(
+             array(
+                 array((string) 'varname', (string) 't'), # name  \_ pair
+                 array((string) 'int', (int) 2)           # value /
+             )
+         )
+      )

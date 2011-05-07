@@ -26,7 +26,7 @@
     Serialized includes the superset of PHP serialized
     types and their values.
 
-        Draft: 0.1.5 alpha
+        Draft: 0.2.0 alpha
 
         Authors:
         	Tom Klingenberg
@@ -43,6 +43,7 @@
 <!ENTITY % type.simple " null | bool | int | float | string " >
 <!ENTITY % type.complex " array | object " >
 <!ENTITY % type.recursion " recursion | recursionref " >
+<!ENTITY % type.base " %type.simple; | %type.complex; " >
 <!ENTITY % type.all " %type.simple; | %type.complex; | %type.recursion; " >
 
 <!--====== named values ======-->
@@ -79,7 +80,7 @@
 
 <!--====== root ======-->
 
-<!ELEMENT serialized (%type.simple;|%type.complex;)>
+<!ELEMENT serialized ( variables|%type.simple;|%type.complex; )>
 
 <!--====== simple/simple ======-->
 
@@ -142,4 +143,16 @@
 <!ELEMENT recursionref EMPTY >
 <!ATTLIST recursionref
   value %Ref; #REQUIRED
+  >
+
+<!--====== session ======-->
+
+<!ELEMENT variables ( var* ) >
+<!ATTLIST variables
+  count %Count; #IMPLIED
+  >
+
+<!ELEMENT var ( %type.simple;|%type.complex; )  >
+<!ATTLIST var
+  name CDATA #REQUIRED
   >

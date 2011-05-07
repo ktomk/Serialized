@@ -25,6 +25,7 @@
  */
 
 Namespace Serialized;
+Use \OutOfRangeException;
 
 /**
  * Serialize Parser
@@ -44,6 +45,8 @@ class Parser implements Value, ValueTypes {
 		self::TYPE_CLASSNAME => 'classname',
 		self::TYPE_MEMBERS => 'members',
 		self::TYPE_MEMBER => 'member',
+		self::TYPE_VARIABLES => 'variables',
+		self::TYPE_VARNAME => 'name',
 	);
 	private $typeChars = array(
 		self::TYPE_ARRAY => 'a',
@@ -59,7 +62,7 @@ class Parser implements Value, ValueTypes {
 	/**
 	 * @var string serialized
 	 */
-	private $data = 'N;';
+	protected $data = '';
 	public function __construct($serialized = 'N;') {
 		$this->setSerialized($serialized);
 	}
@@ -94,7 +97,7 @@ class Parser implements Value, ValueTypes {
 		}
 		return $map[$name];
 	}
-	private function typeNameByType($type) {
+	protected function typeNameByType($type) {
 		if (array_key_exists($type, $this->typeNames)) {
 			return $this->typeNames[$type];
 		}
@@ -126,9 +129,13 @@ class Parser implements Value, ValueTypes {
 	 * @param int $offset
 	 * @return int length in chars of match
 	 */
-	private function matchRegex($regex, $offset) {
+	protected function matchRegex($regex, $offset) {
 		$return = 0;
-		$found = preg_match($regex, $this->data, $matches, PREG_OFFSET_CAPTURE, $offset);
+		$subject = $this->data;
+		if (!isset($subject[$offset])) {
+			throw new ParseException(sprintf('Illegal offset "%s" for pattern, length is #%d.', $offset, strlen($subject)));
+		}
+		$found = preg_match($regex, $subject, $matches, PREG_OFFSET_CAPTURE, $offset);
 		if (false === $found) {
 			// @codeCoverageIgnoreStart
 			$error = preg_last_error();
@@ -142,8 +149,8 @@ class Parser implements Value, ValueTypes {
 		;
 		return $return;
 	}
-	private function expectChar($charExpected, $offset) {
-		if ($offset > strlen($this->data)-1) {
+	protected function expectChar($charExpected, $offset) {
+		if (!isset($this->data[$offset])) {
 			throw new ParseException(sprintf('Unexpected EOF at offset %d. Expected "%s".', $offset, $charExpected));
 		}
 		$char = $this->data[$offset];
@@ -151,7 +158,7 @@ class Parser implements Value, ValueTypes {
 			throw new ParseException(sprintf('Unexpected char "%s" at offset %d. Expected "%s".', $char, $offset, $charExpected));
 		}
 	}
-	private function expectEof($offset) {
+	protected function expectEof($offset) {
 		$len = strlen($this->data);
 		$end = ($offset + 1) === $len;
 		if (!$end) {
@@ -290,8 +297,6 @@ class Parser implements Value, ValueTypes {
 		$totalLen += $len;
 
 		$count = count($classMembers);
-
-
 		$value = array(array($this->typeNameByType(self::TYPE_CLASSNAME), $className), array($this->typeNameByType(self::TYPE_MEMBERS), $classMembers));
 		return array($value, $totalLen);
 	}
@@ -330,7 +335,7 @@ class Parser implements Value, ValueTypes {
 	 */
 	public function dump(array $parsed = null, array $options = array()) {
 		(null === $parsed) && $parsed = $this->getParsed();
-		$options = array_merge(array('type'=>'text', 'config'=>array()));
+		$options = array_merge(array('type'=>'text', 'config'=>array()), $options);
 		$dumper = Dumper::factory($options['type'], $options['config']);
 		$dumper->dump($parsed);
 	}

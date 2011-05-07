@@ -63,6 +63,8 @@ abstract class Dumper implements ValueTypes {
 		self::TYPE_CLASSNAME => 'classname',
 		self::TYPE_MEMBERS => 'members',
 		self::TYPE_MEMBER => 'member',
+		self::TYPE_VARIABLES => 'variables',
+		self::TYPE_VARNAME => 'varname',
 	);
 	private function stateInit() {
 		$state = new \stdClass();
