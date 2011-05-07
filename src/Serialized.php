@@ -90,6 +90,7 @@ class Serialized {
 			'Serialized\\Value',
 			'Serialized\\ParseException',
 			'Serialized\\Parser',
+			'Serialized\\SessionParser',
 		);
 		$resultArray = array_map(get_called_class().'::loadClass', $classNames);
 		$resultCountable = array_map('intval', $resultArray);
