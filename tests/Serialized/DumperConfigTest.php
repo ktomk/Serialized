@@ -28,6 +28,10 @@ Namespace Serialized;
 
 require_once(__DIR__.'/../TestCase.php');
 
+/**
+ * Test the config (sub-) functionality of the dumper base
+ * class (which is a private function).
+ */
 class DumperConfigTest extends TestCase
 {
 	/**
@@ -59,7 +63,9 @@ class DumperConfigTest extends TestCase
 	{
 		# drop numeric keys
 		$args = array(array(), array(0=>1));
-		$result = $this->callMerge($args);
+		$expected = array();
+		$actual = $this->callMerge($args);
+		$this->assertSame($expected, $actual);
 
 		# provoke merging of values
 		$args = array(array('set' => array('set'=>0)), array('set'=> array(0=>1, 1=>2, 'set'=>3)));
