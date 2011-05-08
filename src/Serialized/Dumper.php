@@ -166,6 +166,13 @@ abstract class Dumper implements ValueTypes {
 	public function setConfig(array $config) {
 		$this->config = $this->configMergeDeep($this->config, $config);
 	}
+	/**
+	 * get dump as string
+	 *
+	 * @param array $parsed
+	 * @param array $config
+	 * @return string
+	 */
 	public function getDump(array $parsed, array $config=array()) {
 		ob_start();
 		try {
@@ -177,6 +184,20 @@ abstract class Dumper implements ValueTypes {
 		}
 		return ob_get_clean();
 	}
+	/**
+	 * dump array notation
+	 *
+	 * @param array $parsed serialized array notation data.
+	 * @param array $config (optional) dumper configuration
+	 */
+	final public function dump(array $parsed, array $config=array()) {
+		if (count($parsed) != 2) {
+			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
+		}
+		$config && $this->setConfig($config);
+		$this->dumpConcrete($parsed);
+	}
+	abstract protected function dumpConcrete(array $parsed);
 	/**
 	 * @return Dumper\Concrete
 	 */
