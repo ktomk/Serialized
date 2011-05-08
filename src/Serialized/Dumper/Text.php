@@ -207,9 +207,6 @@ class Text extends Dumper implements Concrete {
 	}
 	// @codeCoverageIgnoreEnd
 	private function dumpAny(array $parsed) {
-		if (count($parsed) != 2) {
-			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
-		}
 		list($type, $typeName, $valueValue) = $this->typeExport($parsed);
 		$valueString = $this->dumpValue($type, $valueValue);
 		$this->printInset(1);
@@ -217,11 +214,11 @@ class Text extends Dumper implements Concrete {
 		$this->dumpSubValue($type, $valueValue, true);
 	}
 	/**
-	 * print serialized array notation
+	 * print serialized array notation as text
 	 *
 	 * @param array $parsed serialized array notation data.
 	 */
-	public function dump(array $parsed, array $config=array()) {
+	public function dumpConcrete(array $parsed) {
 		$this->dumpAny($parsed);
 	}
 }

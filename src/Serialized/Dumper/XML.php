@@ -224,10 +224,6 @@ class XML extends Dumper implements Concrete {
 		return empty($this->config[$name]) ? '' : $this->config[$name].$NL;
 	}
 	private function dumpAny(array $parsed) {
-		if (count($parsed) != 2) {
-			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
-		}
-
 		$xmlRoot = $this->config['tags']['root'];
 
 		$doctype = null;
@@ -242,13 +238,11 @@ class XML extends Dumper implements Concrete {
 		echo '</', $xmlRoot, '>', $this->config('newline');
 	}
 	/**
-	 * print serialized array notation
+	 * print serialized array notation as XML
 	 *
 	 * @param array $parsed serialized array notation data.
-	 * @param array $config (optional) dumper configuration
 	 */
-	public function dump(array $parsed, array $config=array()) {
-		$config && $this->setConfig($config);
+	public function dumpConcrete(array $parsed) {
 		$this->dumpAny($parsed);
 	}
 }
