@@ -133,7 +133,7 @@ class SerializedTest extends \Serialized\TestCase
 	 */
 	public function testLoadLibrary()
 	{
-		$expected = 9;
+		$expected = 12;
 		$actual = \Serialized::loadLibrary();
 		$this->assertSame($expected, $actual, sprintf('loadLibrary failed to load %d classes/interfaces (result was: %d).', $expected, $actual));
 	}
