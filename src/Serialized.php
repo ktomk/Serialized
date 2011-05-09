@@ -83,6 +83,9 @@ class Serialized {
 	public static function loadLibrary() {
 		$classNames = array(
 			'Serialized\\ValueTypes',
+			'Serialized\\TypeMap',
+			'Serialized\\TypeNames',
+			'Serialized\\TypeChars',
 			'Serialized\\Dumper',
 			'Serialized\\Dumper\\Concrete',
 			'Serialized\\Dumper\\Text',
