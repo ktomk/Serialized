@@ -54,6 +54,18 @@ class TypeMapTest extends TestCase
     protected function tearDown()
     {
     }
+    protected function mapTestHas($class, $type, $nonExistantType = null) {
+    	$class = __NAMESPACE__.'\\'.$class;
+    	# test existing
+    	$expected = true;
+    	$actual = $class::has($type);
+    	$this->assertSame($expected, $actual);
+
+    	# test non-existing
+    	$expected = false;
+    	$actual = $class::has($nonExistantType);
+    	$this->assertSame($expected, $actual);
+    }
     protected function mapTestOf($class, $type, $expected, $nonExistantType = null) {
     	$class = __NAMESPACE__.'\\'.$class;
      	# test existing
@@ -72,14 +84,16 @@ class TypeMapTest extends TestCase
     	# test non-existing (provoke exception)
     	$result = $class::by($nonExistantValue);
     }
+    public function testHas() {
+    	$class = $this->testClass;
+    	$type = $this->testType;
+    	$nonExistantType = $this->testNonExistantType;
+    	$this->mapTestHas($class, $type, $nonExistantType);
+    }
     /**
      * @expectedException InvalidArgumentException
      */
     public function testOf() {
-    	// skip test if the base class is executed
-    	if (get_class($this) === __NAMESPACE__.'\\TypeMapTest') {
-    		throw new InvalidArgumentException();
-    	}
     	$class = $this->testClass;
     	$type = $this->testType;
     	$expected = $this->testValue;
@@ -89,10 +103,6 @@ class TypeMapTest extends TestCase
      * @expectedException InvalidArgumentException
      */
     public function testBy() {
-    	// skip test if the base class is executed
-    	if (get_class($this) === __NAMESPACE__.'\\TypeMapTest') {
-    		throw new InvalidArgumentException();
-    	}
     	$class = $this->testClass;
     	$value = $this->testValue;
     	$expected = $this->testType;
