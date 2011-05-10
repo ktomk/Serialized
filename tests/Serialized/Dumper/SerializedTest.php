@@ -42,16 +42,28 @@ class SerializedTest extends DumperTest
 		return 'a:4:{s:4:"user";s:9:"user-name";s:7:"network";a:1:{s:7:"localip";s:7:"1.2.3.4";}i:2;s:4:"Zwei";s:8:"language";s:6:"german";}';
 	}
 
-	protected function expectedDumpOutput() {
+	protected function expectedRecursionObjectDumpOutput() {
 		return 'O:8:"stdClass":6:{s:8:"property";s:4:"test";s:5:"float";d:1;s:4:"bool";b:1;s:4:"null";N;s:9:"recursion";r:1;s:12:"recursionref";R:1;}';
 	}
 
-	protected function expectedObjectDumpOutput() {
+	protected function expectedInheritedObjectDumpOutput() {
 		return 'O:33:"Serialized\Dumper\testObjectChild":7:{s:37:"'."\x00".'Serialized\Dumper\testObjectChild'."\x00".'ca";s:7:"private";s:5:"'."\x00*\x00".'cb";s:9:"protected";s:2:"cc";s:6:"public";s:38:"'."\x00".'Serialized\Dumper\testObjectParent'."\x00".'pa";s:15:"private, parent";s:5:"'."\x00*\x00".'pb";s:17:"protected, parent";s:2:"pc";s:14:"public, parent";s:46:"'."\x00".'Serialized\Dumper\testÉncödïng'."\x00".'Éncödïng";b:1;}';
 	}
+
+	protected function expectedSessionDumpOutput() {
+		return 'test|i:1;more|a:2:{i:0;i:56;s:3:"key";i:57;}again|i:2;';
+	}
+
 	public function testEmptyObject() {
 		$object = new \stdClass();
 		$serialized = serialize($object);
+		$parser = new Parser($serialized);
+		$actual = $parser->getDump('Serialized');
+		$this->assertSame($serialized, $actual);
+	}
+
+	public function testInfFloat() {
+		$serialized = 'd:INF;';
 		$parser = new Parser($serialized);
 		$actual = $parser->getDump('Serialized');
 		$this->assertSame($serialized, $actual);

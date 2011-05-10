@@ -43,7 +43,7 @@ class TextTest extends DumperTest
      `-- [language] => string(6): "german"'."\n";
 	}
 
-	protected function expectedDumpOutput() {
+	protected function expectedRecursionObjectDumpOutput() {
 		return '`-- object(stdClass) (6):
      +-- [property] -> string(4): "test"
      +-- [float] -> float: 1
@@ -53,7 +53,7 @@ class TextTest extends DumperTest
      `-- [recursionref] -> recursionref: &1'."\n";
 	}
 
-	protected function expectedObjectDumpOutput() {
+	protected function expectedInheritedObjectDumpOutput() {
 		return '`-- object(Serialized\Dumper\testObjectChild) (7):
      +-- [ca] (Serialized\Dumper\testObjectChild:private) -> string(7): "private"
      +-- [cb] (protected) -> string(9): "protected"
@@ -62,5 +62,14 @@ class TextTest extends DumperTest
      +-- [pb] (protected) -> string(17): "protected, parent"
      +-- [pc] -> string(14): "public, parent"
      `-- [Éncödïng] (Serialized\Dumper\testÉncödïng:private) -> bool: TRUE'."\n";
+	}
+
+	protected function expectedSessionDumpOutput() {
+		return '`-- variables (3):
+     +-- $test = int: 1
+     +-- $more = array(2):
+     |    +-- [0] => int: 56
+     |    `-- [key] => int: 57
+     `-- $again = int: 2'."\n";
 	}
 }

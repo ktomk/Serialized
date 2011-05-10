@@ -28,6 +28,7 @@ Namespace Serialized\Dumper;
 Use Serialized\Dumper;
 Use Serialized\TypeNames;
 Use Serialized\TypeChars;
+Use \InvalidArgumentException;
 
 /**
  * Serialize Dumper
@@ -45,14 +46,16 @@ class Serialized extends Dumper implements Concrete {
 		print('}');
 	}
 	private function dumpBool($bool) {
-		print serialize($bool);
+		$char = TypeChars::of(self::TYPE_BOOL);
+		printf('%s:%d;', $char, (bool) $bool);
 	}
 	private function dumpInt($int) {
 		$char = TypeChars::of(self::TYPE_INT);
-		printf('%s:%d;', $char, $int);
+		printf('%s:%d;', $char, (int) $int);
 	}
 	private function dumpFloat($float) {
-		print serialize($float);
+		$char = TypeChars::of(self::TYPE_FLOAT);
+		printf('%s:%s;', $char, (float) $float);
 	}
 	private function dumpMembers($members) {
 		$count = count($members);
@@ -65,20 +68,22 @@ class Serialized extends Dumper implements Concrete {
 		print('}');
 	}
 	private function dumpNull($null) {
-		print('N;');
+		$char = TypeChars::of(self::TYPE_NULL);
+		print("$char;");
 	}
 	private function dumpObject(array $object) {
 		$char = TypeChars::of(self::TYPE_OBJECT);
 		$classname = $object[0][1];
 		printf('%s:%d:"%s":', $char, strlen($classname), $classname);
 		$this->dumpAny($object[1]);
-		// "O:8:\"stdClass\":2:{s:6:\"normal\";r:1;s:9:\"reference\";R:1;}"
 	}
 	private function dumpRecursion($recursion) {
-		printf('r:%d;', $recursion);
+		$char = TypeChars::of(self::TYPE_RECURSION);
+		printf('%s:%d;', $char, $recursion);
 	}
 	private function dumpRecursionref($recursionref) {
-		printf('R:%d;', $recursionref);
+		$char = TypeChars::of(self::TYPE_RECURSIONREF);
+		printf('%s:%d;', $char, $recursionref);
 	}
 	private function dumpString($string) {
 		$char = TypeChars::of(self::TYPE_STRING);
@@ -86,10 +91,20 @@ class Serialized extends Dumper implements Concrete {
 		print($string);
 		print('";');
 	}
+	private function dumpVariables($variables) {
+		foreach($variables as $variable) {
+			list(list(, $varname), $value) = $variable;
+			printf('%s|', $varname);
+			$this->dumpAny($value);
+		}
+	}
 	private function dumpAny(array $parsed) {
 		list($typeName, $value) = $parsed;
 		$type = TypeNames::by($typeName);
 		$function = sprintf('dump%s', ucfirst($typeName));
+		if (!is_callable(array($this, $function))) {
+			throw new InvalidArgumentException(sprintf('Unexpected type "%s" (#%d) can not be dumped.', $typeName, $type));
+		}
 		$this->$function($value);
 	}
 	/**
