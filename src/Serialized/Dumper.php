@@ -28,6 +28,7 @@ Namespace Serialized;
 Use \Exception;
 Use \BadMethodCallException;
 Use \InvalidArgumentException;
+Use \stdClass;
 
 /**
  * Serialize Dumper
@@ -69,7 +70,7 @@ abstract class Dumper implements ValueTypes {
 		self::TYPE_VARNAME => 'varname',
 	);
 	private function stateInit() {
-		$state = new \stdClass();
+		$state = new stdClass();
 		$state->level = 0;
 		$state->inset = '';
 		$this->state = $state;
