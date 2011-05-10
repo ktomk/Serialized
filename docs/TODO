@@ -1,23 +1,17 @@
- [x] Move Dumper into class of it's own.
- [x] Dumper: Do Nice-Printing ASCII 7bit safe
- [x] Tests for Serialized::loadLibrary() - all classes covered?
- [x] Dumper: Factory / additional Dumpers (Dumper_Text, Dumper_VarDump etc.)
-     [x] Prepare merge with DumperXML
-     [x] Generalized option handling for dumpers (option/config array)
-     [x] Dumper Interface
- [x] Arrange examples in directories.
- [x] XML Dumper finalisation
-     [x] XML correct string value=""/encoding
-     [x] XML: "public" als default accessor (access="pulic") so to spare the output (StdClass Scenario)
-     [x] XML: CDATA Encode attribute values of Array-Keys, Object-Member and Class-Names.
-     [x] XML: <?xml version="1.0" encoding="us-ascii" ?> per default
  [.] Add XSLT example.
  [/] Dump into buffer.
+
+ [ ] Parse session data / var / var types in array notation.
+    [ ] Update Array Notation ODT/PDF
+ [ ] Dumper: solve typeByName() code duplication (taken from Parser).
+    -> TypeMap; TypeNames; TypeChars
+
+ [ ] Add Offset when throwing a parse error / Add offset to ParseException
+ [ ] Add DumpException (probably).
+
  [ ] Validate class- and member-mame parsing.
  [ ] Create a validator for array notation data.
      [ ] When done, remove deep-redundant code from dumpers.
- [ ] Parse session data / var / var types in array notation.
- [ ] Dumper: solve typeByName() code duplication (taken from Parser).
  [ ] Add Static Serialized::parse() / Serialized::dump().
 
 

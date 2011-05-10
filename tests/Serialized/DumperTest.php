@@ -51,12 +51,13 @@ abstract class DumperTest extends TestCase
 	/**
 	 * test dump output
 	 *
-	 * @param mixed $value
+	 * @param string $serialized
 	 * @return dump
 	 */
-	protected function getDump($value) {
-		$serialized = serialize($value);
-		$parser = new Parser($serialized);
+	protected function getDump($serialized, $parser = null) {
+		$parser || $parser = 'Parser';
+		$parserClass = __NAMESPACE__."\\{$parser}";
+		$parser = new $parserClass($serialized);
 		$parsed = $parser->getParsed();
 		$class = __NAMESPACE__."\\Dumper\\{$this->dumper}";
 		$dumper = new $class();
@@ -64,8 +65,9 @@ abstract class DumperTest extends TestCase
 	}
 
 	abstract protected function expectedArrayDumpOutput();
-	abstract protected function expectedDumpOutput();
-	abstract protected function expectedObjectDumpOutput();
+	abstract protected function expectedInheritedObjectDumpOutput();
+	abstract protected function expectedRecursionObjectDumpOutput();
+	abstract protected function expectedSessionDumpOutput();
 
 	final public function getDataArray() {
 		$array = array();
@@ -77,7 +79,7 @@ abstract class DumperTest extends TestCase
 		return $array;
 	}
 
-	final public function &getDataObject() {
+	final public function &getDataRecursionObject() {
 		$object = new \stdClass();
 		$object->property = "test";
 		$object->float = (float) 1;
@@ -91,40 +93,38 @@ abstract class DumperTest extends TestCase
 		return array(&$object);
 	}
 
-	final public function getDataObjectInherited() {
+	final public function getDataInheritedObject() {
 		require_once(__DIR__.'/Dumper/testObjects.php');
 		return new Dumper\testObjectChild();
 	}
 
-	final public function testArrayDumpOutput()
-	{
-		$expected = $this->expectedArrayDumpOutput();
-		$array = $this->getDataArray();
-
-		$actual = $this->getDump($array);
-
-		$this->assertEquals($expected, $actual);
+	final public function getDataSession() {
+		return 'test|i:1;more|a:2:{i:0;i:56;s:3:"key";i:57;}again|i:2;';
 	}
 
-	// @todo rename to testObjectDumpOutput
-	final public function testDumpOutput()
-	{
-		$expected = $this->expectedDumpOutput();
-		$object = &$this->getDataObject();
-
-		$actual = $this->getDump($object);
-
-		$this->assertEquals($expected, $actual);
+	public function provideMultiple() {
+		return array(
+			array('Array'),
+			array('InheritedObject'),
+			array('RecursionObject'),
+			array('Session', true, 'SessionParser'),
+		);
 	}
 
-	// @todo rename to testComplexObjectDumpOutput
-	final public function testObjectDumpOutput()
-	{
-		$expected = $this->expectedObjectDumpOutput();
-		$object = $this->getDataObjectInherited();
+	/**
+	 * @dataProvider provideMultiple
+	 *
+	 * test dumpers agains a specific set of datas defined in this class
+	 */
+	final public function testDumpOutput($what, $serialized = false, $parser = null) {
 
-		$actual = $this->getDump($object);
+		$expectedFunction = sprintf('expected%sDumpOutput', $what);
+		$dataFunction = sprintf('getData%s', $what);
 
+		$expected = $this->$expectedFunction();
+		$data = &$this->$dataFunction();
+		$serialized || $data = serialize($data);
+		$actual = $this->getDump($data, $parser);
 		$this->assertEquals($expected, $actual);
 	}
 

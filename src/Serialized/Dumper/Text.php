@@ -97,14 +97,14 @@ class Text extends Dumper implements Concrete {
 
 		foreach($value as $index => $element) {
 			$isLast = $index === $count;
-			$keyValue = sprintf('[%s]', $element[0][1]);
+			$keyValue = sprintf('$%s', $element[0][1]);
 
 			list($typeName, $valueValue) = $element[1];
 			$type = $this->typeByName($typeName);
 			$valueString = $this->dumpValue($type, $valueValue);
 
 			$this->printInset($isLast);
-			printf(" %s => %s%s\n", $keyValue, $typeName, $valueString);
+			printf(" %s = %s%s\n", $keyValue, $typeName, $valueString);
 			$this->dumpSubValue($type, $valueValue, $isLast);
 		}
 	}
@@ -182,8 +182,9 @@ class Text extends Dumper implements Concrete {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
-			case self::TYPE_VARIABLES:
 				return sprintf('(%d)%s', count($value), count($value)?':':'.');
+			case self::TYPE_VARIABLES:
+				return sprintf(' (%d)%s', count($value), count($value)?':':'.');
 			case self::TYPE_STRING:
 				return sprintf('(%d): "%s"', strlen($value), $this->phpEncodeString($value));
 			case self::TYPE_INT:

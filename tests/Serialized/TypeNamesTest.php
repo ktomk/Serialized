@@ -26,7 +26,7 @@
 Namespace Serialized;
 Use \InvalidArgumentException;
 
-require_once(__DIR__.'/TypeMapTest.php');
+require_once(__DIR__.'/TypeMapTestCase.php');
 
 /**
  * Test class for TypeNames.

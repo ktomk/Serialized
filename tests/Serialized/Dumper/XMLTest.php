@@ -59,7 +59,7 @@ class XMLTest extends DumperTest
 </serialized>'."\n";
 	}
 
-	public function expectedDumpOutput()
+	public function expectedRecursionObjectDumpOutput()
 	{
 		return '<?xml version="1.0" encoding="us-ascii"?>
 <serialized>
@@ -86,7 +86,7 @@ class XMLTest extends DumperTest
 </serialized>'."\n";
 	}
 
-	public function expectedObjectDumpOutput() {
+	public function expectedInheritedObjectDumpOutput() {
 		return '<?xml version="1.0" encoding="us-ascii"?>
 <serialized>
   <object class="Serialized\Dumper\testObjectChild" members="7">
@@ -112,6 +112,29 @@ class XMLTest extends DumperTest
       <bool value="true"/>
     </property>
   </object>
+</serialized>'."\n";
+	}
+	protected function expectedSessionDumpOutput() {
+		return '<?xml version="1.0" encoding="us-ascii"?>
+<serialized>
+  <variables count="3">
+    <item name="test">
+      <int value="1"/>
+    </item>
+    <item name="more">
+      <array members="2">
+        <item name="0" type="int">
+          <int value="56"/>
+        </item>
+        <item name="key" type="string">
+          <int value="57"/>
+        </item>
+      </array>
+    </item>
+    <item name="again">
+      <int value="2"/>
+    </item>
+  </variables>
 </serialized>'."\n";
 	}
 
@@ -220,8 +243,8 @@ class XMLTest extends DumperTest
 		$data = file_get_contents($path);
 		$dtd = 'data://text/plain;base64,'.base64_encode($data);
 
-		foreach( array('ArrayDump', 'Dump', 'ObjectDump') as $proc) {
-			$func = sprintf('expected%sOutput', $proc);
+		foreach( array('Array', 'RecursionObject', 'InheritedObject') as $proc) {
+			$func = sprintf('expected%sDumpOutput', $proc);
 			$xml = $this->$func();
 			$this->assertDTD($xml, $dtd, sprintf('DTD in %s.', $proc));
 		}
