@@ -35,6 +35,9 @@ Use \InvalidArgumentException;
 abstract class TypeMap implements ValueTypes {
 	protected static $valType = '[value type of map]';
 	protected static $map = array();
+	static public function has($type) {
+		return isset(static::$map[$type]);
+	}
 	/**
 	 * get [value] of type
 	 * @param int $type

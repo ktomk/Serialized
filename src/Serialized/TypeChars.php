@@ -25,15 +25,15 @@
  */
 
 Namespace Serialized;
-Use \InvalidArgumentException;
 
 /**
  * Chars of Value Types
  *
  * Concrete implementation of Value Type Chars (represented as string, more or less defined by PHP itself)
  */
-class TypeChars implements ValueTypes {
-	private static $typeChars = array(
+class TypeChars  extends TypeMap {
+	protected static $valType = 'char';
+	protected static $map = array(
 		self::TYPE_ARRAY => 'a',
 		self::TYPE_BOOL => 'b',
 		self::TYPE_FLOAT => 'd',
@@ -44,27 +44,4 @@ class TypeChars implements ValueTypes {
 		self::TYPE_RECURSION => 'r',
 		self::TYPE_RECURSIONREF => 'R',
 	);
-	/**
-	 * get character of type
-	 * @param int $type
-	 * @throws InvalidArgumentException
-	 */
-	static public function of($type) {
-		if (!isset(self::$typeChars[$type])) {
-			throw new InvalidArgumentException(sprintf('Illegal type "%s" - no character for it.', $type));
-		}
-		return self::$typeChars[$type];
-	}
-	/**
-	 * get type by character
-	 * @param string $char
-	 * @return int type
-	 */
-	static public function by($char) {
-		$map = array_flip(self::$typeChars);
-		if (!isset($map[$char])) {
-			throw new InvalidArgumentException(sprintf('Illegal char "%s" - no type for it.', $char));
-		}
-		return $map[$char];
-	}
 }
