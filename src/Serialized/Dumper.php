@@ -26,6 +26,8 @@
 
 Namespace Serialized;
 Use \Exception;
+Use \BadMethodCallException;
+Use \InvalidArgumentException;
 
 /**
  * Serialize Dumper
@@ -91,7 +93,7 @@ abstract class Dumper implements ValueTypes {
 	protected function typeByName($name) {
 		$map = array_flip($this->typeNames);
 		if (!isset($map[$name])) {
-			throw new \InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype.', $name));
+			throw new InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype.', $name));
 		}
 		return $map[$name];
 	}
@@ -115,7 +117,7 @@ abstract class Dumper implements ValueTypes {
 				$name = substr($name, $pos+1);
 			} else {
 				// @codeCoverageIgnoreStart
-				throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
+				throw new InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
 			}	// @codeCoverageIgnoreEnd
 		}
 		return array($name, $class, $access);
@@ -178,9 +180,9 @@ abstract class Dumper implements ValueTypes {
 		try {
 			$this->dump($parsed, $config);
 		} catch(Exception $e) {
-			ob_end_clean();
-			$class = get_class($e);
-			throw new $class($e->getMessage(),$e->getCode(), $e);
+			$buffer = ob_get_clean();
+			$e->serializedDumpFragment = $buffer;
+			throw $e;
 		}
 		return ob_get_clean();
 	}
@@ -192,7 +194,7 @@ abstract class Dumper implements ValueTypes {
 	 */
 	final public function dump(array $parsed, array $config=array()) {
 		if (count($parsed) != 2) {
-			throw new \InvalidArgumentException('Parameter is expected to be an array of two values.');
+			throw new InvalidArgumentException('Parameter is expected to be an array of two values.');
 		}
 		$config && $this->setConfig($config);
 		$this->dumpConcrete($parsed);
