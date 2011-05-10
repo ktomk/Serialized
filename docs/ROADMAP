@@ -14,7 +14,7 @@
           references. (done)
   0.2.0 - Parsing of serialized variables (session data).
   0.3.0 - Service release.
-  0.4.0 - Serialized Dumper.
+  0.4.0 - Serialized Dumper. [will be added in 0.2.x already]
   0.5.0 - Service release.
   0.6.0 - Class Interfaces orchestring the Array Notation.
   0.7.0 - Stablize interfaces and classes.

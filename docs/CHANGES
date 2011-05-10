@@ -10,6 +10,12 @@
   For all changes please refer to the public Serialized SCM:
     <https://github.com/ktomk/Serialized>
 
+  0.2.x
+
+  NEW: Serialized Dumper.
+  NEW: Session support.
+  FIX: Diverse fixes.
+
   0.1.x
 
   NEW: XML Dumper and Serialized-XML.

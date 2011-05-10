@@ -29,6 +29,10 @@
  *
  * Add your own files with a similar naming into the same directory and
  * they will become automatically part of the \Serialized\DataTest.
+ *
+ * @todo move into serialized dir
+ * @todo create session dir
+ * @todo add session data test
  */
 return array(
   "N;",
