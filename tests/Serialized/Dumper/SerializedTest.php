@@ -25,6 +25,8 @@
  */
 
 namespace Serialized\Dumper;
+use Serialized\Dumper;
+
 Use Serialized\DumperTest;
 Use Serialized\Parser;
 
@@ -52,6 +54,14 @@ class SerializedTest extends DumperTest
 
 	protected function expectedSessionDumpOutput() {
 		return 'test|i:1;more|a:2:{i:0;i:56;s:3:"key";i:57;}again|i:2;';
+	}
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+	public function testException() {
+		$dumper = Dumper::factory('Serialized');
+		$dumper->dump(array('member', 0));
 	}
 
 	public function testEmptyObject() {
