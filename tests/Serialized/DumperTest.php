@@ -106,6 +106,7 @@ abstract class DumperTest extends TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
+	// @todo rename to testObjectDumpOutput
 	final public function testDumpOutput()
 	{
 		$expected = $this->expectedDumpOutput();
@@ -116,15 +117,16 @@ abstract class DumperTest extends TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
+	// @todo rename to testComplexObjectDumpOutput
 	final public function testObjectDumpOutput()
 	{
 		$expected = $this->expectedObjectDumpOutput();
 		$object = $this->getDataObjectInherited();
 
 		$actual = $this->getDump($object);
+
 		$this->assertEquals($expected, $actual);
 	}
-
 
 	/**
      * @expectedException \InvalidArgumentException
@@ -134,6 +136,7 @@ abstract class DumperTest extends TestCase
 		$dumper = Dumper::factory($this->dumper);
 		$dumper->getDump($parsed);
 	}
+
     /**
      * @expectedException \PHPUnit_Framework_Error
      */
@@ -142,6 +145,7 @@ abstract class DumperTest extends TestCase
 		$dumper->getDump(array(array(), array('illegal option')));
 		return;
 	}
+
     /**
      * @expectedException \InvalidArgumentException
      */

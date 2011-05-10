@@ -339,4 +339,17 @@ class Parser implements Value, ValueTypes {
 		$dumper = Dumper::factory($options['type'], $options['config']);
 		$dumper->dump($parsed);
 	}
+	/**
+	 * get dump of a serialized array notation
+	 *
+	 * @param string $type dumper type / format (Text, XML, Serialized)
+	 * @param array $parsed
+	 * @param array $config dumper configuration
+	 * @return string dump
+	 */
+	public function getDump($type, array $parsed = null, array $config = array()) {
+		(null === $parsed) && $parsed = $this->getParsed();
+		$dumper = Dumper::factory($type, $config);
+		return $dumper->getDump($parsed);
+	}
 }
