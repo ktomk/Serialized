@@ -131,6 +131,15 @@ abstract class DumperTest extends TestCase
 	/**
      * @expectedException \InvalidArgumentException
      */
+	final public function testInvalidArgumentExceptionViaDump() {
+		$parsed = array('1');
+		$dumper = Dumper::factory($this->dumper);
+		$dumper->dump($parsed);
+	}
+
+	/**
+     * @expectedException \InvalidArgumentException
+     */
 	final public function testUnkownValueTypeNameExceptionViaDump() {
 		$parsed = array('foo', '42');
 		$dumper = Dumper::factory($this->dumper);

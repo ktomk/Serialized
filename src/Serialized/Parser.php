@@ -277,9 +277,6 @@ class Parser implements Value, ValueTypes {
 	 * @param array $config (optional) dumper configuration
 	 */
 	public function dump($type = null, array $config = array()) {
-		if (!is_string($type) && null !== $type) {
-			throw new InvalidArgumentException(sprintf('Type must be string, %s given.', gettype($type)));
-		}
 		$parsed = $this->getParsed();
 		$dumper = Dumper::factory($type, $config);
 		$dumper->dump($parsed);
@@ -292,9 +289,6 @@ class Parser implements Value, ValueTypes {
 	 * @return string dump
 	 */
 	public function getDump($type = null, array $config = array()) {
-		if (!is_string($type) && null !== $type) {
-			throw new InvalidArgumentException(sprintf('Type must be string, %s given.', gettype($type)));
-		}
 		$parsed = $this->getParsed();
 		$dumper = Dumper::factory($type, $config);
 		return $dumper->getDump($parsed);

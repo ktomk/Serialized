@@ -181,6 +181,9 @@ abstract class Dumper implements ValueTypes {
 	 * @return \Serialized\Dumper\Concrete
 	 */
 	public static function factory($type = null, array $config = array()) {
+		if (!is_string($type) && null !== $type) {
+			throw new InvalidArgumentException(sprintf('Type expected be string, %s given.', gettype($type)));
+		}
 		null === $type && $type = 'text';
 		$dumperClass = ucfirst(strtolower($type));
 		if ($dumperClass === 'Xml') $dumperClass = 'XML'; // Dumper\XML is all caps
