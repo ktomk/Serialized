@@ -1,10 +1,8 @@
  [.] Add XSLT example.
- [/] Dump into buffer.
+ [x] Dump into buffer.
 
- [ ] Parse session data / var / var types in array notation.
-    [ ] Update Array Notation ODT/PDF
- [ ] Dumper: solve typeByName() code duplication (taken from Parser).
-    -> TypeMap; TypeNames; TypeChars
+ [x] Parse session data / var / var types in array notation.
+ [ ] Update Array Notation ODT/PDF for sessions
 
  [ ] Add Offset when throwing a parse error / Add offset to ParseException
  [ ] Add DumpException (probably).

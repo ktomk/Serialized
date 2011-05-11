@@ -52,6 +52,8 @@
     * member
     * recursion
     * recursionref
+    * variables (session)
+    * name (session)
 
   SERIALIZE TYPE IDENTIFICATION CHARS
 
