@@ -68,6 +68,6 @@ foreach($files as $file) {
 	$parser = new SessionParser($serializedSession);
 	$dumpMode = $mode++%2?'text':'xml';
 	printf("\nSession \"%s\" as %s:\n", basename($file), $dumpMode);
-	$parser->dump(null,array('type'=>$dumpMode));
+	$parser->dump($dumpMode);
 	print "\n";
 }

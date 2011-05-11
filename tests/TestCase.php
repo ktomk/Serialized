@@ -30,28 +30,24 @@ require_once(__DIR__.'/../src/Serialized.php');
 
 require_once('PHPUnit/Autoload.php');
 
+require_once(__DIR__.'/Constraints.php');
+
 /**
  * abstract, base test-case class.
  */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * assert the last error
-	 *
-	 * @param string $message of error or notice
-	 * @param string $file where to expect that message
+	 * assert lint of a php file
 	 */
-	protected function assertLastError($message, $file)
-	{
-		$lastError = error_get_last();
-		$condition = NULL === $lastError;
-		$this->assertFalse($condition);
-
-		$last_message = $lastError['message'];
-		$last_file = $lastError['file'];
-
-		$this->assertEquals($message, $last_message);
-		$this->assertEquals(basename($file), basename($last_file));
+	protected function assertLint($filename, $message = '') {
+		self::assertThat($filename, new ConstraintLint, $message);
+	}
+	/**
+	 * assert the last error
+	 */
+	protected function assertLastError($error, $file, $message = '') {
+		self::assertThat($file, new ConstraintLastError($error), $message);
 	}
 	/**
 	 * hexdump of string

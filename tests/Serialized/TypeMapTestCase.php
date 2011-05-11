@@ -73,7 +73,7 @@ abstract class TypeMapTestCase extends TestCase
     	$this->assertSame($expected, $actual);
 
     	# test non-existing (provoke exception)
-    	$result = $class::of($nonExistantType);
+		$class::of($nonExistantType);
     }
     protected function mapTestBy($class, $value, $expected, $nonExistantValue = null) {
     	$class = __NAMESPACE__.'\\'.$class;
@@ -82,7 +82,7 @@ abstract class TypeMapTestCase extends TestCase
     	$this->assertSame($expected, $actual);
 
     	# test non-existing (provoke exception)
-    	$result = $class::by($nonExistantValue);
+		$class::by($nonExistantValue);
     }
     public function testHas() {
     	$class = $this->testClass;

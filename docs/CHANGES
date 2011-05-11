@@ -14,7 +14,11 @@
 
   NEW: Serialized Dumper.
   NEW: Session support.
-  FIX: Diverse fixes.
+  FIX: Dumper did not properly re-throw exception while dumping into
+       output buffer.
+  FIX: XML Dumper has class and filename in all caps.
+  FIX: DumperConfigTest: testConfigMerge missed drop numeric keys
+       assertion. Added.
 
   0.1.x
 

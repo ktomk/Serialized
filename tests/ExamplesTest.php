@@ -53,18 +53,6 @@ class ExamplesTest extends TestCase
 	{
 	}
 
-	private function lintExampleFile($fileName) {
-		$return = 0;
-		$lintOutput = array();
-		$exitStatus = 0;
-		exec("php -l " . escapeshellarg($fileName), $lintOutput, $return);
-		if ($return != 0) {
-			$exitStatus = 1;
-			array_splice($lintOutput, -2);
-		}
-		return array($exitStatus, $lintOutput);
-	}
-
 	private function runExampleFile($fileName)
 	{
 		ob_start();
@@ -74,13 +62,7 @@ class ExamplesTest extends TestCase
 
 	private function exampleTest($example) {
 		$fileName = $this->getExamplesPath().'/'.$example.'.php';
-		$this->addToAssertionCount(1);
-		list($lint, $lines) = $this->lintExampleFile($fileName);
-		if ($lint==1) {
-			$this->fail(sprintf("Example %s lint failed:%s", $example, implode("\n  - ", $lines)));
-			return;
-		}
-		$this->addToAssertionCount(1);
+		$this->assertLint($fileName);
 		$this->runExampleFile($fileName);
 		return true;
 	}

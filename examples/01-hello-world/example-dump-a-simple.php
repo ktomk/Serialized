@@ -40,8 +40,8 @@
 
   $parser->dump();
 
-  // on array notation
-  $parser->dump(
+  // dump with default dumper (text) on array notation
+  Dumper::factory()->dump(
   	Parser::parse(
   		serialize(
   			range(1,10)

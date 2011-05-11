@@ -26,6 +26,7 @@
 
 Namespace Serialized;
 Use \OutOfRangeException;
+Use \InvalidArgumentException;
 
 /**
  * Serialize Parser
@@ -331,24 +332,29 @@ class Parser implements Value, ValueTypes {
 	/**
 	 * print serialized array notation
 	 *
-	 * @param array $parsed (optional) serialized array notation data or empty to use this objects data.
+	 * @param string $type (optional) dumper type / format (Text, XML, Serialized)
+	 * @param array $config (optional) dumper configuration
 	 */
-	public function dump(array $parsed = null, array $options = array()) {
-		(null === $parsed) && $parsed = $this->getParsed();
-		$options = array_merge(array('type'=>'text', 'config'=>array()), $options);
-		$dumper = Dumper::factory($options['type'], $options['config']);
+	public function dump($type = null, array $config = array()) {
+		if (!is_string($type) && null !== $type) {
+			throw new InvalidArgumentException(sprintf('Type must be string, %s given.', gettype($type)));
+		}
+		$parsed = $this->getParsed();
+		$dumper = Dumper::factory($type, $config);
 		$dumper->dump($parsed);
 	}
 	/**
 	 * get dump of a serialized array notation
 	 *
-	 * @param string $type dumper type / format (Text, XML, Serialized)
-	 * @param array $parsed
-	 * @param array $config dumper configuration
+	 * @param string $type (optional) dumper type / format (Text, XML, Serialized)
+	 * @param array $config (optional) dumper configuration
 	 * @return string dump
 	 */
-	public function getDump($type, array $parsed = null, array $config = array()) {
-		(null === $parsed) && $parsed = $this->getParsed();
+	public function getDump($type = null, array $config = array()) {
+		if (!is_string($type) && null !== $type) {
+			throw new InvalidArgumentException(sprintf('Type must be string, %s given.', gettype($type)));
+		}
+		$parsed = $this->getParsed();
 		$dumper = Dumper::factory($type, $config);
 		return $dumper->getDump($parsed);
 	}

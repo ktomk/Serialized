@@ -30,23 +30,11 @@ require_once(__DIR__.'/TestCase.php');
 
 class DataTest extends TestCase
 {
-	private function lintDataFile($fileName) {
-		$return = 0;
-		$lintOutput = array();
-		$exitStatus = 0;
-		exec("php -l " . escapeshellarg($fileName), $lintOutput, $return);
-		if ($return != 0) {
-			$exitStatus = 1;
-			array_splice($lintOutput, -2);
-		}
-		return array($exitStatus, $lintOutput);
-	}
-
 	private function runDataFile($fileName)
 	{
 		$datas = require $fileName;
 
-		$parser = new \Serialized\Parser();
+		$parser = new Parser();
 		printf("%s:\n", basename($fileName));
 		foreach($datas as $index => $serialized) {
 			printf(' % 2d ... ', $index + 1);
@@ -66,13 +54,7 @@ class DataTest extends TestCase
 
 	private function dataTest($data) {
 		$fileName = $this->getDataPath().'/'.$data.'.php';
-		$this->addToAssertionCount(1);
-		list($lint, $lines) = $this->lintDataFile($fileName);
-		if ($lint==1) {
-			$this->fail(sprintf("Data %s lint failed:%s", $data, implode("\n  - ", $lines)));
-			return;
-		}
-		$this->addToAssertionCount(1);
+		$this->assertLint($fileName);
 		$this->runDataFile($fileName);
 	}
 

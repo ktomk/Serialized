@@ -9,6 +9,7 @@
  [ ] Add Offset when throwing a parse error / Add offset to ParseException
  [ ] Add DumpException (probably).
 
+ [ ] Find a better place for serialized.xml/dtd (examples dir currently)
  [ ] Validate class- and member-mame parsing.
  [ ] Create a validator for array notation data.
      [ ] When done, remove deep-redundant code from dumpers.

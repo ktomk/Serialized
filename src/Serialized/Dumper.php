@@ -172,11 +172,14 @@ abstract class Dumper implements ValueTypes {
 	/**
 	 * get dump as string
 	 *
-	 * @param array $parsed
-	 * @param array $config
+	 * @param array $parsed serialized array notation data to be dumped.
+	 * @param array $config (optional) dumper configuration
 	 * @return string
 	 */
 	public function getDump(array $parsed, array $config=array()) {
+		if (count($parsed) != 2) {
+			throw new InvalidArgumentException(sprintf('Parsed is expected to be an array of two values, array has %d values.', count($parsed)));
+		}
 		ob_start();
 		try {
 			$this->dump($parsed, $config);
@@ -190,26 +193,27 @@ abstract class Dumper implements ValueTypes {
 	/**
 	 * dump array notation
 	 *
-	 * @param array $parsed serialized array notation data.
+	 * @param array $parsed serialized array notation data to be dumped.
 	 * @param array $config (optional) dumper configuration
 	 */
 	final public function dump(array $parsed, array $config=array()) {
 		if (count($parsed) != 2) {
-			throw new InvalidArgumentException('Parameter is expected to be an array of two values.');
+			throw new InvalidArgumentException(sprintf('Parsed is expected to be an array of two values, array has %d values.', count($parsed)));
 		}
 		$config && $this->setConfig($config);
 		$this->dumpConcrete($parsed);
 	}
 	abstract protected function dumpConcrete(array $parsed);
 	/**
-	 * @return Dumper\Concrete
+	 * @return \Serialized\Dumper\Concrete
 	 */
-	public static function factory($dumper, array $config = array()) {
-		$dumperClass = ucfirst(strtolower($dumper));
+	public static function factory($type = null, array $config = array()) {
+		null === $type && $type = 'text';
+		$dumperClass = ucfirst(strtolower($type));
 		if ($dumperClass === 'Xml') $dumperClass = 'XML'; // Dumper\XML is all caps
 		$class = sprintf('%s\Dumper\%s', __NAMESPACE__, $dumperClass);
 		$dumper = new $class();
-		$config && $config->setConfig($config);
+		$config && $dumper->setConfig($config);
 		return $dumper;
 	}
 }
