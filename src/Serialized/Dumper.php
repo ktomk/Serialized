@@ -33,7 +33,7 @@ Use \stdClass;
 /**
  * Serialize Dumper
  *
- * @todo solve typeByName() code duplication (taken from Parser)
+ * Abstract Dumper Class
  */
 abstract class Dumper implements ValueTypes {
 	/**
@@ -52,23 +52,6 @@ abstract class Dumper implements ValueTypes {
 	 * @var array
 	 */
 	private $stack = array();
-	private $typeNames = array(
-		self::TYPE_INVALID => 'invalid',
-		self::TYPE_BOOL => 'bool',
-		self::TYPE_FLOAT => 'float',
-		self::TYPE_INT => 'int',
-		self::TYPE_NULL => 'null',
-		self::TYPE_RECURSION => 'recursion',
-		self::TYPE_RECURSIONREF => 'recursionref',
-		self::TYPE_ARRAY => 'array',
-		self::TYPE_OBJECT => 'object',
-		self::TYPE_STRING => 'string',
-		self::TYPE_CLASSNAME => 'classname',
-		self::TYPE_MEMBERS => 'members',
-		self::TYPE_MEMBER => 'member',
-		self::TYPE_VARIABLES => 'variables',
-		self::TYPE_VARNAME => 'varname',
-	);
 	private function stateInit() {
 		$state = new stdClass();
 		$state->level = 0;
@@ -90,16 +73,6 @@ abstract class Dumper implements ValueTypes {
 	 */
 	protected function statePop() {
 		$this->state = array_pop($this->stack);
-	}
-	protected function typeByName($name) {
-		$map = array_flip($this->typeNames);
-		if (!isset($map[$name])) {
-			throw new InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype.', $name));
-		}
-		return $map[$name];
-	}
-	protected function typeExport(array $parsed) {
-		return array_merge((array) $this->typeByName($parsed[0]), $parsed);
 	}
 	/**
 	 * @return array $name, $class, $access (0:public,1:protected,2:private)

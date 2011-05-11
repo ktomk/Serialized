@@ -32,34 +32,6 @@ Use \InvalidArgumentException;
  * Serialize Parser
  */
 class Parser implements Value, ValueTypes {
-	private $typeNames = array(
-		self::TYPE_INVALID => 'invalid',
-		self::TYPE_BOOL => 'bool',
-		self::TYPE_FLOAT => 'float',
-		self::TYPE_INT => 'int',
-		self::TYPE_NULL => 'null',
-		self::TYPE_RECURSION => 'recursion',
-		self::TYPE_RECURSIONREF => 'recursionref',
-		self::TYPE_ARRAY => 'array',
-		self::TYPE_OBJECT => 'object',
-		self::TYPE_STRING => 'string',
-		self::TYPE_CLASSNAME => 'classname',
-		self::TYPE_MEMBERS => 'members',
-		self::TYPE_MEMBER => 'member',
-		self::TYPE_VARIABLES => 'variables',
-		self::TYPE_VARNAME => 'name',
-	);
-	private $typeChars = array(
-		self::TYPE_ARRAY => 'a',
-		self::TYPE_BOOL => 'b',
-		self::TYPE_FLOAT => 'd',
-		self::TYPE_INT => 'i',
-		self::TYPE_NULL => 'N',
-		self::TYPE_OBJECT => 'O',
-		self::TYPE_STRING => 's',
-		self::TYPE_RECURSION => 'r',
-		self::TYPE_RECURSIONREF => 'R',
-	);
 	/**
 	 * @var string serialized
 	 */
@@ -80,32 +52,6 @@ class Parser implements Value, ValueTypes {
 	public function setSerialized($serialized) {
 		$this->data = (string) $serialized;
 	}
-	private function typeByChar($char) {
-		$map = array_flip($this->typeChars);
-		if (!isset($map[$char])) {
-			// @codeCoverageIgnoreStart
-			throw new \InvalidArgumentException(sprintf('Unknown char "%s" to identify a vartype.', $char));
-			// @codeCoverageIgnoreEnd
-		}
-		return $map[$char];
-	}
-	private function typeByName($name) {
-		$map = array_flip($this->typeNames);
-		if (!isset($map[$name])) {
-			// @codeCoverageIgnoreStart
-			throw new \InvalidArgumentException(sprintf('Unknown name "%s" to identify a vartype.', $name));
-			// @codeCoverageIgnoreEnd
-		}
-		return $map[$name];
-	}
-	protected function typeNameByType($type) {
-		if (array_key_exists($type, $this->typeNames)) {
-			return $this->typeNames[$type];
-		}
-		// @codeCoverageIgnoreStart
-		throw new \InvalidArgumentException(sprintf('Unknown vartype %s.', $type));
-		// @codeCoverageIgnoreEnd
-	}
 	/**
 	 * @return array(int type, int byte length)
 	 */
@@ -123,7 +69,7 @@ class Parser implements Value, ValueTypes {
 			return $error;
 		if (false === strpos('abdiOrRs', $token))
 			return $error;
-		return array($this->typeByChar($token), 2);
+		return array(TypeChars::by($token), 2);
 	}
 	/**
 	 * @param string $regex
@@ -247,13 +193,8 @@ class Parser implements Value, ValueTypes {
 		$value = (bool) $valueInt;
 		return array($value, 2);
 	}
-	private function infoOf($hinted) {
-		list($typeName) = $hinted;
-		$type = $this->typeByName($typeName);
-		return array($typeName, $type);
-	}
 	private function invalidArrayKeyType($type) {
-		return (bool) !in_array($type, array(self::TYPE_INT, self::TYPE_STRING));
+		return (bool) !in_array($type, array('int', 'string'));
 	}
 	private function parseArrayValue($offset) {
 		$offsetStart = $offset;
@@ -268,9 +209,9 @@ class Parser implements Value, ValueTypes {
 		$value = array();
 		for($elementNumber=0; $elementNumber<$lenLen; $elementNumber++) {
 			list($keyHinted, $keyLength) = $this->parseValue($offset);
-			list($keyTypeName, $keyType) = $this->infoOf($keyHinted);
-			if ($this->invalidArrayKeyType($keyType)) {
-				throw new ParseException(sprintf('Invalid vartype %s (%d) for array key at offset %d.', $keyTypeName, $keyType, $offset));
+			list($keyTypeName) = $keyHinted;
+			if ($this->invalidArrayKeyType($keyTypeName)) {
+				throw new ParseException(sprintf('Invalid vartype %s (%d) for array key at offset %d.', $keyTypeName, TypeNames::by($keyTypeName), $offset));
 			}
 			list($valueHinted, $valueLength) = $this->parseValue($offset+=$keyLength);
 			$offset+=$valueLength;
@@ -293,17 +234,17 @@ class Parser implements Value, ValueTypes {
 			list(list($typeSpec)) = $member;
 			if ('string' !== $typeSpec)
 				throw new ParseException(sprintf('Unexpected type %s, expected string on offset %d.', $typeSpec, $offset));
-			$classMembers[$index][0][0] = $this->typeNameByType(self::TYPE_MEMBER);
+			$classMembers[$index][0][0] = TypeNames::of(self::TYPE_MEMBER);
 		}
 		$totalLen += $len;
 
 		$count = count($classMembers);
-		$value = array(array($this->typeNameByType(self::TYPE_CLASSNAME), $className), array($this->typeNameByType(self::TYPE_MEMBERS), $classMembers));
+		$value = array(array(TypeNames::of(self::TYPE_CLASSNAME), $className), array(TypeNames::of(self::TYPE_MEMBERS), $classMembers));
 		return array($value, $totalLen);
 	}
 	public function parseValue($offset) {
 		list($type, $consume) = $this->lookupVartype($offset);
-		$typeName = $this->typeNameByType($type);
+		$typeName = TypeNames::of($type);
 		$function = sprintf('parse%sValue', ucfirst($typeName));
 		if (!is_callable(array($this, $function))) {
 			// @codeCoverageIgnoreStart

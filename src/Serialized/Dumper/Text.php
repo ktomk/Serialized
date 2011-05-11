@@ -26,6 +26,7 @@
 
 Namespace Serialized\Dumper;
 Use Serialized\Dumper;
+Use Serialized\TypeNames;
 Use \Exception;
 
 /**
@@ -82,7 +83,7 @@ class Text extends Dumper implements Concrete {
 			$keyValue = $this->dumpArrayElement($element);
 
 			list($typeName, $valueValue) = $element[1];
-			$type = $this->typeByName($typeName);
+			$type = TypeNames::by($typeName);
 			$valueString = $this->dumpValue($type, $valueValue);
 
 			$this->printInset($isLast);
@@ -100,7 +101,7 @@ class Text extends Dumper implements Concrete {
 			$keyValue = sprintf('$%s', $element[0][1]);
 
 			list($typeName, $valueValue) = $element[1];
-			$type = $this->typeByName($typeName);
+			$type = TypeNames::by($typeName);
 			$valueString = $this->dumpValue($type, $valueValue);
 
 			$this->printInset($isLast);
@@ -154,7 +155,7 @@ class Text extends Dumper implements Concrete {
 			list(, $valueArray) = $element;
 
 			list($typeName, $valueValue) = $valueArray;
-			$type = $this->typeByName($typeName);
+			$type = TypeNames::by($typeName);
 			$valueString = $this->dumpValue($type, $valueValue);
 
 			$this->printInset($isLast);
@@ -208,7 +209,8 @@ class Text extends Dumper implements Concrete {
 	}
 	// @codeCoverageIgnoreEnd
 	private function dumpAny(array $parsed) {
-		list($type, $typeName, $valueValue) = $this->typeExport($parsed);
+		list($typeName, $valueValue) = $parsed;
+		$type = TypeNames::by($typeName);
 		$valueString = $this->dumpValue($type, $valueValue);
 		$this->printInset(1);
 		printf(" %s%s\n", $typeName, $valueString);

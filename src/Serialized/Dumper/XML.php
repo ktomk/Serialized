@@ -26,6 +26,7 @@
 
 Namespace Serialized\Dumper;
 Use Serialized\Dumper;
+Use Serialized\TypeNames;
 Use \Exception;
 
 /**
@@ -202,7 +203,8 @@ class XML extends Dumper implements Concrete {
 		}
 	}
 	private function dumpNode(array $parsed) {
-		list($type, $typeName, $valueValue) = $this->typeExport($parsed);
+		list($typeName, $valueValue) = $parsed;
+		$type = TypeNames::by($typeName);
 
 		$valueString = $this->dumpValue($type, $valueValue);
 		$xmlElement = $typeName;

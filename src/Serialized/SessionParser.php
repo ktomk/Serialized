@@ -52,7 +52,7 @@ class SessionParser extends Parser {
 		return array(
 			array(
 				array(
-					$this->typeNameByType(self::TYPE_VARNAME),
+					TypeNames::of(self::TYPE_VARNAME),
 					$nameString
 				),
 				$value
@@ -71,7 +71,7 @@ class SessionParser extends Parser {
 			$sessionVariables[] = $value;
 			$offset += $len;
 		} while(isset($this->data[$offset]));
-		return array(array($this->typeNameByType(self::TYPE_VARIABLES), $sessionVariables), $offset-$startOffset);
+		return array(array(TypeNames::of(self::TYPE_VARIABLES), $sessionVariables), $offset-$startOffset);
 	}
 	public function getParsed() {
 		if(isset($this->data[0])) {
