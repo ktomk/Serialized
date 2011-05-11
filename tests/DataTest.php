@@ -28,6 +28,9 @@ Namespace Serialized;
 
 require_once(__DIR__.'/TestCase.php');
 
+/**
+ * @todo add session data test
+ */
 class DataTest extends TestCase
 {
 	private function runDataFile($fileName)
@@ -59,7 +62,7 @@ class DataTest extends TestCase
 	}
 
 	private function getDataPath() {
-		return __DIR__.'/../data';
+		return __DIR__.'/../data/serialize';
 	}
 
 	private function getData() {
