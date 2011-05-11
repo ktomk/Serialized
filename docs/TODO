@@ -3,6 +3,9 @@
 
  [x] Parse session data / var / var types in array notation.
  [ ] Update Array Notation ODT/PDF for sessions
+ [ ] Add support for Serializable interface (C serialize type)
+ 	[ ] Create a testsuite that works on example data for both
+ 	    parsing and dumping more easily.
 
  [ ] Add Offset when throwing a parse error / Add offset to ParseException
  [ ] Add DumpException (probably).
