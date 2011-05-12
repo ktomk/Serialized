@@ -20,7 +20,7 @@
  * author.
  *
  * @author Tom Klingenberg <http://lastflood.com/>
- * @version 0.2.1
+ * @version 0.2.3
  * @package Tests
  */
 

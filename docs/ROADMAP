@@ -11,10 +11,10 @@
 
   0.0.0 - Init. (done)
   0.1.0 - Parsing of all available serialized types incl. recursion and
-          references. (done)
-  0.2.0 - Parsing of serialized variables (session data).
+          references. (done with exception of S)
+  0.2.0 - Parsing of serialized variables/sessions. (done)
   0.3.0 - Service release.
-  0.4.0 - Serialized Dumper. [will be added in 0.2.x already]
+  0.4.0 - Serialized Dumper. [was added in 0.2.1 already]
   0.5.0 - Service release.
   0.6.0 - Class Interfaces orchestring the Array Notation.
   0.7.0 - Stablize interfaces and classes.
