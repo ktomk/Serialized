@@ -1,0 +1,91 @@
+Array
+(
+    [0] => variables
+    [1] => Array
+        (
+            [0] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => name
+                            [1] => test
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => int
+                            [1] => 1
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => name
+                            [1] => more
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => array
+                            [1] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [0] => int
+                                                    [1] => 0
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [0] => int
+                                                    [1] => 56
+                                                )
+
+                                        )
+
+                                    [1] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [0] => string
+                                                    [1] => key
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [0] => int
+                                                    [1] => 57
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => name
+                            [1] => again
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => int
+                            [1] => 2
+                        )
+
+                )
+
+        )
+
+)

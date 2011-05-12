@@ -33,43 +33,4 @@ require_once(__DIR__.'/../DumperTest.php');
 class TextTest extends DumperTest
 {
 	protected $dumper = 'Text';
-
-	protected function expectedArrayDumpOutput() {
-		return '`-- array(4):
-     +-- [user] => string(9): "user-name"
-     +-- [network] => array(1):
-     |    `-- [localip] => string(7): "1.2.3.4"
-     +-- [2] => string(4): "Zwei"
-     `-- [language] => string(6): "german"'."\n";
-	}
-
-	protected function expectedRecursionObjectDumpOutput() {
-		return '`-- object(stdClass) (6):
-     +-- [property] -> string(4): "test"
-     +-- [float] -> float: 1
-     +-- [bool] -> bool: TRUE
-     +-- [null] -> null: NULL
-     +-- [recursion] -> recursion: 1
-     `-- [recursionref] -> recursionref: &1'."\n";
-	}
-
-	protected function expectedInheritedObjectDumpOutput() {
-		return '`-- object(Serialized\Dumper\testObjectChild) (7):
-     +-- [ca] (Serialized\Dumper\testObjectChild:private) -> string(7): "private"
-     +-- [cb] (protected) -> string(9): "protected"
-     +-- [cc] -> string(6): "public"
-     +-- [pa] (Serialized\Dumper\testObjectParent:private) -> string(15): "private, parent"
-     +-- [pb] (protected) -> string(17): "protected, parent"
-     +-- [pc] -> string(14): "public, parent"
-     `-- [Éncödïng] (Serialized\Dumper\testÉncödïng:private) -> bool: TRUE'."\n";
-	}
-
-	protected function expectedSessionDumpOutput() {
-		return '`-- variables (3):
-     +-- $test = int: 1
-     +-- $more = array(2):
-     |    +-- [0] => int: 56
-     |    `-- [key] => int: 57
-     `-- $again = int: 2'."\n";
-	}
 }

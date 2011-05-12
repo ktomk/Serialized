@@ -59,10 +59,23 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 		$return = '';
 		$len = strlen($string);
 		for($i=0; $i<$len; $i++) {
-			$char = $string[$i];
-			$point = substr('0'.dechex(ord($char)), -2);
 			$i && $return .= ' ';
+			$point = sprintf('%02x', ord($string[$i]));
 			$return .= $point;
+		}
+		return $return;
+	}
+	protected function providerGetDataPath() {
+		return __DIR__.'/data/serialize';
+	}
+
+	public function providerTestDataSerialize()
+	{
+		$filename = $this->providerGetDataPath().'/testData.php';
+		$keyedChunks = include($filename);
+		$return = array();
+		foreach($keyedChunks as $name => $string) {
+			$return[] = array($name, $string);
 		}
 		return $return;
 	}

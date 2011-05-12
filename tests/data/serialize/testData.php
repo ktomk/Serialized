@@ -21,28 +21,15 @@
  *
  * @author Tom Klingenberg <http://lastflood.com/>
  * @version 0.2.1
- * @package Serialized
+ * @package Tests
  */
 
-Namespace Serialized;
-
-/**
- * Chars of Value Types
- *
- * Concrete implementation of Value Type Chars (represented as string, more or less defined by PHP itself)
- */
-class TypeChars  extends TypeMap {
-	protected static $valType = 'char';
-	protected static $map = array(
-		self::TYPE_ARRAY => 'a',
-		self::TYPE_BOOL => 'b',
-		self::TYPE_FLOAT => 'd',
-		self::TYPE_INT => 'i',
-		self::TYPE_NULL => 'N',
-		self::TYPE_OBJECT => 'O',
-		self::TYPE_STRING => 's',
-		self::TYPE_RECURSION => 'r',
-		self::TYPE_RECURSIONREF => 'R',
-		self::TYPE_CUSTOM => 'C',
-	);
-}
+return array(
+	'0001' => 'N;',
+	'0002' => 'C:3:"any":2:{N;}',
+	'0003' => 'C:3:"any":0:{}',
+	'1001' => 'a:4:{s:4:"user";s:9:"user-name";s:7:"network";a:1:{s:7:"localip";s:7:"1.2.3.4";}i:2;s:4:"Zwei";s:8:"language";s:6:"german";}',
+	'1002' => 'O:8:"stdClass":6:{s:8:"property";s:4:"test";s:5:"float";d:1;s:4:"bool";b:1;s:4:"null";N;s:9:"recursion";r:1;s:12:"recursionref";R:1;}',
+	'1003' => 'O:33:"Serialized\Dumper\testObjectChild":7:{s:37:"'."\x00".'Serialized\Dumper\testObjectChild'."\x00".'ca";s:7:"private";s:5:"'."\x00*\x00".'cb";s:9:"protected";s:2:"cc";s:6:"public";s:38:"'."\x00".'Serialized\Dumper\testObjectParent'."\x00".'pa";s:15:"private, parent";s:5:"'."\x00*\x00".'pb";s:17:"protected, parent";s:2:"pc";s:14:"public, parent";s:46:"'."\x00".'Serialized\Dumper\testÉncödïng'."\x00".'Éncödïng";b:1;}',
+	'session-01' => array('test|i:1;more|a:2:{i:0;i:56;s:3:"key";i:57;}again|i:2;'),
+);

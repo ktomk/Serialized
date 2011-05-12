@@ -116,7 +116,7 @@ class XML extends Dumper implements Concrete {
 		$this->dumpChildren($value, $xmlElement, $callbackElement);
 	}
 	private function dumpVariables(array $variables) {
-		$xmlElement = $this->config['tags']['array/item'];
+		$xmlElement = $this->config['tags']['variables/variable'];
 		$callbackElement = 'dumpVariable';
 		$this->dumpChildren($variables, $xmlElement, $callbackElement);
 	}
@@ -146,6 +146,7 @@ class XML extends Dumper implements Concrete {
 	private function dumpSubValue($type, $value) {
 		$subDumpMap = array(
 			self::TYPE_ARRAY => 'dumpArray',
+			self::TYPE_CUSTOM => 'dumpCustom',
 			self::TYPE_OBJECT => 'dumpObject',
 			self::TYPE_VARIABLES => 'dumpVariables',
 		);
@@ -154,11 +155,11 @@ class XML extends Dumper implements Concrete {
 			return;
 
 		$this->statePush();
-
-		$method = $subDumpMap[$type];
-		$this->$method($value);
-
+		$this->$subDumpMap[$type]($value);
 		$this->statePop();
+	}
+	private function dumpCustom(array $custom) {
+		$this->dumpNode($custom[1]);
 	}
 	private function dumpValue($type, $value) {
 		switch($type) {
@@ -168,6 +169,7 @@ class XML extends Dumper implements Concrete {
 			case self::TYPE_VARIABLES:
 				return sprintf(' count="%s"', count($value));
 			case self::TYPE_STRING:
+			case self::TYPE_CUSTOMDATA:
 				return sprintf(' len="%d" value="%s"', strlen($value), $this->xmlAttributeEncode($value));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
@@ -175,6 +177,8 @@ class XML extends Dumper implements Concrete {
 			case self::TYPE_OBJECT:
 				$count = count($value[1][1]);
 				return sprintf(' class="%s" members="%d"', $value[0][1], $count);
+			case self::TYPE_CUSTOM:
+				return sprintf(' class="%s"', $value[0][1]);
 			case self::TYPE_NULL:
 				return '';
 			case self::TYPE_BOOL:
@@ -185,12 +189,13 @@ class XML extends Dumper implements Concrete {
 				return sprintf(' value="%s"', $value);
 			// @codeCoverageIgnoreStart
 			default:
-				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
+				throw new \InvalidArgumentException(sprintf('Type #%s (%s) unhandeled.', $type, TypeNames::of($type)));
 		}
 	} // @codeCoverageIgnoreEnd
 	private function hasInnerElements($type) {
 		switch($type) {
 			case self::TYPE_ARRAY:
+			case self::TYPE_CUSTOM:
 			case self::TYPE_OBJECT:
 			case self::TYPE_VARIABLES:
 				return true;

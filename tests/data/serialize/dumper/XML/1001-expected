@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<serialized>
+  <array members="4">
+    <item name="user" type="string">
+      <string len="9" value="user-name"/>
+    </item>
+    <item name="network" type="string">
+      <array members="1">
+        <item name="localip" type="string">
+          <string len="7" value="1.2.3.4"/>
+        </item>
+      </array>
+    </item>
+    <item name="2" type="int">
+      <string len="4" value="Zwei"/>
+    </item>
+    <item name="language" type="string">
+      <string len="6" value="german"/>
+    </item>
+  </array>
+</serialized>

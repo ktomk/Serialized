@@ -49,6 +49,13 @@ class Serialized extends Dumper implements Concrete {
 		$char = TypeChars::of(self::TYPE_BOOL);
 		printf('%s:%d;', $char, (bool) $bool);
 	}
+	private function dumpCustom($custom) {
+		$char = TypeChars::of(self::TYPE_CUSTOM);
+		list(list(,$class),list(,$data)) = $custom;
+		printf('%s:%d:"%s":%d:{', $char, strlen($class), $class, strlen($data));
+		print($data);
+		print('}');
+	}
 	private function dumpInt($int) {
 		$char = TypeChars::of(self::TYPE_INT);
 		printf('%s:%d;', $char, (int) $int);

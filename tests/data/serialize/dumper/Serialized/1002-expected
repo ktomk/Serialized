@@ -1,0 +1,1 @@
+O:8:"stdClass":6:{s:8:"property";s:4:"test";s:5:"float";d:1;s:4:"bool";b:1;s:4:"null";N;s:9:"recursion";r:1;s:12:"recursionref";R:1;}

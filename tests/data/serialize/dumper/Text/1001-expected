@@ -1,0 +1,6 @@
+`-- array(4):
+     +-- [user] => string(9): "user-name"
+     +-- [network] => array(1):
+     |    `-- [localip] => string(7): "1.2.3.4"
+     +-- [2] => string(4): "Zwei"
+     `-- [language] => string(6): "german"

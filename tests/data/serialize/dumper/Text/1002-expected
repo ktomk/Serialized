@@ -1,0 +1,7 @@
+`-- object(stdClass) (6):
+     +-- [property] -> string(4): "test"
+     +-- [float] -> float: 1
+     +-- [bool] -> bool: TRUE
+     +-- [null] -> null: NULL
+     +-- [recursion] -> recursion: 1
+     `-- [recursionref] -> recursionref: &1

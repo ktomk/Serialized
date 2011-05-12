@@ -67,7 +67,7 @@ class Parser implements Value, ValueTypes {
 			return array(self::TYPE_NULL, 0);
 		if (':' !== $test)
 			return $error;
-		if (false === strpos('abdiOrRs', $token))
+		if (false === strpos('abCdiOrRs', $token))
 			return $error;
 		return array(TypeChars::by($token), 2);
 	}
@@ -193,8 +193,26 @@ class Parser implements Value, ValueTypes {
 		$value = (bool) $valueInt;
 		return array($value, 2);
 	}
+	private function parseCustomValue($offset) {
+		list($className, $classLen) = $this->parseStringValue($offset, ':');
+		$dataLenLength = $this->matchRegex('([0-9]+(?=:))', $offset+$classLen);
+		if (!$dataLenLength) {
+			throw new ParseException(sprintf('Invalid character sequence for custom vartype at offset %d.', $offset+$classLen));
+		}
+		$dataLengthString = substr($this->data, $offset+$classLen, $dataLenLength);
+		$dataLength = (int) $dataLengthString;
+		$this->expectChar('{', $offset+$classLen+1+$dataLenLength);
+		$this->expectChar('}', $offset+$classLen+1+$dataLenLength+1+$dataLength);
+		$data = $dataLength ? substr($this->data, $offset+$classLen+1+$dataLenLength+1, $dataLength) : '';
+		$value = array(
+			array(TypeNames::of(self::TYPE_CLASSNAME), $className),
+			array(TypeNames::of(self::TYPE_CUSTOMDATA), $data)
+		);
+		$consume = $classLen+$dataLenLength+2+$dataLength+1;
+		return array($value, $consume);
+	}
 	private function invalidArrayKeyType($type) {
-		return (bool) !in_array($type, array('int', 'string'));
+		return !in_array($type, array('int', 'string'));
 	}
 	private function parseArrayValue($offset) {
 		$offsetStart = $offset;
@@ -242,6 +260,13 @@ class Parser implements Value, ValueTypes {
 		$value = array(array(TypeNames::of(self::TYPE_CLASSNAME), $className), array(TypeNames::of(self::TYPE_MEMBERS), $classMembers));
 		return array($value, $totalLen);
 	}
+	/**
+	 * parse for a serialized value at offset
+	 *
+	 * @param int $offset byte offset
+	 * @return array array notation of serialized value
+	 * @throws ParseException
+	 */
 	public function parseValue($offset) {
 		list($type, $consume) = $this->lookupVartype($offset);
 		$typeName = TypeNames::of($type);
@@ -255,6 +280,17 @@ class Parser implements Value, ValueTypes {
 		$hinted = array($typeName, $value);
 		return array($hinted, $len+$consume);
 	}
+	public function getParsed() {
+		list($value, $len) = $this->parseValue(0);
+		$this->expectEof($len-1);
+		return $value;
+	}
+	/**
+	 * parse string of serialized  data into array notation
+	 *
+	 * @param string $serialized
+	 * @return array|false array notation, false on parse error
+	 */
 	public static function parse($serialized) {
 		$parser = new self($serialized);
 		try {
@@ -264,11 +300,6 @@ class Parser implements Value, ValueTypes {
 			$result = false;
 		}
 		return $result;
-	}
-	public function getParsed() {
-		list($value, $len) = $this->parseValue(0);
-		$this->expectEof($len-1);
-		return $value;
 	}
 	/**
 	 * print serialized array notation

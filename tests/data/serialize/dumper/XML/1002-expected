@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<serialized>
+  <object class="stdClass" members="6">
+    <property name="property">
+      <string len="4" value="test"/>
+    </property>
+    <property name="float">
+      <float value="1"/>
+    </property>
+    <property name="bool">
+      <bool value="true"/>
+    </property>
+    <property name="null">
+      <null/>
+    </property>
+    <property name="recursion">
+      <recursion value="1"/>
+    </property>
+    <property name="recursionref">
+      <recursionref value="1"/>
+    </property>
+  </object>
+</serialized>

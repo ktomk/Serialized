@@ -1,11 +1,11 @@
  [.] Add XSLT example.
  [x] Dump into buffer.
-
  [x] Parse session data / var / var types in array notation.
+
+ [x] Complete Data Test Suite for all current dumpers
+ [x] Add support for Serializable interface (C serialize type)
+ [ ] Add support for serialized S values.
  [ ] Update Array Notation ODT/PDF for sessions
- [ ] Add support for Serializable interface (C serialize type)
- 	[ ] Create a testsuite that works on example data for both
- 	    parsing and dumping more easily.
 
  [ ] Add Offset when throwing a parse error / Add offset to ParseException
  [ ] Add DumpException (probably).

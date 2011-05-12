@@ -35,109 +35,6 @@ class XMLTest extends DumperTest
 {
 	protected $dumper = 'XML';
 
-	public function expectedArrayDumpOutput() {
-		return '<?xml version="1.0" encoding="us-ascii"?>
-<serialized>
-  <array members="4">
-    <item name="user" type="string">
-      <string len="9" value="user-name"/>
-    </item>
-    <item name="network" type="string">
-      <array members="1">
-        <item name="localip" type="string">
-          <string len="7" value="1.2.3.4"/>
-        </item>
-      </array>
-    </item>
-    <item name="2" type="int">
-      <string len="4" value="Zwei"/>
-    </item>
-    <item name="language" type="string">
-      <string len="6" value="german"/>
-    </item>
-  </array>
-</serialized>'."\n";
-	}
-
-	public function expectedRecursionObjectDumpOutput()
-	{
-		return '<?xml version="1.0" encoding="us-ascii"?>
-<serialized>
-  <object class="stdClass" members="6">
-    <property name="property">
-      <string len="4" value="test"/>
-    </property>
-    <property name="float">
-      <float value="1"/>
-    </property>
-    <property name="bool">
-      <bool value="true"/>
-    </property>
-    <property name="null">
-      <null/>
-    </property>
-    <property name="recursion">
-      <recursion value="1"/>
-    </property>
-    <property name="recursionref">
-      <recursionref value="1"/>
-    </property>
-  </object>
-</serialized>'."\n";
-	}
-
-	public function expectedInheritedObjectDumpOutput() {
-		return '<?xml version="1.0" encoding="us-ascii"?>
-<serialized>
-  <object class="Serialized\Dumper\testObjectChild" members="7">
-    <property class="Serialized\Dumper\testObjectChild" name="ca" access="private">
-      <string len="7" value="private"/>
-    </property>
-    <property name="cb" access="protected">
-      <string len="9" value="protected"/>
-    </property>
-    <property name="cc">
-      <string len="6" value="public"/>
-    </property>
-    <property class="Serialized\Dumper\testObjectParent" name="pa" access="private">
-      <string len="15" value="private, parent"/>
-    </property>
-    <property name="pb" access="protected">
-      <string len="17" value="protected, parent"/>
-    </property>
-    <property name="pc">
-      <string len="14" value="public, parent"/>
-    </property>
-    <property class="Serialized\Dumper\test&#xC3;&#x89;nc&#xC3;&#xB6;d&#xC3;&#xAF;ng" name="&#xC3;&#x89;nc&#xC3;&#xB6;d&#xC3;&#xAF;ng" access="private">
-      <bool value="true"/>
-    </property>
-  </object>
-</serialized>'."\n";
-	}
-	protected function expectedSessionDumpOutput() {
-		return '<?xml version="1.0" encoding="us-ascii"?>
-<serialized>
-  <variables count="3">
-    <item name="test">
-      <int value="1"/>
-    </item>
-    <item name="more">
-      <array members="2">
-        <item name="0" type="int">
-          <int value="56"/>
-        </item>
-        <item name="key" type="string">
-          <int value="57"/>
-        </item>
-      </array>
-    </item>
-    <item name="again">
-      <int value="2"/>
-    </item>
-  </variables>
-</serialized>'."\n";
-	}
-
 	public function testOptions() {
 		$dumper = new XML();
 		$config = array(
@@ -243,9 +140,8 @@ class XMLTest extends DumperTest
 		$data = file_get_contents($path);
 		$dtd = 'data://text/plain;base64,'.base64_encode($data);
 
-		foreach( array('Array', 'RecursionObject', 'InheritedObject') as $proc) {
-			$func = sprintf('expected%sDumpOutput', $proc);
-			$xml = $this->$func();
+		foreach( array('1001', '1002', '1003', 'session-01') as $proc) {
+			$xml = $this->getExpected($proc);
 			$this->assertDTD($xml, $dtd, sprintf('DTD in %s.', $proc));
 		}
 	}

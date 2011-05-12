@@ -163,11 +163,20 @@ class Text extends Dumper implements Concrete {
 			$this->dumpSubValue($type, $valueValue, $isLast);
 		}
 	}
+	private function dumpCustom($value) {
+		$isLast = true;
+		list($typeName, $valueValue) = $value[1];
+		$type = TypeNames::by($typeName);
+		$valueString = $this->dumpValue($type, $valueValue);
+		$this->printInset($isLast);
+		printf(" %s%s\n", $typeName, $valueString);
+	}
 	private function dumpSubValue($type, $value, $isLast) {
 		$subDumpMap = array(
 			self::TYPE_ARRAY => 'dumpArray',
 			self::TYPE_OBJECT => 'dumpObject',
 			self::TYPE_VARIABLES => 'dumpVariables',
+			self::TYPE_CUSTOM => 'dumpCustom',
 		);
 		if (false === array_key_exists($type, $subDumpMap))
 			return;
@@ -187,6 +196,7 @@ class Text extends Dumper implements Concrete {
 			case self::TYPE_VARIABLES:
 				return sprintf(' (%d)%s', count($value), count($value)?':':'.');
 			case self::TYPE_STRING:
+			case self::TYPE_CUSTOMDATA:
 				return sprintf('(%d): "%s"', strlen($value), $this->phpEncodeString($value));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
@@ -194,6 +204,8 @@ class Text extends Dumper implements Concrete {
 			case self::TYPE_OBJECT:
 				$count = count($value[1][1]);
 				return sprintf('(%s) (%d)%s', $value[0][1], $count, $count?':':'.');
+			case self::TYPE_CUSTOM:
+				return sprintf('(%s):', $value[0][1]);
 			case self::TYPE_NULL:
 				return ': NULL';
 			case self::TYPE_BOOL:
@@ -204,7 +216,7 @@ class Text extends Dumper implements Concrete {
 				return ': &' . $value;
 			// @codeCoverageIgnoreStart
 			default:
-				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
+				throw new \InvalidArgumentException(sprintf('Type #%s (%s) not handeled.', $type, TypeNames::of($type)));
 		}
 	}
 	// @codeCoverageIgnoreEnd

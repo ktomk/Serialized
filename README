@@ -95,6 +95,12 @@
     PHP Session Decode Function (PHP Manual)
   http://php.net/manual/en/function.session-decode.php
 
+    PHP Serialize C Sourcecode
+  http://svn.php.net/viewvc/php/php-src/trunk/ext/standard/var.c
+
+    PHP Unserialize C Sourcecode
+  http://svn.php.net/viewvc/php/php-src/trunk/ext/standard/var_unserializer.re
+
     PHP Serialization And Recursion Demystified (by Andrea Giammarchi; 2009-09-07)
   http://webreflection.blogspot.com/2009/09/php-serialization-and-recursion.html
 

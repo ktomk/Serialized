@@ -1,0 +1,6 @@
+`-- variables (3):
+     +-- $test = int: 1
+     +-- $more = array(2):
+     |    +-- [0] => int: 56
+     |    `-- [key] => int: 57
+     `-- $again = int: 2

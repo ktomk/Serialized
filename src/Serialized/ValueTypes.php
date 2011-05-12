@@ -35,11 +35,13 @@ interface ValueTypes {
 	const TYPE_STRING = 24;
 	const TYPE_RECURSION = 31;
 	const TYPE_RECURSIONREF = 32;
-	const TYPE_ARRAY = 41; // has children
-	const TYPE_OBJECT = 42;
+	const TYPE_ARRAY = 41; // collection
+	const TYPE_OBJECT = 42; // composite
+	const TYPE_CUSTOM = 51; // composite
+	const TYPE_CUSTOMDATA = 52;
 	const TYPE_CLASSNAME = 101;
-	const TYPE_MEMBERS = 102; // has children
+	const TYPE_MEMBERS = 102; // collection
 	const TYPE_MEMBER = 103;
-	const TYPE_VARIABLES = 201; // has children
+	const TYPE_VARIABLES = 201; // collection
 	const TYPE_VARNAME = 202;
 }

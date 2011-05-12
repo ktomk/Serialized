@@ -64,70 +64,6 @@ abstract class DumperTest extends TestCase
 		return $dumper->getDump($parsed);
 	}
 
-	abstract protected function expectedArrayDumpOutput();
-	abstract protected function expectedInheritedObjectDumpOutput();
-	abstract protected function expectedRecursionObjectDumpOutput();
-	abstract protected function expectedSessionDumpOutput();
-
-	final public function getDataArray() {
-		$array = array();
-		$array["user"] = "user-name";
-		$array["network"] = array( "localip" => "1.2.3.4");
-		$array[2] = "Zwei";
-		$array["language"] = "german";
-
-		return $array;
-	}
-
-	final public function &getDataRecursionObject() {
-		$object = new \stdClass();
-		$object->property = "test";
-		$object->float = (float) 1;
-		$object->bool = TRUE;
-		$object->null = NULL;
-		$object->recursion = $object;
-		$object->recursionref = &$object;
-
-		return $object;
-
-		return array(&$object);
-	}
-
-	final public function getDataInheritedObject() {
-		require_once(__DIR__.'/Dumper/testObjects.php');
-		return new Dumper\testObjectChild();
-	}
-
-	final public function getDataSession() {
-		return 'test|i:1;more|a:2:{i:0;i:56;s:3:"key";i:57;}again|i:2;';
-	}
-
-	public function provideMultiple() {
-		return array(
-			array('Array'),
-			array('InheritedObject'),
-			array('RecursionObject'),
-			array('Session', true, 'SessionParser'),
-		);
-	}
-
-	/**
-	 * @dataProvider provideMultiple
-	 *
-	 * test dumpers agains a specific set of datas defined in this class
-	 */
-	final public function testDumpOutput($what, $serialized = false, $parser = null) {
-
-		$expectedFunction = sprintf('expected%sDumpOutput', $what);
-		$dataFunction = sprintf('getData%s', $what);
-
-		$expected = $this->$expectedFunction();
-		$data = &$this->$dataFunction();
-		$serialized || $data = serialize($data);
-		$actual = $this->getDump($data, $parser);
-		$this->assertEquals($expected, $actual);
-	}
-
 	/**
      * @expectedException \InvalidArgumentException
      */
@@ -162,5 +98,39 @@ abstract class DumperTest extends TestCase
 		$dumper = Dumper::factory($this->dumper);
 		$dumper->getDump(array());
 		return;
+	}
+
+	/**
+	 * NOTE: this function is re-used by the XMLDumper as well,
+	 *       therefore it's protected.
+	 * @param
+	 */
+	protected function getExpected($name) {
+		$filename = sprintf('%s/dumper/%s/%s-expected', $this->providerGetDataPath(), $this->dumper, $name);
+		return file_exists($filename) ? file_get_contents($filename) : '';
+	}
+
+	private function setLast($name, $actual) {
+		$filename = sprintf('%s/dumper/%s/%s-last', $this->providerGetDataPath(), $this->dumper, $name);
+		return file_put_contents($filename, $actual);
+	}
+
+	/**
+	 * NOTE: If the Parser Data based Tests fail, this
+	 *       test relies on them.
+	 *
+	 * @dataProvider providerTestDataSerialize
+	 */
+	public function testData($name, $testdata) {
+			if (is_array($testdata)) {
+			$parser = new SessionParser($testdata[0]);
+		} else {
+			$parser = new Parser($testdata);
+		}
+		$this->setLast($name, 'if you can read this, dumping the test data failed.');
+		$actual = $parser->getDump($this->dumper);
+		$expected = $this->getExpected($name);
+		$this->setLast($name, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 }

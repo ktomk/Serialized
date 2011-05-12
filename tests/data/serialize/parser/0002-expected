@@ -1,0 +1,20 @@
+Array
+(
+    [0] => custom
+    [1] => Array
+        (
+            [0] => Array
+                (
+                    [0] => classname
+                    [1] => any
+                )
+
+            [1] => Array
+                (
+                    [0] => customdata
+                    [1] => N;
+                )
+
+        )
+
+)

@@ -41,8 +41,8 @@
       -or-  array((string) TYPE, (array) DATA);
 
     The Array Notation has been chosen to represent parsed data in form
-  of a parse-tree. Next to the Array Notation, a object based represenation
-  is planned. See ROADMAP.
+  of a parse-tree or semi-structured data. Next to the Array Notation,
+  an object based represenation is planned. See ROADMAP.
 
     DATA varies based on TYPE which can be grouped in SINGLE, COMPOUND and
   RECURSION. See the tree for grouping and association to PHP datatypes.
@@ -52,18 +52,21 @@
       SINGLE---------------COMPOUND--------------RECURSION
         |                     |                      |
         +- null               +- array               +- recursion[*]
-        +- int                `- object              `- reference[*]
-        +- float
-        +- string
+        +- int                +- object              `- reference[*]
+        +- float              +- session[**]
+        +- string             `- custom[**]
         `- bool
 
     The Array Notation is quite complex to explain in written form. See
   ARRAYNOT.pdf or ARRAYNOT.odg for a graphical representation.
 
   ----
-    [*] recursion and reference in the tree do not represent a native PHP
-        datatype but a serialized one. They are (un)serialisation-ordered
-        sequence-based non-negative integer indices starting at one.
+    [*]  recursion and reference in the tree do not represent a native PHP
+         datatype but a serialized one. They are (un)serialisation-ordered
+         sequence-based non-negative integer indices starting at one.
+    [**] session and custom are as well not native PHP datatypes.
+         session is a collection of named serialized values (see 4);
+         custom is a named class with string data attached (see 5).
 
   1 SINGLE DATATYPES
 
@@ -284,5 +287,33 @@
                  array((string) 'varname', (string) 't'), # name  \_ pair
                  array((string) 'int', (int) 2)           # value /
              )
+         )
+      )
+
+  5 CUSTOM
+
+    PHP serializes objects of classes that implement the serializeable
+  interface in a notation that differs from object above. They consist of
+  a classname and a custom-data entry. The custom data entry is the string
+  returned by the Serializable::serialize() implementation.
+
+    CUSTOM    ~= array('custom', CUSTOMVAL)
+    CUSTOMVAL ~= array(CLASSNAME, DATA)        // compare: array(TYPE, DATA)
+    CLASSNAME ~= array('classname', (string))
+    DATA      ~= array('customdata', (string))
+
+    Example: Array Notation of a class "foo" assumed to have the serialize-
+  able interface implemented:
+
+      Serialized foo Instance:
+
+      'C:3:"foo":4:{i:2;}'
+
+      Array Notation:
+
+      array(
+         (string) 'custom',  array(
+             array((string) 'classname', (string) 'foo'),   # \_ pair
+             array((string) 'customdata', (string) 'i:2;')  # /
          )
       )

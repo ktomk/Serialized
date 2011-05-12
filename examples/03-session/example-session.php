@@ -58,7 +58,9 @@ print "\n";
 
 $files = glob(__DIR__.'/session_files/sess_*', GLOB_NOSORT);
 if (!$files) {
+	// @codeCoverageIgnoreStart
 	throw new \UnexpectedValueException('Found no session files in "session_files" directory');
+	// @codeCoverageIgnoreEnd
 }
 
 print "Parsing example Session Data:\n";

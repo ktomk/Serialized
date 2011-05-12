@@ -1,0 +1,37 @@
+This directory contains a set of predefined serialized
+strings that are tested
+
+  a) against the Parser
+  b) against the Dumpers (Text, XML, ...)
+
+Dumpers have their own subdirectory.
+
+Each directory contains the expected data and each tests'
+last result is stored next to it as well.
+
+The parser expects text in the form of  print_r() of the
+array notation but with whitespace at the end of each line
+removed (rtrim'med print_r).
+
+The dumpers expect text/binary data in the form of the
+dumper (e.g. XML for the XML dumper).
+
+To add more test data, add an entry into the array in
+testData.php and one expected-file for parser and all
+dumpers in the according directories.
+
+Related test classes are:
+
+ - tests/Serialized/ParserDataTest.php
+ - tests/Serialized/DumperTest.php
+
+If you plan to provide test data ensure it does not
+contain any private information.
+
+Alternatively you can make use of the old style data-tests
+working from:
+
+ - tests/DataTest.php
+
+until inclusion of additional testData.php files is available
+(which will mark the end from the old style data-tests).

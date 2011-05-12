@@ -1,0 +1,91 @@
+Array
+(
+    [0] => array
+    [1] => Array
+        (
+            [0] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => string
+                            [1] => user
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => string
+                            [1] => user-name
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => string
+                            [1] => network
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => array
+                            [1] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [0] => string
+                                                    [1] => localip
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [0] => string
+                                                    [1] => 1.2.3.4
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => int
+                            [1] => 2
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => string
+                            [1] => Zwei
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [0] => Array
+                        (
+                            [0] => string
+                            [1] => language
+                        )
+
+                    [1] => Array
+                        (
+                            [0] => string
+                            [1] => german
+                        )
+
+                )
+
+        )
+
+)

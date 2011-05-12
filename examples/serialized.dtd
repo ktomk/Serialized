@@ -42,8 +42,8 @@
 
 <!ENTITY % type.simple " null | bool | int | float | string " >
 <!ENTITY % type.complex " array | object " >
-<!ENTITY % type.recursion " recursion | recursionref " >
 <!ENTITY % type.base " %type.simple; | %type.complex; " >
+<!ENTITY % type.recursion " recursion | recursionref " >
 <!ENTITY % type.all " %type.simple; | %type.complex; | %type.recursion; " >
 
 <!--====== named values ======-->

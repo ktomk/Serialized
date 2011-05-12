@@ -62,6 +62,45 @@ class ParserTest extends TestCase
 		return array('array', $result);
 	}
 
+	/**
+     * @expectedException Serialized\ParseException
+     */
+	public function testInvalidCustomCharacterSequence() {
+		$parser = new Parser('C:3:"foo":2a:');
+		$tmp = $parser->getParsed();
+	}
+	public function testCustom()
+	{
+		$tests = array(
+			array(
+				'C:3:"any":2:{N;}',
+				array('custom', array(
+					array('classname', 'any'),
+					array('customdata', 'N;')
+				))
+			),
+			array(
+				'C:10:"testString":0:{}',
+				array('custom', array(
+					array('classname', 'testString'),
+					array('customdata', '')
+				))
+			),
+		);
+		foreach($tests as $test) {
+			list($serialized, $expected) = $test;
+			$object = new Parser($serialized);
+			try {
+				$actual = $object->getParsed();
+			} catch (Exception $e) {
+				$this->fail(sprintf('Parse Exception: (%s) %s', get_class($e), $e->getMessage()));
+			}
+			if ($expected) {
+				$this->assertEquals($expected, $actual);
+			}
+		}
+	}
+
 	public function testArray()
 	{
 		$class = new \StdClass;

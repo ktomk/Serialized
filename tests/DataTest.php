@@ -29,7 +29,7 @@ Namespace Serialized;
 require_once(__DIR__.'/TestCase.php');
 
 /**
- * @todo add session data test
+ * Test multiple data
  */
 class DataTest extends TestCase
 {

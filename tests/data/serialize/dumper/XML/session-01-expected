@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<serialized>
+  <variables count="3">
+    <var name="test">
+      <int value="1"/>
+    </var>
+    <var name="more">
+      <array members="2">
+        <item name="0" type="int">
+          <int value="56"/>
+        </item>
+        <item name="key" type="string">
+          <int value="57"/>
+        </item>
+      </array>
+    </var>
+    <var name="again">
+      <int value="2"/>
+    </var>
+  </variables>
+</serialized>

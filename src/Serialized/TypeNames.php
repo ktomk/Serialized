@@ -49,5 +49,7 @@ class TypeNames extends TypeMap {
 		self::TYPE_MEMBER => 'member',
 		self::TYPE_VARIABLES => 'variables',
 		self::TYPE_VARNAME => 'name',
+		self::TYPE_CUSTOM => 'custom',
+		self::TYPE_CUSTOMDATA => 'customdata',
 	);
 }

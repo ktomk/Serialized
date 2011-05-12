@@ -35,6 +35,9 @@
   numerical index refererring to the value. The index is a one-based,
   non-negative integer referencing the value in (un-)serialized order.
 
+    A special form of serialized values in PHP are sessions, which are
+  collections of named serialized objects.
+
   SERIALIZED TYPE NAMES
 
     The following is a list of all string identifiers used in Serialized
@@ -50,6 +53,7 @@
     * classname
     * members
     * member
+    * custom (object with custom handler / serializeable interface)
     * recursion
     * recursionref
     * variables (session)
