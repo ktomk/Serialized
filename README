@@ -20,16 +20,58 @@
 
     This can be used to inspect and validate serialized data w/o the need
   to unserialize it first. For example if waking up sleeping objects is
-  unwanted.
+  unwanted. The parsed data can then be inspected and changed.
 
     Serialized variables (Sessions) are supported as well. Those are
   a list of serialized values with their variable name.
 
-    Potential field of use is static data analysis.
+    Potential field of use is static data analysis, session display,
+  manipulation of serialized data, converting etc.
 
-    Right now, the library works "read-only" which means it can only
-  parse but not build a serialized string so far. This will change soon,
-  see ROADMAP.
+    Right now, the library can already do both: parsing into the Array
+  Notation and dumping it into serialized data again. Output into other
+  formats is possible as well.
+
+    The following output formats to display serialized data and sessions
+  are as of now (example of a serialized array with some data):
+
+    * Text - Plain text, suitable for display in a shell environment.
+
+        `-- array(4):
+             +-- [user] => string(9): "user-name"
+             +-- [network] => array(1):
+             |    `-- [localip] => string(7): "1.2.3.4"
+             +-- [2] => string(4): "Zwei"
+             `-- [language] => string(6): "german"
+
+    * XML - Well-formed, machine readable and easy to convert.
+
+        <?xml version="1.0" encoding="us-ascii"?>
+        <serialized>
+          <array members="4">
+            <item name="user" type="string">
+              <string len="9" value="user-name"/>
+            </item>
+            <item name="network" type="string">
+              <array members="1">
+                <item name="localip" type="string">
+                  <string len="7" value="1.2.3.4"/>
+                </item>
+              </array>
+            </item>
+            <item name="2" type="int">
+              <string len="4" value="Zwei"/>
+            </item>
+            <item name="language" type="string">
+              <string len="6" value="german"/>
+            </item>
+          </array>
+        </serialized>
+
+    * Serialized - To store back.
+
+        a:4:{s:4:"user";s:9:"user-name";s:7:"network";a:1:{s:7:"localip";\
+        s:7:"1.2.3.4";}i:2;s:4:"Zwei";s:8:"language";s:6:"german";}
 
     The library sources contain a test-suite to guarantee a certain level
   of confidence and strictness.
