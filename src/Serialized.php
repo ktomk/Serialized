@@ -88,6 +88,7 @@ class Serialized {
 			'Serialized\\TypeChars',
 			'Serialized\\Dumper',
 			'Serialized\\Dumper\\Concrete',
+			'Serialized\\Dumper\\Serialized',
 			'Serialized\\Dumper\\Text',
 			'Serialized\\Dumper\\XML',
 			'Serialized\\Value',

@@ -12,6 +12,10 @@
 
   0.2.x
 
+  FIX: Library was missing Serialized Dumper Class. Fixed.
+
+  0.2.3
+
   NEW: Support for objects with the Serializeable interface.
 
   0.2.1
