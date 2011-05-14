@@ -1,0 +1,23 @@
+Array
+(
+    [0] => object
+    [1] => Array
+        (
+            [0] => Array
+                (
+                    [0] => classname
+                    [1] => stdClass
+                )
+
+            [1] => Array
+                (
+                    [0] => members
+                    [1] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+)

@@ -27,6 +27,7 @@
 Namespace Serialized;
 Use \OutOfRangeException;
 Use \InvalidArgumentException;
+Use \UnexpectedValueException;
 
 /**
  * Serialize Parser
@@ -72,21 +73,21 @@ class Parser implements Value, ValueTypes {
 		return array(TypeChars::by($token), 2);
 	}
 	/**
-	 * @param string $regex
+	 * @param string $pattern
 	 * @param int $offset
 	 * @return int length in chars of match
 	 */
-	protected function matchRegex($regex, $offset) {
+	protected function matchRegex($pattern, $offset) {
 		$return = 0;
 		$subject = $this->data;
 		if (!isset($subject[$offset])) {
-			throw new ParseException(sprintf('Illegal offset "%s" for pattern, length is #%d.', $offset, strlen($subject)));
+			throw new ParseException(sprintf('Illegal offset #%d ("%s") for pattern, length is #%d.', $offset, $this->extract($offset), strlen($subject)));
 		}
-		$found = preg_match($regex, $subject, $matches, PREG_OFFSET_CAPTURE, $offset);
+		$found = preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, $offset);
 		if (false === $found) {
 			// @codeCoverageIgnoreStart
 			$error = preg_last_error();
-			throw new \UnexpectedValueException(sprintf('Regular expression ("%s") failed (Error-Code: %d).', $regex, $error));
+			throw new UnexpectedValueException(sprintf('Regular expression ("%s") failed (Error-Code: %d).', $pattern, $error));
 			// @codeCoverageIgnoreEnd
 		}
 		$found
@@ -96,20 +97,33 @@ class Parser implements Value, ValueTypes {
 		;
 		return $return;
 	}
+	/**
+	 * @param string $pattern
+	 * @param int $offset
+	 * @throws ParseException
+	 * @return string
+	 */
+	private function parseRegex($pattern, $offset) {
+		$match = $this->matchRegex($pattern, $offset);
+		if (!$match) {
+			throw new ParseException(sprintf('Invalid character sequence for %s at offset #%d ("%s").', $pattern, $offset, $this->extract($offset)));
+		}
+		return substr($this->data, $offset, $match);
+	}
 	protected function expectChar($charExpected, $offset) {
 		if (!isset($this->data[$offset])) {
-			throw new ParseException(sprintf('Unexpected EOF at offset %d. Expected "%s".', $offset, $charExpected));
+			throw new ParseException(sprintf('Unexpected EOF, expected Expected "%s". At offset #%d ("%s").', $charExpected, $offset, $this->extract($offset)));
 		}
 		$char = $this->data[$offset];
 		if ($charExpected !== $char) {
-			throw new ParseException(sprintf('Unexpected char "%s" at offset %d. Expected "%s".', $char, $offset, $charExpected));
+			throw new ParseException(sprintf('Unexpected char "%s", expected "%s". At offset #%d ("%s").', $char, $charExpected, $offset, $this->extract($offset)));
 		}
 	}
 	protected function expectEof($offset) {
 		$len = strlen($this->data);
 		$end = ($offset + 1) === $len;
 		if (!$end) {
-			throw new ParseException(sprintf('Not EOF after offset %d. Length is %d.', $offset, $len));
+			throw new ParseException(sprintf('Not EOF after offset #%d ("%s"). Length is %d.', $offset, $this->extract($offset), $len));
 		}
 	}
 	private function parseRecursionValue($offset) {
@@ -126,18 +140,13 @@ class Parser implements Value, ValueTypes {
 		return $this->parseRecursionValue($offset);
 	}
 	private function parseStringValue($offset, $terminator = ';') {
-		$lenLength = $this->matchRegex('([0-9]+(?=:))', $offset);
-		if (!$lenLength) {
-			throw new ParseException(sprintf('Invalid character sequence for string vartype at offset %d.', $offset));
-		}
-		$this->expectChar(':', $offset+$lenLength);
-		$this->expectChar('"', $offset+$lenLength+1);
-		$lenString = substr($this->data, $offset, $lenLength);
-		$lenInt = (int) $lenString;
-		$this->expectChar('"', $offset+$lenLength+$lenInt+2);
-		$this->expectChar($terminator, $offset+$lenLength+$lenInt+3);
-		$value = substr($this->data, $offset+$lenLength+2, $lenInt);
-		return array($value, $lenLength+2+$lenInt+2);
+		$len = $this->parseRegex('([+]?[0-9]+:")', $offset);
+		$lenLen = strlen($len);
+		$lenInt = (int) $len;
+		$this->expectChar('"', $offset+$lenLen+$lenInt);
+		$this->expectChar($terminator, $offset+$lenLen+$lenInt+1);
+		$value = substr($this->data, $offset+$lenLen, $lenInt);
+		return array($value, $lenLen+$lenInt+2);
 	}
 	private function parseIntValue($offset) {
 		$len = $this->matchRegex('([-+]?[0-9]+)', $offset);
@@ -150,7 +159,7 @@ class Parser implements Value, ValueTypes {
 		return array($value, $len+1);
 	}
 	private function extract($offset) {
-		$delta = 10;
+		$delta = 12;
 		$start = max(0, $offset-$delta);
 		$before = $offset - $start;
 		$end = min(strlen($this->data), $offset + $delta + 1);
@@ -159,7 +168,7 @@ class Parser implements Value, ValueTypes {
 		$build = '';
 		$build .= ($before === $delta ? '...' : '');
 		$build .= substr($this->data, $start, $before);
-		$build .= sprintf('[%s]', $this->data[$offset]);
+		$build .= isset($this->data[$offset]) ? sprintf('[%s]', $this->data[$offset]) : sprintf('<-- #%d', strlen($this->data)-1);
 		$build .= substr($this->data, $end, $after);
 		$build .= ($after === $delta ? '...' : '');
 
@@ -216,20 +225,16 @@ class Parser implements Value, ValueTypes {
 	}
 	private function parseArrayValue($offset) {
 		$offsetStart = $offset;
-		$lenMatch = $this->matchRegex('([0-9]+:)', $offset);
-		if (!$lenMatch) {
-			throw new ParseException(sprintf('Invalid character sequence for array length at offset %d.', $offset));
-		}
-		$lenString = substr($this->data, $offset, $lenMatch-1);
+		$lenString = $this->parseRegex('([+]?[0-9]+:{)', $offset);
+		$lenMatch = strlen($lenString);
 		$lenLen = (int) $lenString;
 		$offset += $lenMatch;
-		$this->expectChar('{', $offset++);
 		$value = array();
 		for($elementNumber=0; $elementNumber<$lenLen; $elementNumber++) {
 			list($keyHinted, $keyLength) = $this->parseValue($offset);
 			list($keyTypeName) = $keyHinted;
 			if ($this->invalidArrayKeyType($keyTypeName)) {
-				throw new ParseException(sprintf('Invalid vartype %s (%d) for array key at offset %d.', $keyTypeName, TypeNames::by($keyTypeName), $offset));
+				throw new ParseException(sprintf('Invalid vartype %s (%d) for array key at offset #%d ("%s").', $keyTypeName, TypeNames::by($keyTypeName), $offset, $this->extract($offset)));
 			}
 			list($valueHinted, $valueLength) = $this->parseValue($offset+=$keyLength);
 			$offset+=$valueLength;
@@ -251,7 +256,7 @@ class Parser implements Value, ValueTypes {
 		foreach($classMembers as $index => $member) {
 			list(list($typeSpec)) = $member;
 			if ('string' !== $typeSpec)
-				throw new ParseException(sprintf('Unexpected type %s, expected string on offset %d.', $typeSpec, $offset));
+				throw new ParseException(sprintf('Unexpected type %s, expected string on offset #%d ("%s").', $typeSpec, $offset, $this->extract($offset)));
 			$classMembers[$index][0][0] = TypeNames::of(self::TYPE_MEMBER);
 		}
 		$totalLen += $len;

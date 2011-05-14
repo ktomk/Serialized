@@ -62,12 +62,19 @@ class ParserTest extends TestCase
 		return array('array', $result);
 	}
 
+	public function provideInvalid() {
+		return array(
+			array('C:-3:'),
+			array('C:3:"foo":2a:'),
+		);
+	}
 	/**
+	 * @dataProvider provideInvalid
      * @expectedException Serialized\ParseException
      */
-	public function testInvalidCustomCharacterSequence() {
-		$parser = new Parser('C:3:"foo":2a:');
-		$tmp = $parser->getParsed();
+	public function testInvalidCustomCharacterSequence($invalidSequence) {
+		$parser = new Parser($invalidSequence);
+		$parser->getParsed();
 	}
 	public function testCustom()
 	{
