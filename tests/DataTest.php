@@ -36,6 +36,8 @@ class DataTest extends TestCase
 	private function runDataFile($fileName)
 	{
 		$datas = require $fileName;
+		if ($datas === 1)
+			$datas = array();
 
 		$parser = new Parser();
 		printf("%s:\n", basename($fileName));
