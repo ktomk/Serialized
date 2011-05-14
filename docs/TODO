@@ -6,7 +6,7 @@
  [x] Add support for Serializable interface (C serialize type)
  [x] share gitignore *-last in tests/data
  [ ] Add support for serialized S values.
- [ ] Update Array Notation ODT/PDF.
+ [x] Update Array Notation ODG/PDF.
 
  [ ] Add Offset member to ParseException when throwing a parse error.
  [ ] Add DumpException (probably).
