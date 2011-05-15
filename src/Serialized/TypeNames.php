@@ -44,6 +44,7 @@ class TypeNames extends TypeMap {
 		self::TYPE_ARRAY => 'array',
 		self::TYPE_OBJECT => 'object',
 		self::TYPE_STRING => 'string',
+		self::TYPE_STRINGENCODED => 'stringEncoded',
 		self::TYPE_CLASSNAME => 'classname',
 		self::TYPE_MEMBERS => 'members',
 		self::TYPE_MEMBER => 'member',

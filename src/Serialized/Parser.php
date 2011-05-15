@@ -68,9 +68,25 @@ class Parser implements Value, ValueTypes {
 			return array(self::TYPE_NULL, 0);
 		if (':' !== $test)
 			return $error;
-		if (false === strpos('abCdiOrRs', $token))
+		if (false === strpos('abCdiOrRsS', $token))
 			return $error;
 		return array(TypeChars::by($token), 2);
+	}
+	private function extract($offset) {
+		$delta = 12;
+		$start = max(0, $offset-$delta);
+		$before = $offset - $start;
+		$end = min(strlen($this->data), $offset + $delta + 1);
+		$after = $end - $offset;
+		$end = $end - $after + 1;
+		$build = '';
+		$build .= ($before === $delta ? '...' : '');
+		$build .= substr($this->data, $start, $before);
+		$build .= isset($this->data[$offset]) ? sprintf('[%s]', $this->data[$offset]) : sprintf('<-- #%d', strlen($this->data)-1);
+		$build .= substr($this->data, $end, $after);
+		$build .= ($after === $delta ? '...' : '');
+
+		return $build;
 	}
 	/**
 	 * @param string $pattern
@@ -148,6 +164,40 @@ class Parser implements Value, ValueTypes {
 		$value = substr($this->data, $offset+$lenLen, $lenInt);
 		return array($value, $lenLen+$lenInt+2);
 	}
+	private function unserializeString($offset, $len, &$consume) {
+		$string = '';
+		$consume = 0;
+		$subject = $this->data;
+		$pos = $offset;
+		for ($i = 0; $i < $len; $i++) {
+			if (!isset($subject[$pos])) {
+				throw new ParseException(sprintf('Unexpected EOF at #%d ("%s")', $pos, $this->extract($pos)));
+			}
+			$char = $subject[$pos];
+			if ($char === '\\') {
+				$token = $this->parseRegex('([0-9a-fA-F]{2})', $pos+1);
+				$char = chr(hexdec($token));
+				$pos+=2;
+			}
+			$string .= $char;
+			$pos++;
+		}
+		$consume = $pos - $offset;
+		return $string;
+	}
+	private function parseStringEncodedValue($offset) {
+		$len = $this->parseRegex('([+]?[0-9]+:")', $offset);
+		$lenLen = strlen($len);
+		$lenInt = (int) $len;
+		if ($offset+$lenLen+$lenInt>strlen($this->data)) {
+			throw new ParseException(sprintf('String length %d too large for data at offset #%d ("%s").', $lenInt, $offset, $this->extract($offset)));
+		}
+		$consume = 0;
+		$string = $this->unserializeString($offset+$lenLen, $lenInt, $consume);
+		$this->expectChar('"', $offset+$lenLen+$consume);
+		$this->expectChar(';', $offset+$lenLen+$consume+1);
+		return array($string, $lenLen+$consume+2);
+	}
 	private function parseIntValue($offset) {
 		$len = $this->matchRegex('([-+]?[0-9]+)', $offset);
 		if (!$len) {
@@ -157,22 +207,6 @@ class Parser implements Value, ValueTypes {
 		$valueString = substr($this->data, $offset, $len);
 		$value = (int) $valueString;
 		return array($value, $len+1);
-	}
-	private function extract($offset) {
-		$delta = 12;
-		$start = max(0, $offset-$delta);
-		$before = $offset - $start;
-		$end = min(strlen($this->data), $offset + $delta + 1);
-		$after = $end - $offset;
-		$end = $end - $after + 1;
-		$build = '';
-		$build .= ($before === $delta ? '...' : '');
-		$build .= substr($this->data, $start, $before);
-		$build .= isset($this->data[$offset]) ? sprintf('[%s]', $this->data[$offset]) : sprintf('<-- #%d', strlen($this->data)-1);
-		$build .= substr($this->data, $end, $after);
-		$build .= ($after === $delta ? '...' : '');
-
-		return $build;
 	}
 	private function parseInvalidValue($offset) {
 		throw new ParseException(sprintf('Invalid ("%s") at offset %d.', $this->extract($offset), $offset));
@@ -278,10 +312,14 @@ class Parser implements Value, ValueTypes {
 		$function = sprintf('parse%sValue', ucfirst($typeName));
 		if (!is_callable(array($this, $function))) {
 			// @codeCoverageIgnoreStart
-			throw new ParseException(sprintf('Unable to parse vartype %s (%d) at offset %s. Parsing function %s is not callable', $typeName, $type, $offset, $function));
+			throw new UnexpectedValueException(sprintf('Unable to parse vartype %s (%d) at offset %s. Parsing function %s is not callable', $typeName, $type, $offset, $function));
 			// @codeCoverageIgnoreEnd
 		}
 		list($value, $len) = $this->$function($offset+$consume);
+		// parse encoded strings as strings (php forward compatiblitity)
+		if ($type === self::TYPE_STRINGENCODED) {
+			$typeName = TypeNames::of(self::TYPE_STRING);
+		}
 		$hinted = array($typeName, $value);
 		return array($hinted, $len+$consume);
 	}

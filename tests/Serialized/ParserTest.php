@@ -66,6 +66,8 @@ class ParserTest extends TestCase
 		return array(
 			array('C:-3:'),
 			array('C:3:"foo":2a:'),
+			array('S:50:"";'),
+			array('S:4:"\61";'),
 		);
 	}
 	/**

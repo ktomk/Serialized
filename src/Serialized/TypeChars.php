@@ -41,6 +41,7 @@ class TypeChars  extends TypeMap {
 		self::TYPE_NULL => 'N',
 		self::TYPE_OBJECT => 'O',
 		self::TYPE_STRING => 's',
+		self::TYPE_STRINGENCODED => 'S',
 		self::TYPE_RECURSION => 'r',
 		self::TYPE_RECURSIONREF => 'R',
 		self::TYPE_CUSTOM => 'C',

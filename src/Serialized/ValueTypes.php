@@ -33,6 +33,7 @@ interface ValueTypes {
 	const TYPE_INT = 22;
 	const TYPE_FLOAT = 23;
 	const TYPE_STRING = 24;
+	const TYPE_STRINGENCODED = 25;
 	const TYPE_RECURSION = 31;
 	const TYPE_RECURSIONREF = 32;
 	const TYPE_ARRAY = 41; // collection

@@ -35,4 +35,8 @@ return array(
 	'basic-s-pluslen' => 's:+1:"a";',
 	'basic-a-pluslen' => 'a:+0:{}',
 	'basic-O-pluslen' => 'O:+8:"stdClass":+0:{}',
+	'basic-S-empty' => 'S:+0:"";',
+	'basic-S-init' => 'S:3:"\61b\63";',
+	// @todo 'basic-s-minlen' => 's:1:"a"',
+	// @todo 'basic-s-overlen' => 's:1:"a" - please leave a message after the beep.',
 );
