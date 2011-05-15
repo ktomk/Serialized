@@ -5,7 +5,7 @@
  [x] Complete Data Test Suite for all current dumpers
  [x] Add support for Serializable interface (C serialize type)
  [x] share gitignore *-last in tests/data
- [ ] Add support for serialized S values.
+ [x] Add support for serialized S values.
  [x] Update Array Notation ODG/PDF.
 
  [ ] Add Offset member to ParseException when throwing a parse error.
