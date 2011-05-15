@@ -11,7 +11,7 @@
 
   0.0.0 - Init. (done)
   0.1.0 - Parsing of all available serialized types incl. recursion and
-          references. (done with exception of S)
+          references.
   0.2.0 - Parsing of serialized variables/sessions. (done)
   0.3.0 - Service release.
   0.4.0 - Serialized Dumper. [was added in 0.2.1 already]

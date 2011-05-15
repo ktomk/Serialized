@@ -10,13 +10,14 @@
   For all changes please refer to the public Serialized SCM:
     <https://github.com/ktomk/Serialized>
 
-  0.2.x
+  0.2.5
 
+  NEW: Support for 'S' format in Parser (forward compatibility with PHP 6).
   FIX: Library was missing Serialized Dumper Class. Fixed.
 
   0.2.3
 
-  NEW: Support for objects with the Serializeable interface.
+  NEW: Support for objects with the Serializeable interface ('C' format).
 
   0.2.1
 
