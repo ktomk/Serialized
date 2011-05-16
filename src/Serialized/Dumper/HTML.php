@@ -111,8 +111,10 @@ class HTML extends Dumper implements Concrete {
 		echo '#header { background-color: #99c; border-bottom: solid #669 4px; }';
 		echo '.serializedRoot { padding:10px; background-color: #fff; border: 2px solid #89a; margin:10px; }';
 		echo '#toc { background-color: #eef; border: 2px solid #ccc;}';
+		echo '#toc a {display:block;color:#057; text-decoration:none;}';
+		echo '#toc a:hover { color:#226; background-color: #eef;}';
 		echo '#footer { color:#444; background-color: #eee;padding:4px; font-size:small; }';
-		echo "h1 { font-family: 'Michroma', arial, serif; font-style: italic; }";
+		echo "h1 { font-family: 'Michroma', arial, serif; font-style: italic; }";		
 		echo '</style>';	
 	}
 	
