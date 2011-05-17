@@ -247,6 +247,7 @@ class HTML extends Dumper implements Concrete {
 
 		if ($this->hasInnerElements($type)) {
 			$this->addToIndex($typeName, $valueString);
+			printf('<a id="%s" name="%s" />', md5($valueString), md5($valueString));
 		}
 		printf('%s<%s%s>%s', $this->state->inset, $htmlElement, $valueString, $this->config('newline'));
 		$this->dumpSubValue($type, $valueValue);
