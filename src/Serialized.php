@@ -87,6 +87,7 @@ class Serialized {
 			'Serialized\\Dumper\\Concrete',
 			'Serialized\\Dumper\\Text',
 			'Serialized\\Dumper\\XML',
+			'Serialized\\Dumper\\HTML',
 			'Serialized\\Value',
 			'Serialized\\ParseException',
 			'Serialized\\Parser',

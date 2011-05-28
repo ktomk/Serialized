@@ -21,26 +21,38 @@
  *
  * @author Tom Klingenberg <http://lastflood.com/>
  * @version 0.1.6
- * @package Examples
- * @example $ php 06-dump-html.php  > example.html && firefox example.html
+ * @package Tests
  */
 
-Namespace Serialized;
-Use Serialized\Dumper\HTML as DumperHTML;
+Namespace Serialized\Dumper;
+Use Serialized\DumperTest;
+Use Serialized\Parser;
 
+require_once(__DIR__.'/../DumperTest.php');
 
-require_once(__DIR__.'/../src/Serialized.php');
+class HTMLTest extends DumperTest
+{
+	protected $dumper = 'HTML';
 
-$string = array(
-		'fistArrayItem-index-0' => "TestString",
-		'2ndArrayItem-index-1' => "AnotherString",
-		'SomeArray' => array( 'Nulltes', 'Erstes')
-);
+	public function expectedArrayDumpOutput() {
+		return ''."\n";
+	}
 
-$serialized = serialize($string);
-$parser = new Parser($serialized);
-$parsed = $parser->getParsed();
-$dumper = new DumperHTML();
+	public function expectedDumpOutput()
+	{
+		return ''."\n";
+	}
 
+	public function expectedObjectDumpOutput() {
+		return ''."\n";
+	}
 
-$dumper->dump($parsed);
+	public function testOptions() {
+		$this->markTestIncomplete();
+	}
+
+	public function testConfig() {
+		$this->markTestIncomplete();
+	}
+
+}
