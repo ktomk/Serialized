@@ -86,7 +86,7 @@ class HTML extends Dumper implements Concrete {
 			// @codeCoverageIgnoreStart
 			throw new \InvalidArgumentException(sprintf('Invalid type for array key #%d: "%s".', $index, $keyType));
 		} 	// @codeCoverageIgnoreEnd
-		$keyValue = sprintf(' name="%s" type="%s"', htmlspecialchars($keyValue), $keyType);
+		$keyValue = sprintf(' <span class="typeInfo">%s</span> %s', $keyType, htmlspecialchars($keyValue));
 		return $keyValue;
 	}
 	
@@ -104,17 +104,29 @@ class HTML extends Dumper implements Concrete {
 	}
 
 	private function dumpStyle() {
+		/* #7cf */
 		echo "<link href='http://fonts.googleapis.com/css?family=Michroma' rel='stylesheet' type='text/css'>";
 		echo '<style>';	
 		echo '* { padding:0; margin:0; font-family: arial, serif; }';
 		echo 'body { background-color: #abc; }';
-		echo '#header { background-color: #99c; border-bottom: solid #669 4px; padding:4px;}';
-		echo '.serializedRoot { padding:10px; background-color: #fff; border: 2px solid #89a; margin:10px; }';
+		echo '#header { background-color: #99c; border-bottom: solid #669 4px; padding:4px;
+		background: -webkit-gradient(linear, left top, left bottom, from(#9999cc),to(#000) );
+		background: -moz-linear-gradient(top, #9999cc, #000);
+		filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr=#9999cc, endColorstr =   #000000 );
+		-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#9999cc, endColorstr=#000000)";
+		}';
+		echo '.typeInfo {color:#49c; background-color:#9ef; border:1px solid #6be;
+			-moz-border-radius: 5px;
+			border-radius: 5px;}
+			.serializedRoot { padding:10px; background-color: #fff; border: 2px solid #89a; margin:10px; 
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}';
 		echo '#toc { background-color: #eef; border: 2px solid #ccc;}';
 		echo '#toc a {display:block;color:#057; text-decoration:none;}';
 		echo '#toc a:hover { color:#226; background-color: #eef;}';
 		echo '#footer { color:#444; background-color: #eee;padding:4px; font-size:small; }';
-		echo "h1 { font-family: 'Michroma', arial, serif; font-style: italic; color:#369; }";
+		echo "h1 { font-family: 'Michroma', arial, serif; font-style: italic; color:#ccc/*369*/; }";
 		echo '/*test:*/.array { padding:2px; } .arrayItem { padding-left:10px; background-color: #fff;} ';
 		echo '</style>';
 	}
@@ -161,7 +173,7 @@ class HTML extends Dumper implements Concrete {
 					throw new \InvalidArgumentException(sprintf('Invalid member-name: "%s".', $memberName));
 				} 	// @codeCoverageIgnoreEnd
 			}
-			return sprintf('%s name="%s" access="%s"', $memberClass, $memberName, $memberAccess);
+			return sprintf('%s name:"%s" access:"%s"', $memberClass, $memberName, $memberAccess);
 	}
 	private function dumpObject($value) {
 		$classname = $value[0][1];
