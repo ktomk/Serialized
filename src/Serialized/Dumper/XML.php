@@ -144,7 +144,7 @@ class XML extends Dumper implements Concrete {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
-				return sprintf(' members="%s"', count($value));
+				return sprintf(' members="%d"', count($value));
 			case self::TYPE_STRING:
 				// TODO imagine some propper CDATA for strings
 				return sprintf(' len="%d" value="%s"', strlen($value), htmlspecialchars($this->dumpStringNice($value)));
