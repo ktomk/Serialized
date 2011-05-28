@@ -91,6 +91,7 @@ class HTML extends Dumper implements Concrete {
 	}
 	
 	private function dumpIndex() {
+		return;
 		if (null === $this->index) return;
 		
 		echo '<div id="toc">';
@@ -127,7 +128,7 @@ class HTML extends Dumper implements Concrete {
 		echo '#toc a:hover { color:#226; background-color: #eef;}';
 		echo '#footer { color:#444; background-color: #eee;padding:4px; font-size:small; }';
 		echo "h1 { font-family: 'Michroma', arial, serif; font-style: italic; color:#ccc/*369*/; }";
-		echo '/*test:*/.array { padding:2px; } .arrayItem { padding-left:10px; background-color: #fff;} ';
+		echo '/*test:*/.array { padding-left:12px; } .arrayItem {  padding:4px; border-left: 1px solid #79c; background-color: #fff;} ';
 		echo '</style>';
 	}
 	
@@ -214,24 +215,24 @@ class HTML extends Dumper implements Concrete {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
-				return sprintf(' members="%s"', count($value));
+				return sprintf(' > members:%d', count($value));
 			case self::TYPE_STRING:
 				// TODO imagine some propper CDATA for strings
-				return sprintf(' len="%d" value="%s"', strlen($value), htmlspecialchars($this->dumpStringNice($value)));
+				return sprintf(' > len:%d value: "%s"', strlen($value), htmlspecialchars($this->dumpStringNice($value)));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
-				return sprintf(' value="%s"', $value);
+				return sprintf(' > value: %s', $value);
 			case self::TYPE_OBJECT:
 				$count = count($value[1][1]);
-				return sprintf(' class="%s" members="%d"', $value[0][1], $count);
+				return sprintf(' > class: "%s" members:"%d"', $value[0][1], $count);
 			case self::TYPE_NULL:
 				return '';
 			case self::TYPE_BOOL:
-				return sprintf(' value="%s"', ($value ? 'true' : 'false'));
+				return sprintf(' > %s', ($value ? 'true' : 'false'));
 			case self::TYPE_RECURSION:
-				return sprintf(' value="%s"', $value);
+				return sprintf(' > %s', $value);
 			case self::TYPE_RECURSIONREF:
-				return sprintf(' value="%s"', $value);
+				return sprintf(' > %s', $value);
 			// @codeCoverageIgnoreStart
 			default:
 				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
