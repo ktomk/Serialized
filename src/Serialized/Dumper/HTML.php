@@ -68,7 +68,6 @@ class HTML extends Dumper implements Concrete {
 	 * @var SplDoublyLinkedList
 	 */
 	private $index;
-	
 	/**
 	 * push the current state onto the stack
 	 */
@@ -91,14 +90,13 @@ class HTML extends Dumper implements Concrete {
 	}
 	
 	private function dumpIndex() {
-		return;
 		if (null === $this->index) return;
 		
 		echo '<div id="toc">';
 		foreach($this->index as $index) {
 			// ...arrays
 			printf('<a href="#%s">', md5($index[1]));
-			print_r($index);
+			printf('%s %s', $index[0], $index[1]);
 			echo '</a>';
 		}
 		echo '</div>';
@@ -215,24 +213,24 @@ class HTML extends Dumper implements Concrete {
 		switch($type) {
 			case self::TYPE_ARRAY:
 			case self::TYPE_MEMBERS:
-				return sprintf(' > members:%d', count($value));
+				return sprintf('> members: %d', count($value));
 			case self::TYPE_STRING:
 				// TODO imagine some propper CDATA for strings
-				return sprintf(' > len:%d value: "%s"', strlen($value), htmlspecialchars($this->dumpStringNice($value)));
+				return sprintf('> "%s" len: %d', htmlspecialchars($this->dumpStringNice($value)), strlen($value));
 			case self::TYPE_INT:
 			case self::TYPE_FLOAT:
-				return sprintf(' > value: %s', $value);
+				return sprintf('> value: %s', $value);
 			case self::TYPE_OBJECT:
 				$count = count($value[1][1]);
-				return sprintf(' > class: "%s" members:"%d"', $value[0][1], $count);
+				return sprintf('> "%s" members: %d', $value[0][1], $count);
 			case self::TYPE_NULL:
 				return '';
 			case self::TYPE_BOOL:
-				return sprintf(' > %s', ($value ? 'true' : 'false'));
+				return sprintf('> %s', ($value ? 'true' : 'false'));
 			case self::TYPE_RECURSION:
-				return sprintf(' > %s', $value);
+				return sprintf('> %s', $value);
 			case self::TYPE_RECURSIONREF:
-				return sprintf(' > %s', $value);
+				return sprintf('> %s', $value);
 			// @codeCoverageIgnoreStart
 			default:
 				throw new \InvalidArgumentException(sprintf('Type %s unknonwn.', $type));
@@ -260,9 +258,9 @@ class HTML extends Dumper implements Concrete {
 
 		if ($this->hasInnerElements($type)) {
 			$this->addToIndex($typeName, $valueString);
-			printf('<a id="%s" name="%s" />', md5($valueString), md5($valueString));
+			$htmlElement .= sprintf(' id="%s"', md5($valueString));
 		}
-		printf('%s<%s%s>%s', $this->state->inset, $htmlElement, $valueString, $this->config('newline'));
+		printf('%s<%s%s%s', $this->state->inset, $htmlElement, $valueString, $this->config('newline'));
 		$this->dumpSubValue($type, $valueValue);
 		printf("%s</%s>%s", $this->state->inset, $htmlCloseElement, $this->config('newline'));
 
