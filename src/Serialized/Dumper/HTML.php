@@ -69,6 +69,11 @@ class HTML extends Dumper implements Concrete {
 	 */
 	private $index;
 	/**
+	 * count sections
+	 * @var int
+	 */
+	private $sectionCount=0;
+	/**
 	 * push the current state onto the stack
 	 */
 	protected function statePush() {
@@ -91,13 +96,13 @@ class HTML extends Dumper implements Concrete {
 	
 	private function dumpIndex() {
 		if (null === $this->index) return;
-		
+
 		echo '<div id="toc">';
+		$sectionCount = 0;
 		foreach($this->index as $index) {
-			// ...arrays
-			printf('<a href="#%s">', md5($index[1]));
-			printf('%s %s', $index[0], $index[1]);
-			echo '</a>';
+			printf('<a href="#%s">', 's'.$sectionCount);
+			printf('%s %s</a>', $index[0], $index[1]);
+			$sectionCount++;
 		}
 		echo '</div>';
 	}
@@ -258,7 +263,8 @@ class HTML extends Dumper implements Concrete {
 
 		if ($this->hasInnerElements($type)) {
 			$this->addToIndex($typeName, $valueString);
-			$htmlElement .= sprintf(' id="%s"', md5($valueString));
+			$htmlElement .= sprintf(' id="%s"', 's'.$this->sectionCount);
+			$this->sectionCount++;
 		}
 		printf('%s<%s%s%s', $this->state->inset, $htmlElement, $valueString, $this->config('newline'));
 		$this->dumpSubValue($type, $valueValue);
