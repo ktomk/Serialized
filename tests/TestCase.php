@@ -50,6 +50,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 		self::assertThat($file, new ConstraintLastError($error), $message);
 	}
 	/**
+	 * assert XML DTD validity
+	 */
+	protected function assertXmlStringValidatesDtdUri($xml, $dtd, $message = '') {
+		self::assertThat($dtd, new ConstraintXmlStringValidatesDtdUri($xml), $message);
+	}
+	/**
 	 * hexdump of string
 	 *
 	 * @param string $string

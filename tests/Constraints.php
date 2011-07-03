@@ -45,10 +45,10 @@ class ConstraintLastError extends \PHPUnit_Framework_Constraint {
 		$this->error = $error;
 	}
     /**
-     * Evaluates the constraint for parameter $other. Returns TRUE if the
+     * Evaluates the constraint for parameter $file. Returns TRUE if the
      * constraint is met, FALSE otherwise.
      *
-     * @param mixed $other Value or object to evaluate.
+     * @param string $file Value or object to evaluate.
      * @return bool
      */
 	public function evaluate($file)
@@ -117,15 +117,15 @@ class ConstraintLint extends \PHPUnit_Framework_Constraint {
 		return $exitStatus;
 	}
 	/**
-     * Evaluates the constraint for parameter $other. Returns TRUE if the
+     * Evaluates the constraint for parameter $fileName. Returns TRUE if the
      * constraint is met, FALSE otherwise.
      *
-     * @param mixed $other Value or object to evaluate.
+     * @param string $fileName Value or object to evaluate.
      * @return bool
      */
-    public function evaluate($other)
+    public function evaluate($fileName)
     {
-		$lint = $this->lintFile($other);
+		$lint = $this->lintFile($fileName);
 		return $lint != 1;
     }
 
@@ -151,4 +151,130 @@ class ConstraintLint extends \PHPUnit_Framework_Constraint {
     }
 }
 
-// @todo XMLDTD Constraint
+/**
+ * ConstraintXmlStringValidatesDtdUri
+ *
+ * For asserting that XML validates a DTD.
+ *
+ * To test that an XML string validates a DTD URI.
+ *
+ * Example:
+ *
+ *   $this->assertXmlStringValidatesDtdUri($xml, $dtd);
+ *
+ * PHP does not do the resolvement of all dtd URIs, especially if
+ * those are files in the local system. To make those DTDs useable,
+ * the PHP data:// stream wrapper can be used. The following
+ * example shows how to do this:
+ *
+ * Example:
+ *
+ *   $dtdFile = 'path/to/local/file.dtd';
+ * 	 $dtdText = file_get_contents($dtdFile);
+ *   $dtd = 'data://text/plain;base64,'.base64_encode($dtdText);
+ *   $this->assertXmlStringValidatesDtdUri($xml, $dtd);
+ *
+ */
+class ConstraintXmlStringValidatesDtdUri extends \PHPUnit_Framework_Constraint
+{
+	/**
+	 * @var string XML
+	 */
+	private $xml;
+
+	/**
+     * @var string DTD URI
+	 */
+	private $dtd;
+
+	/**
+	 * @var array local store for validation errors.
+	 */
+	private $errors;
+
+	/**
+	 * @param string $xml
+	 */
+	public function __construct($xml)
+	{
+		$this->xml = $xml;
+	}
+
+    public function validateErrorHandler ($no, $message, $file = null, $line = null, $context = null) {
+        $nice = $message;
+        $prefix = 'DOMDocument::validate(): ';
+        if ($prefix === substr($nice,0, strlen($prefix))) {
+        	$nice = substr($nice, strlen($prefix));
+        }
+
+        $this->errors[] = $nice;
+    }
+
+	/**
+	 * validateDTD
+	 *
+	 * @param string $xml XML
+	 * @param string $dtd DTD URI
+	 * @return bool
+	 */
+	private function validateDTD($xml, $dtd)
+	{
+		$importDoc = new \DOMDocument();
+		$importDoc->loadXML($xml);
+
+		$rootNode = $importDoc->documentElement;
+		$rootName = $rootNode->tagName;
+		$version = $importDoc->xmlVersion;
+		$encoding = $importDoc->encoding;
+
+		$assertImplementation = new \DOMImplementation;
+		$assertDocType = $assertImplementation->createDocumentType($rootName, '', $dtd);
+		$assertDoc = $assertImplementation->createDocument('', '', $assertDocType);
+		$assertDoc->xmlVersion = $version;
+		$assertDoc->encoding = $encoding;
+		$importNode = $assertDoc->importNode($rootNode, true);
+		$assertDoc->appendChild($importNode);
+
+		$this->errors = null;
+		set_error_handler(array($this, "validateErrorHandler"));
+		$result = $assertDoc->validate();
+		restore_error_handler();
+		return $result;
+	}
+
+	/**
+     * Evaluates the constraint for parameter $dtd. Returns TRUE if the
+     * constraint is met, FALSE otherwise.
+     *
+     * @param mixed $other Value or object to evaluate.
+     * @return bool
+     */
+    public function evaluate($dtd)
+    {
+        return $this->validateDTD($this->xml, $dtd);
+    }
+
+    /**
+     * @param string  $dtd
+     * @param string  $description
+     * @param boolean $not
+     */
+    protected function customFailureDescription($dtd, $description, $not)
+    {
+    	$dtdLabel = $dtd;
+    	if (strlen($dtdLabel)>40) {
+    		$dtdLabel = substr($dtdlabel, 0, 37). '...';
+    	}
+		return sprintf('Assertion that XML %s DTD "%s" has failed (%d errors).', $not ? 'does not validate' : 'validates', $dtdLabel, count($this->errors));
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'validates DTD';
+    }
+}

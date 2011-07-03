@@ -112,29 +112,6 @@ class XMLTest extends DumperTest
 		}
 	}
 
-	private function assertDTD($xml, $dtd, $message='')
-	{
-		$importDoc = new \DOMDocument();
-		$importDoc->loadXML($xml);
-
-		$rootNode = $importDoc->documentElement;
-		$rootName = $rootNode->tagName;
-		$version = $importDoc->xmlVersion;
-		$encoding = $importDoc->encoding;
-
-		$assertImplementation = new \DOMImplementation;
-		$assertDocType = $assertImplementation->createDocumentType($rootName, '', $dtd);
-		$assertDoc = $assertImplementation->createDocument('', '', $assertDocType);
-		$assertDoc->xmlVersion = $version;
-		$assertDoc->encoding = $encoding;
-		$importNode = $assertDoc->importNode($rootNode, true);
-		$assertDoc->appendChild($importNode);
-
-		$expected = true;
-		$actual = $assertDoc->validate();
-		$this->assertSame($expected, $actual, $message);
-	}
-
 	public function testDTDValidity()
 	{
 		$name = 'serialized.dtd';
@@ -144,8 +121,7 @@ class XMLTest extends DumperTest
 
 		foreach( array('1001', '1002', '1003', 'session-01') as $proc) {
 			$xml = $this->getExpected($proc);
-			$this->assertDTD($xml, $dtd, sprintf('DTD in %s.', $proc));
+			$this->assertXmlStringValidatesDtdUri($xml, $dtd, sprintf('DTD in %s.', $proc));
 		}
 	}
-
 }
