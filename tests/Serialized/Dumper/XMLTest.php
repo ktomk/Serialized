@@ -112,24 +112,26 @@ class XMLTest extends DumperTest
 		}
 	}
 
-	private function assertDTD($xml, $dtd, $message='') {
-		$root = 'serialized';
-		$version = '1.0';
-		$encoding = 'utf-8';
+	private function assertDTD($xml, $dtd, $message='')
+	{
+		$importDoc = new \DOMDocument();
+		$importDoc->loadXML($xml);
 
-		$lDoc = new \DOMDocument($version, $encoding);
-		$lDoc->loadXML($xml);
-		$lNode = $lDoc->getElementsByTagName($root)->item(0);
+		$rootNode = $importDoc->documentElement;
+		$rootName = $rootNode->tagName;
+		$version = $importDoc->xmlVersion;
+		$encoding = $importDoc->encoding;
 
-		$aImp = new \DOMImplementation;
-		$aDocType = $aImp->createDocumentType($root, '', $dtd);
-		$aDoc = $aImp->createDocument('', '', $aDocType);
-		$aDoc->encoding = $encoding;
-		$aNode = $aDoc->importNode($lNode, true);
-		$aDoc->appendChild($aNode);
+		$assertImplementation = new \DOMImplementation;
+		$assertDocType = $assertImplementation->createDocumentType($rootName, '', $dtd);
+		$assertDoc = $assertImplementation->createDocument('', '', $assertDocType);
+		$assertDoc->xmlVersion = $version;
+		$assertDoc->encoding = $encoding;
+		$importNode = $assertDoc->importNode($rootNode, true);
+		$assertDoc->appendChild($importNode);
 
 		$expected = true;
-		$actual = $aDoc->validate();
+		$actual = $assertDoc->validate();
 		$this->assertSame($expected, $actual, $message);
 	}
 
