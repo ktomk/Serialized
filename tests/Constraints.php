@@ -26,8 +26,18 @@
 
 Namespace Serialized;
 
-// @todo XMLDTD Constraint
-
+/**
+ * ConstraintLastError
+ *
+ * For asserting the last error message in a file.
+ *
+ * To test trigger_error().
+ *
+ * Example:
+ *
+ *   $this->assertLastError('Error Message', 'basenameOfFile.php');
+ *
+ */
 class ConstraintLastError extends \PHPUnit_Framework_Constraint {
 	private $file;
 	private $error;
@@ -77,6 +87,21 @@ class ConstraintLastError extends \PHPUnit_Framework_Constraint {
     }
 }
 
+/**
+ * ConstraintLint
+ *
+ * For asserting that a file passes php lint (php -l).
+ *
+ * To test php's internal lint syntax check on a php file. Useful to run
+ * tests on files that will be automatically included but preventing fatal
+ * errors in tests because included files would not lint.
+ *
+ * Example:
+ *
+ *   $this->assertLint($fileName); // test fails if file does not lint
+ *   require $fileName;
+ *
+ */
 class ConstraintLint extends \PHPUnit_Framework_Constraint {
 	private $lines;
     private function lintFile($fileName) {
@@ -125,3 +150,5 @@ class ConstraintLint extends \PHPUnit_Framework_Constraint {
         return 'can lint';
     }
 }
+
+// @todo XMLDTD Constraint
