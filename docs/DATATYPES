@@ -62,10 +62,11 @@
   SERIALIZE TYPE IDENTIFICATION CHARS
 
     In a serialized string, each chunk of data is prefixed by a single
-  character (case sensitive) signalling the type (a-z):
+  character (case sensitive) signalling the type (a-z sorted):
 
     * a - Array
     * b - Boolean
+    * C - Object implementing serializeable Interface
     * d - Float
     * i - Integer
     * N - NULL
@@ -73,3 +74,4 @@
     * r - Recursion
     * R - Recursion by Reference
     * s - String
+    * S - Encoded String (PHP 6 upwards compatibility)
