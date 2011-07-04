@@ -29,8 +29,8 @@
   require_once(__DIR__.'/../../src/Serialized.php');
 
   $data = array(
-  	'foo' => 1,
-  	'bar' => range(2,20,3),
+    'foo' => 1,
+    'bar' => range(2,20,3),
     'baz' => new Parser
   );
 
@@ -42,9 +42,5 @@
 
   // dump with default dumper (text) on array notation
   Dumper::factory()->dump(
-  	Parser::parse(
-  		serialize(
-  			range(1,10)
-  		)
-  	)
+    Parser::parse(serialize(range(1,10)))
   );

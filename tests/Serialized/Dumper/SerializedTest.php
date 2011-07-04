@@ -40,9 +40,9 @@ class SerializedTest extends DumperTest
 {
 	protected $dumper = 'Serialized';
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
 	public function testException() {
 		$dumper = Dumper::factory('Serialized');
 		$dumper->dump(array('member', 0));

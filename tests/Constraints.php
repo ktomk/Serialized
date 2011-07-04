@@ -39,11 +39,11 @@ Namespace Serialized;
  *
  */
 class ConstraintLastError extends \PHPUnit_Framework_Constraint {
-	private $file;
-	private $error;
-	public function __construct($error) {
-		$this->error = $error;
-	}
+    private $file;
+    private $error;
+    public function __construct($error) {
+        $this->error = $error;
+    }
     /**
      * Evaluates the constraint for parameter $file. Returns TRUE if the
      * constraint is met, FALSE otherwise.
@@ -51,19 +51,19 @@ class ConstraintLastError extends \PHPUnit_Framework_Constraint {
      * @param string $file Value or object to evaluate.
      * @return bool
      */
-	public function evaluate($file)
-	{
-		$this->file = $file;
-		$error = $this->error;
-		$lastError = error_get_last();
-		if (NULL === $lastError)
-			return false;
+    public function evaluate($file)
+    {
+        $this->file = $file;
+        $error = $this->error;
+        $lastError = error_get_last();
+        if (NULL === $lastError)
+            return false;
 
-		$last_message = $lastError['message'];
-		$last_file = $lastError['file'];
+        $last_message = $lastError['message'];
+        $last_file = $lastError['file'];
 
-		return ($error == $last_message && basename($file) == basename($last_file));
-	}
+        return ($error == $last_message && basename($file) == basename($last_file));
+    }
 
     /**
      * @param mixed   $other
@@ -72,7 +72,7 @@ class ConstraintLastError extends \PHPUnit_Framework_Constraint {
      */
     protected function customFailureDescription($other, $description, $not)
     {
-		return sprintf('Failed asserting that the last error %s', basename($other), $not ? '' : 'no ', implode("\n  - ", $this->lines));
+        return sprintf('Failed asserting that the last error %s', basename($other), $not ? '' : 'no ', implode("\n  - ", $this->lines));
     }
 
 
@@ -103,20 +103,20 @@ class ConstraintLastError extends \PHPUnit_Framework_Constraint {
  *
  */
 class ConstraintLint extends \PHPUnit_Framework_Constraint {
-	private $lines;
+    private $lines;
     private function lintFile($fileName) {
-		$return = 0;
-		$lintOutput = array();
-		$exitStatus = 0;
-		exec("php -l " . escapeshellarg($fileName), $lintOutput, $return);
-		if ($return != 0) {
-			$exitStatus = 1;
-			array_splice($lintOutput, -2);
-		}
-		$this->lines = $lintOutput;
-		return $exitStatus;
-	}
-	/**
+        $return = 0;
+        $lintOutput = array();
+        $exitStatus = 0;
+        exec("php -l " . escapeshellarg($fileName), $lintOutput, $return);
+        if ($return != 0) {
+            $exitStatus = 1;
+            array_splice($lintOutput, -2);
+        }
+        $this->lines = $lintOutput;
+        return $exitStatus;
+    }
+    /**
      * Evaluates the constraint for parameter $fileName. Returns TRUE if the
      * constraint is met, FALSE otherwise.
      *
@@ -125,8 +125,8 @@ class ConstraintLint extends \PHPUnit_Framework_Constraint {
      */
     public function evaluate($fileName)
     {
-		$lint = $this->lintFile($fileName);
-		return $lint != 1;
+        $lint = $this->lintFile($fileName);
+        return $lint != 1;
     }
 
     /**
@@ -136,7 +136,7 @@ class ConstraintLint extends \PHPUnit_Framework_Constraint {
      */
     protected function customFailureDescription($other, $description, $not)
     {
-		return sprintf('Assertion that the file %s has %slints failed: %s', basename($other), $not ? '' : 'no ', implode("\n  - ", $this->lines));
+        return sprintf('Assertion that the file %s has %slints failed: %s', basename($other), $not ? '' : 'no ', implode("\n  - ", $this->lines));
     }
 
 
@@ -177,72 +177,72 @@ class ConstraintLint extends \PHPUnit_Framework_Constraint {
  */
 class ConstraintXmlStringValidatesDtdUri extends \PHPUnit_Framework_Constraint
 {
-	/**
-	 * @var string XML
-	 */
-	private $xml;
+    /**
+     * @var string XML
+     */
+    private $xml;
 
-	/**
+    /**
      * @var string DTD URI
-	 */
-	private $dtd;
+     */
+    private $dtd;
 
-	/**
-	 * @var array local store for validation errors.
-	 */
-	private $errors;
+    /**
+     * @var array local store for validation errors.
+     */
+    private $errors;
 
-	/**
-	 * @param string $xml
-	 */
-	public function __construct($xml)
-	{
-		$this->xml = $xml;
-	}
+    /**
+     * @param string $xml
+     */
+    public function __construct($xml)
+    {
+        $this->xml = $xml;
+    }
 
     public function validateErrorHandler ($no, $message, $file = null, $line = null, $context = null) {
         $nice = $message;
         $prefix = 'DOMDocument::validate(): ';
         if ($prefix === substr($nice,0, strlen($prefix))) {
-        	$nice = substr($nice, strlen($prefix));
+            $nice = substr($nice, strlen($prefix));
         }
 
         $this->errors[] = $nice;
     }
 
-	/**
-	 * validateDTD
-	 *
-	 * @param string $xml XML
-	 * @param string $dtd DTD URI
-	 * @return bool
-	 */
-	private function validateDTD($xml, $dtd)
-	{
-		$importDoc = new \DOMDocument();
-		$importDoc->loadXML($xml);
+    /**
+     * validateDTD
+     *
+     * @param string $xml XML
+     * @param string $dtd DTD URI
+     * @return bool
+     */
+    private function validateDTD($xml, $dtd)
+    {
+        $importDoc = new \DOMDocument();
+        $importDoc->loadXML($xml);
 
-		$rootNode = $importDoc->documentElement;
-		$rootName = $rootNode->tagName;
-		$version = $importDoc->xmlVersion;
-		$encoding = $importDoc->encoding;
+        $rootNode = $importDoc->documentElement;
+        $rootName = $rootNode->tagName;
+        $version = $importDoc->xmlVersion;
+        $encoding = $importDoc->encoding;
 
-		$assertImplementation = new \DOMImplementation;
-		$assertDocType = $assertImplementation->createDocumentType($rootName, '', $dtd);
-		$assertDoc = $assertImplementation->createDocument('', '', $assertDocType);
-		$assertDoc->xmlVersion = $version;
-		$assertDoc->encoding = $encoding;
-		$importNode = $assertDoc->importNode($rootNode, true);
-		$assertDoc->appendChild($importNode);
+        $assertImplementation = new \DOMImplementation;
+        $assertDocType = $assertImplementation->createDocumentType($rootName, '', $dtd);
+        $assertDoc = $assertImplementation->createDocument('', '', $assertDocType);
+        $assertDoc->xmlVersion = $version;
+        $assertDoc->encoding = $encoding;
+        $importNode = $assertDoc->importNode($rootNode, true);
+        $assertDoc->appendChild($importNode);
 
-		$this->errors = null;
-		set_error_handler(array($this, "validateErrorHandler"));
-		$result = $assertDoc->validate();
-		restore_error_handler();
-		return $result;
-	}
+        $this->errors = null;
+        set_error_handler(array($this, "validateErrorHandler"));
+        $result = $assertDoc->validate();
+        restore_error_handler();
+        return $result;
+    }
 
-	/**
+    /**
      * Evaluates the constraint for parameter $dtd. Returns TRUE if the
      * constraint is met, FALSE otherwise.
      *
@@ -261,11 +261,11 @@ class ConstraintXmlStringValidatesDtdUri extends \PHPUnit_Framework_Constraint
      */
     protected function customFailureDescription($dtd, $description, $not)
     {
-    	$dtdLabel = $dtd;
-    	if (strlen($dtdLabel)>40) {
-    		$dtdLabel = substr($dtdlabel, 0, 37). '...';
-    	}
-		return sprintf('Assertion that XML %s DTD "%s" has failed (%d errors).', $not ? 'does not validate' : 'validates', $dtdLabel, count($this->errors));
+        $dtdLabel = $dtd;
+        if (strlen($dtdLabel)>40) {
+            $dtdLabel = substr($dtdlabel, 0, 37). '...';
+        }
+        return sprintf('Assertion that XML %s DTD "%s" has failed (%d errors).', $not ? 'does not validate' : 'validates', $dtdLabel, count($this->errors));
     }
 
     /**

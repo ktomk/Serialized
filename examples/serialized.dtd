@@ -19,7 +19,7 @@
     <http://www.gnu.org/licenses/> and please report back to the original
     author.
 
- 	============
+      ============
 
     This is Serialized DTD.
 
@@ -49,34 +49,34 @@
 <!--====== named values ======-->
 
 <!ENTITY % Int "CDATA" >
-	<!-- an integer value -->
+  <!-- an integer value -->
 
 <!ENTITY % AbsInt "%Int;" >
-	<!-- a positive integer value or 0 -->
+  <!-- a positive integer value or 0 -->
 
 <!ENTITY % PositiveInt "%Int;" >
-	<!-- a positive integer value greater 0 -->
+  <!-- a positive integer value greater 0 -->
 
 <!ENTITY % Count "%AbsInt;" >
-	<!-- Count, 0 or positive integer -->
+  <!-- Count, 0 or positive integer -->
 
 <!ENTITY % Bool "(true|false)" >
-	<!-- a boolean value -->
+  <!-- a boolean value -->
 
 <!ENTITY % Float "CDATA" >
-	<!-- a float value -->
+  <!-- a float value -->
 
 <!ENTITY % Strlen "%AbsInt;" >
-	<!-- Length of a string, 0 or positive integer -->
+  <!-- Length of a string, 0 or positive integer -->
 
 <!ENTITY % Ref "%PositiveInt;" >
-	<!-- Reference index of/to an existing element, a positive integer -->
+  <!-- Reference index of/to an existing element, a positive integer -->
 
 <!ENTITY % KeyType "(string|int)" >
-	<!-- Array keys can be either string or integer  -->
+  <!-- Array keys can be either string or integer  -->
 
 <!ENTITY % PropAccess "(public|protected|private)" >
-	<!-- Property Access can either be public, protected or private -->
+  <!-- Property Access can either be public, protected or private -->
 
 <!--====== root ======-->
 

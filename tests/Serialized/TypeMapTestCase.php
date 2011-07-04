@@ -39,73 +39,73 @@ abstract class TypeMapTestCase extends TestCase
 	protected $testValue;
 	protected $testNonExistantType;
 	protected $testNonExistantValue;
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-    }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+	}
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-    protected function mapTestHas($class, $type, $nonExistantType = null) {
-    	$class = __NAMESPACE__.'\\'.$class;
-    	# test existing
-    	$expected = true;
-    	$actual = $class::has($type);
-    	$this->assertSame($expected, $actual);
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
+	}
+	protected function mapTestHas($class, $type, $nonExistantType = null) {
+		$class = __NAMESPACE__.'\\'.$class;
+		# test existing
+		$expected = true;
+		$actual = $class::has($type);
+		$this->assertSame($expected, $actual);
 
-    	# test non-existing
-    	$expected = false;
-    	$actual = $class::has($nonExistantType);
-    	$this->assertSame($expected, $actual);
-    }
-    protected function mapTestOf($class, $type, $expected, $nonExistantType = null) {
-    	$class = __NAMESPACE__.'\\'.$class;
-     	# test existing
-    	$actual = $class::of($type);
-    	$this->assertSame($expected, $actual);
+		# test non-existing
+		$expected = false;
+		$actual = $class::has($nonExistantType);
+		$this->assertSame($expected, $actual);
+	}
+	protected function mapTestOf($class, $type, $expected, $nonExistantType = null) {
+		$class = __NAMESPACE__.'\\'.$class;
+		# test existing
+		$actual = $class::of($type);
+		$this->assertSame($expected, $actual);
 
-    	# test non-existing (provoke exception)
+		# test non-existing (provoke exception)
 		$class::of($nonExistantType);
-    }
-    protected function mapTestBy($class, $value, $expected, $nonExistantValue = null) {
-    	$class = __NAMESPACE__.'\\'.$class;
-     	# test existing
-    	$actual = $class::by($value);
-    	$this->assertSame($expected, $actual);
+	}
+	protected function mapTestBy($class, $value, $expected, $nonExistantValue = null) {
+		$class = __NAMESPACE__.'\\'.$class;
+		# test existing
+		$actual = $class::by($value);
+		$this->assertSame($expected, $actual);
 
-    	# test non-existing (provoke exception)
+		# test non-existing (provoke exception)
 		$class::by($nonExistantValue);
-    }
-    public function testHas() {
-    	$class = $this->testClass;
-    	$type = $this->testType;
-    	$nonExistantType = $this->testNonExistantType;
-    	$this->mapTestHas($class, $type, $nonExistantType);
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testOf() {
-    	$class = $this->testClass;
-    	$type = $this->testType;
-    	$expected = $this->testValue;
-    	$this->mapTestOf($class, $type, $expected);
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testBy() {
-    	$class = $this->testClass;
-    	$value = $this->testValue;
-    	$expected = $this->testType;
-    	$this->mapTestBy($class, $value, $expected);
-    }
+	}
+	public function testHas() {
+		$class = $this->testClass;
+		$type = $this->testType;
+		$nonExistantType = $this->testNonExistantType;
+		$this->mapTestHas($class, $type, $nonExistantType);
+	}
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testOf() {
+		$class = $this->testClass;
+		$type = $this->testType;
+		$expected = $this->testValue;
+		$this->mapTestOf($class, $type, $expected);
+	}
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testBy() {
+		$class = $this->testClass;
+		$value = $this->testValue;
+		$expected = $this->testType;
+		$this->mapTestBy($class, $value, $expected);
+	}
 }

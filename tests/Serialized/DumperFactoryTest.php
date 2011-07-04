@@ -31,8 +31,8 @@ require_once(__DIR__.'/../TestCase.php');
 class DumperFactoryTest extends TestCase
 {
 	/**
-     * @expectedException \InvalidArgumentException
-     */
+	 * @expectedException \InvalidArgumentException
+	 */
 	public function testInvalidArgumentExceptionFactory() {
 		$type = 0.5;
 		$dumper = Dumper::factory($type);

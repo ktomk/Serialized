@@ -46,17 +46,17 @@ class Serialized {
 		$classNameSeparator = '_';
 		$fileSuffix = '.php';
 
-	    $lineup = explode($nameSpaceSeparator, $className);
-	    if(!count($lineup) || !$lineup[0]) {
-	    	throw new \InvalidArgumentException(sprintf('%s is not a valid classname.', $className));
-	    }
-	    $nonNamespacedClassName = array_pop($lineup);
-	    if(!$nonNamespacedClassName) {
-	    	throw new \InvalidArgumentException(sprintf('%s is not a valid classname.', $className));
-	    }
-	    $lineup[] = str_replace($classNameSeparator, DIRECTORY_SEPARATOR, $nonNamespacedClassName);
-	    $fileName = implode(DIRECTORY_SEPARATOR, $lineup) . $fileSuffix;
-	    return $fileName;
+		$lineup = explode($nameSpaceSeparator, $className);
+		if(!count($lineup) || !$lineup[0]) {
+			throw new \InvalidArgumentException(sprintf('%s is not a valid classname.', $className));
+		}
+		$nonNamespacedClassName = array_pop($lineup);
+		if(!$nonNamespacedClassName) {
+			throw new \InvalidArgumentException(sprintf('%s is not a valid classname.', $className));
+		}
+		$lineup[] = str_replace($classNameSeparator, DIRECTORY_SEPARATOR, $nonNamespacedClassName);
+		$fileName = implode(DIRECTORY_SEPARATOR, $lineup) . $fileSuffix;
+		return $fileName;
 	}
 	public static function autoloadCallback() {
 		return array(get_called_class(), 'loadClass');
@@ -74,7 +74,8 @@ class Serialized {
 		$autoloadCallback = self::autoloadCallback();
 		$autoloadFunctions = spl_autoload_functions();
 		$registered = in_array($autoloadCallback, $autoloadFunctions, true)
-		              || in_array(get_called_class().'::loadClass', $autoloadFunctions, true);
+			|| in_array(get_called_class().'::loadClass', $autoloadFunctions, true)
+			;
 		return $registered;
 	}
 	/**
@@ -105,9 +106,9 @@ class Serialized {
 	 * @return bool did require(class)
 	 */
 	public static function loadClass($className) {
-	     if (strpos($className, get_called_class().'\\') !== 0) {
-            return false;
-        }
+		if (strpos($className, get_called_class().'\\') !== 0) {
+			return false;
+		}
 		$fileName = self::fileNameOfClassName($className);
 		if (self::undefined($className)) {
 			require($fileName);

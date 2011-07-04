@@ -64,17 +64,17 @@ class XML extends Dumper implements Concrete {
 	private function xmlAttributeEncode($string) {
 		static $seq = array(0x22 => 'quot', 0x26 => 'amp', 0x3c => 'lt', 0x3e => 'gt');
 		for(
-		    $r = '',
-		    $l = strlen($string),
-		    $i = 0
-		    ;
-		    $i < $l
-		    ;
-		    $c = $string[$i++],
-		    $o = ord($c),
-		    $h = dechex($o),
-		    ($f = (0x22 === $o || 0x26 === $o || 0x3c === $o || 0x3e  === $o)) && $c = '&'.$seq[$o].';',
-		    $r.= ($f || (0x1F < $o && $o < 0x7F)) ? $c : '&#x'.strtoupper(dechex($o)).';'
+			$r = '',
+			$l = strlen($string),
+			$i = 0
+			;
+			$i < $l
+			;
+			$c = $string[$i++],
+			$o = ord($c),
+			$h = dechex($o),
+			($f = (0x22 === $o || 0x26 === $o || 0x3c === $o || 0x3e  === $o)) && $c = '&'.$seq[$o].';',
+			$r.= ($f || (0x1F < $o && $o < 0x7F)) ? $c : '&#x'.strtoupper(dechex($o)).';'
 		);
 		return $r;
 	}

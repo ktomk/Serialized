@@ -72,8 +72,8 @@ class ParserTest extends TestCase
 	}
 	/**
 	 * @dataProvider provideInvalid
-     * @expectedException Serialized\ParseException
-     */
+	 * @expectedException Serialized\ParseException
+	 */
 	public function testInvalidCustomCharacterSequence($invalidSequence) {
 		$parser = new Parser($invalidSequence);
 		$parser->getParsed();
