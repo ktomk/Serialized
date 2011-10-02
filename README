@@ -12,7 +12,7 @@
   README
 
     Serialized is a set of classes that can parse serialized data into a
-  normalized representation.
+  normalized representation (semi structured data or S-expression).
 
     The base service is to parse serialized data into a so called Array
   Notation which represents both structure and the value(s) of PHP
@@ -20,20 +20,22 @@
 
     This can be used to inspect and validate serialized data w/o the need
   to unserialize it first. For example if waking up sleeping objects is
-  unwanted. The parsed data can then be inspected and changed.
+  unwanted (parsing instead the factual process of unserializing). The 
+  parsed data can then be inspected and changed.
 
     Serialized variables (Sessions) are supported as well. Those are
   a list of serialized values with their variable name.
 
     Potential field of use is static data analysis, session display,
-  manipulation of serialized data, converting etc.
+  inspection and manipulation of serialized data, converting etc. .
 
     Right now, the library can already do both: parsing into the Array
   Notation and dumping it into serialized data again. Output into other
-  formats is possible as well.
+  formats (Text, XML, ...) is possible as well.
 
     The following output formats to display serialized data and sessions
-  are as of now (example of a serialized array with some data):
+  are - as of now - available (example of a serialized array data sample
+  dumped differently):
 
     * Text - Plain text, suitable for display in a shell environment.
 
@@ -81,6 +83,11 @@
   parser so to reproduce and extend the test-suite with abstracted
   serialized data for future regression testing.
 
+    Naturally private data will be anonmyzed before it is put into the test-
+  suite and generally it will not be published w/o a written consent.
+
+    Feedback of any kind is always warmheartly appreciated.
+
     Requirements:
 
     PHP 5.3.3 or higher
@@ -96,8 +103,8 @@
 
       require_once('library/Serialized.php');
 
-      After including the autoloader, auto-loading is enabled and the parser
-    can be used:
+      After including it (the autoloader), auto-loading is enabled and the
+    parser and the dumpers can be used:
 
       $array = Serialized\Parser::parse($serialized);
 
