@@ -91,14 +91,7 @@ class SessionParserTest extends TestCase
 	public function testParseVariables() {
 		$parser = $this->object;
 		$parser->setSession('..test|i:1;');
-		do {
-			try {
-				$parser->parseVariables(1024); // offset is out of bounds
-			} catch(ParseException $e) {
-				break;
-			}
-			$this->fail(sprintf('An expected ParseException has not been raised.'));
-		} while(false);
-
+		$this->setExpectedException('Serialized\ParseException');
+		$parser->parseVariables(1024); // offset is out of bounds
 	}
 }
