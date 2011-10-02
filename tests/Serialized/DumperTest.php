@@ -65,8 +65,8 @@ abstract class DumperTest extends TestCase
 	}
 
 	/**
-     * @expectedException \InvalidArgumentException
-     */
+	 * @expectedException \InvalidArgumentException
+	 */
 	final public function testInvalidArgumentExceptionViaDump() {
 		$parsed = array('1');
 		$dumper = Dumper::factory($this->dumper);
@@ -74,26 +74,26 @@ abstract class DumperTest extends TestCase
 	}
 
 	/**
-     * @expectedException \InvalidArgumentException
-     */
+	 * @expectedException \InvalidArgumentException
+	 */
 	final public function testUnkownValueTypeNameExceptionViaDump() {
 		$parsed = array('foo', '42');
 		$dumper = Dumper::factory($this->dumper);
 		$dumper->getDump($parsed);
 	}
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error
-     */
+	/**
+	 * @expectedException \PHPUnit_Framework_Error
+	 */
 	final public function testDumpParameterException() {
 		$dumper = Dumper::factory($this->dumper);
 		$dumper->getDump(array(array(), array('illegal option')));
 		return;
 	}
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
 	final public function testDumpParameterException2() {
 		$dumper = Dumper::factory($this->dumper);
 		$dumper->getDump(array());

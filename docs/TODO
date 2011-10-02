@@ -26,5 +26,5 @@
  (?) Value Interface: add public function setParsed(array $parsed); (clash-
      es Parser)
  (?) Any chance to see RECURSION INDECIES numerically validated?
- 	- numeric index en parallel to parsing referencing array notations
- 	- own recursion validator/resolver class
+    - numeric index en parallel to parsing referencing array notations
+    - own recursion validator/resolver class

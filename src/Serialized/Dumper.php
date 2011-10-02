@@ -182,7 +182,7 @@ abstract class Dumper implements ValueTypes {
 	 */
 	public static function factory($type = null, array $config = array()) {
 		if (!is_string($type) && null !== $type) {
-			throw new InvalidArgumentException(sprintf('Type expected be string, %s given.', gettype($type)));
+			throw new InvalidArgumentException(sprintf('Type expected string, %s given (%s).', gettype($type), $type));
 		}
 		null === $type && $type = 'text';
 		$dumperClass = ucfirst(strtolower($type));

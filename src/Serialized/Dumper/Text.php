@@ -118,17 +118,17 @@ class Text extends Dumper implements Concrete {
 	private function phpEncodeString($string) {
 		static $seq = array(0x09 => 't', 0x0A => 'n', 0x0B => 'v', 0x0C => 'f',  0x0D => 'r');
 		for(
-		    $r = '',
-		    $l = strlen($string),
-		    $i = 0
-		    ;
-		    $i < $l
-		    ;
-		    $c = $string[$i++],
-		    $o = ord($c),
-		    ($f = 0x08 < $o && $o < 0x0E) && $c = $seq[$o],
-		    ($b = $f || (0x1F < $o && $o < 0x7F)) && ($f || 0x22 === $o || 0x24 === $o || 0x5C === $o) && $c = '\\'.$c,
-		    $r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
+			$r = '',
+			$l = strlen($string),
+			$i = 0
+			;
+			$i < $l
+			;
+			$c = $string[$i++],
+			$o = ord($c),
+			($f = 0x08 < $o && $o < 0x0E) && $c = $seq[$o],
+			($b = $f || (0x1F < $o && $o < 0x7F)) && ($f || 0x22 === $o || 0x24 === $o || 0x5C === $o) && $c = '\\'.$c,
+			$r.= $b ? $c : '\x'.strtoupper(substr('0'.dechex($o),-2))
 		);
 		return $r;
 	}
