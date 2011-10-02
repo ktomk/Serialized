@@ -39,7 +39,7 @@ foreach(array('serialize_handler', 'save_path', 'save_handler', ) as $setting) {
 }
 if ($save_handler === 'files') {
 	// NOTE: does not handle session subdirs
-	$files = glob(sprintf('%s/sess_*', $save_path, GLOB_NOSORT||GLOB_BRACE));
+	$files = glob(sprintf('%s/sess_*', $save_path), GLOB_NOSORT||GLOB_BRACE);
 	$num = count($files);
 	printf("\nThere are %d session(s) stored in \"%s\", listing 15 max:\n", $num, $save_path);
 	$count = 0;
