@@ -94,7 +94,7 @@ function action_view($name)
 <h2><?php echo $name; ?></h2>
 <div><?php echo htmlspecialchars($file); ?></div>
 <pre style="height:380px; width:760px; overflow:auto; border:1px solid #ccc;">
-<?php echo htmlspecialchars($parser->dump()); ?>
+<?php echo htmlspecialchars($parser->getDump()); ?>
 </pre>
 <?php
 }
@@ -200,12 +200,15 @@ class Sessions
 		if (false === $files) throw new Exception('Failed to glob session files.');
 
 		$sessions = array();
+		$time = array();
 		foreach($files as $file)
 		{
 			sscanf(basename($file), $namePattern, $name);
 			
 			$sessions[$name] = array('file' => $file);
+			$time[] = filemtime($file);
 		}
+		array_multisort($time, SORT_DESC, $sessions);
 		return $sessions;
 	}
 }
