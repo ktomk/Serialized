@@ -57,29 +57,61 @@ class DataTest extends TestCase
 		}
 	}
 
-	private function dataTest($data) {
-		$fileName = $this->getDataPath().'/'.$data.'.php';
-		$this->assertLint($fileName);
-		$this->runDataFile($fileName);
+	/**
+	 * helper function for @dataProviders
+	 *
+	 * @param string $dir basename of (user) data directory
+	 * @param string $mask glob
+	 */
+	private function providerFiles($dir, $mask)
+	{
+		$path = realpath(__DIR__ . '/../data/'.$dir);
+		$files = glob($path.'/'.$mask);
+		return array_map(function($file){return array($file);}, $files);
 	}
 
-	private function getDataPath() {
-		return __DIR__.'/../data/serialize';
-	}
-
-	private function getData() {
-		$path = $this->getDataPath();
-		$mask = '??-*.php';
-		return array_map(function($file){return substr(basename($file),0,-4);}, glob($path.'/'.$mask));
+	public function providerDataFiles() {
+		return $this->providerFiles('serialize', '??-*.php');
 	}
 
 	/**
 	 * @group data
+	 * @dataProvider providerDataFiles
 	 */
-	public function testData() {
-		$datas = $this->getData();
-		foreach($datas as $data) {
-			$this->dataTest($data);
+	public function testData($file) {
+		$this->assertLint($file);
+		$this->runDataFile($file);
+	}
+
+	public function providerSessionFiles() {
+		return $this->providerFiles('session', '??-sess*');
+	}
+
+	/**
+	 * @group data
+	 * @dataProvider providerSessionFiles
+	 */
+	public function testSession($file) {
+		$session = file_get_contents($file);
+		$parser = new SessionParser($session);
+		try {
+			$parser->getParsed();
+		} catch(ParseException $e) {
+			$offset = $e->getCode();
+			echo "\n", $e->getMessage(), "\n";
+			if (null !== $offset) {
+				// @see Serialized\Parser::extract() (private)
+				$delta = 12;
+				$before = $offset - max(0, $offset-$delta);
+				$after = min(strlen($session), $offset+1+$delta) - $offset+1;
+				echo ($offset-$before > 0) ? '...' : ''
+					, substr($session, $offset-$before, $before)
+					, '[', $session[$offset], ']'
+					, substr($session, $offset+1, $after)
+					, ($offset+1+$after < strlen($offset)) ? '...' : ''
+					, "\n";
+			}
+			throw $e;
 		}
 	}
 }

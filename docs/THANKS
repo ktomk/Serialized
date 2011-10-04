@@ -4,7 +4,8 @@
 
   THANKS
 
+  Patrick C. Engel - Contribution of XML Dumper and examples as well as
+    continued help and feedback.
   Sven Kiera - Continued Eclipse IDE PHP Tool Integration support.
   Sebastian Bergmann - Making PHPUnit support assertion of triggered notices
     and errors in 3.5.5.
-  Patrick C. Engel - Contribution of XML Dumper and examples.

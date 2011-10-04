@@ -37,10 +37,10 @@ class SessionParser extends Parser {
 		$this->data = (string) $session;
 	}
 	private function parseVariableName($offset) {
-		$pattern = '([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)';
+		$pattern = '([a-zA-Z0-9_\x7f-\xff]*)';
 		$len = $this->matchRegex($pattern, $offset);
 		if (!$len) {
-			throw new ParseException(sprintf('Invalid character sequence for variable name at offset %d.', $offset));
+			throw new ParseException(sprintf('Invalid character sequence for variable name at offset %d.', $offset), $offset);
 		}
 		$value = substr($this->data, $offset, $len);
 		return array($value, $len);

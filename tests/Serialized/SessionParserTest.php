@@ -74,6 +74,7 @@ class SessionParserTest extends TestCase
 		$tests = array(
 			'sks|;',
 			'0sks|;',
+			'-sks|N;',
 			'sk-s|i:1;',
 		);
 		foreach($tests as $session) {
