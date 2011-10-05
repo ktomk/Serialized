@@ -78,7 +78,7 @@ class SessionParser extends Parser {
 			list($value, $len) = $this->parseVariables(0);
 			$this->expectEof($len-1);
 		} else {
-			$value = array();
+			$value = array(TypeNames::of(self::TYPE_VARIABLES), array());
 		}
 		return $value;
 	}

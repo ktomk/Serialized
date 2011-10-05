@@ -57,7 +57,7 @@ class SessionParserTest extends TestCase
 		$parser = $this->object;
 
 		// empty session
-		$expected = array();
+		$expected = array('variables', array());
 		$parser->setSession('');
 		$actual = $parser->getParsed();
 		$this->assertSame($expected, $actual);

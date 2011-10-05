@@ -96,6 +96,7 @@ class DataTest extends TestCase
 		$parser = new SessionParser($session);
 		try {
 			$parser->getParsed();
+			$dump = $parser->getDump();
 		} catch(ParseException $e) {
 			$offset = $e->getCode();
 			echo "\n", $e->getMessage(), "\n";
