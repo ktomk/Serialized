@@ -24,7 +24,7 @@
  * @package Examples
  */
 
-# Session viewer sample application (web)
+# Session viewer sample application (web) for file based sessions (in a single directory)
 
 Use \Serialized\SessionParser;
 
@@ -34,11 +34,38 @@ $router = new Router(new Request());
 
 echo $router->getResponse();
 
-function action_delete($name)
+function action_delete($name, $older)
 {
 	$session = new Session($name);
-	$file = $session->getFile();
-	unlink($file);
+	$delete = array();
+	if ($older)
+	{
+		$sessions = new Sessions();
+		$allSessions = $sessions->getList();
+		foreach($allSessions as $oneSession)
+		{
+			$mtime = $oneSession['mtime'];
+			if ($mtime <= $session->getMTime())
+				$delete[] = $oneSession['file'];
+		}
+	}
+	else
+	{
+		$delete[] = $session->getFile();
+	}
+
+	$counter = new stdClass;
+	$counter->deleted = 0;
+	$counter->failed = 0;
+	foreach($delete as $file)
+	{
+		$r = unlink($file);
+		$r ? $counter->deleted++ : $counter->failed++;
+	}
+?>
+Deleted <?php echo $counter->deleted; ?> sessions (<?php echo $counter->failed; ?> Failure(s)).
+<a href="?">Go on.</a>
+<?php
 }
 
 function action_error(Exception $e)
@@ -59,25 +86,32 @@ function action_list()
 ?>
 <table border="1" id="list">
 <tr>
-	<th colspan="3">Sessions (<?php echo $count; ?>)</th>
+	<th colspan="4">Sessions (<?php echo $count; ?>)</th>
 </tr>
 <tr>
 	<th>Name</th>
 	<th>Date/Time</th>
+	<th>Age</th>
 	<th>Actions</th>
 </tr>
 <?php
 	foreach($list as $name => $session)
 	{
-		$filename = $session['file'];
-		$date = date('Y-m-d H:i:s', filemtime($filename));
+		$mtime = $session['mtime'];
+		$date = date('Y-m-d H:i:s', $mtime);
+		$age = date_age_short($mtime);
 		$linkView = sprintf($viewLink, urlencode($name));
 		$linkDelete = sprintf($deleteLink, urlencode($name));
+		$linkDeleteAndOlder = $linkDelete.'&older=1';
 ?>
 <tr>
 	<td><a href="<?php echo $linkView; ?>"><?php echo $name; ?></a></td>
 	<td><?php echo $date; ?></td>
-	<td><a href="<?php echo $linkDelete; ?>">[delete]</a></td>
+	<td><?php echo $age; ?></td>
+	<td>
+		<a href="<?php echo $linkDelete; ?>">[delete]</a>
+		<a href="<?php echo $linkDeleteAndOlder; ?>">[and older]</a>
+	</td>
 </tr>
 <?php } ?>
 </table>
@@ -88,15 +122,33 @@ function action_view($name)
 {
 	$session = new Session($name);
 	$file = $session->getFile();
+	$mtime = $session->getMTime();
+	$date = date('Y-m-d H:i:s', $mtime);
+	$age = date_age_short($mtime);
 	$serializedSession = file_get_contents($file);
 	$parser = new SessionParser($serializedSession);
 ?>
 <h2><?php echo $name; ?></h2>
-<div><?php echo htmlspecialchars($file); ?></div>
+<div><?php echo htmlspecialchars($file); ?> - <?php echo $age; ?></div>
 <pre style="height:380px; width:760px; overflow:auto; border:1px solid #ccc;">
 <?php echo htmlspecialchars($parser->getDump()); ?>
 </pre>
 <?php
+}
+
+function date_age_short($timestamp)
+{
+	$now = (int) $_SERVER['REQUEST_TIME'];
+	$diff = $now - $timestamp;
+	if ($diff < 10) return 'Now';
+	$secs = $diff % 60;
+	$mins = (int) ($diff / 60);
+	if ($mins < 60) return sprintf('%dm %ds', $mins, $secs);
+	$hours = (int) ($mins / 60);
+	$mins = $mins % 60;
+	if ($hours < 48) return sprintf('%dh %dm', $hours, $mins);
+	$days = (int) $hours / 24;
+	return sprintf('%d days', $days);
 }
 
 class Router
@@ -109,7 +161,7 @@ class Router
 	{
 		$this->request = $request;
 	}
-	
+
 	public function getResponse()
 	{
 		$request = $this->request;
@@ -123,18 +175,18 @@ class Router
 			action_error($e);
 		}
 	}
-	
+
 	public function Route($action)
 	{
+		$request = $this->request;
 		switch($action)
 		{
 			case 'delete':
-				action_delete($this->request->getParameter('name'));
-				action_list();
+				action_delete($request->getParameter('name'), $request->getParameter('older', 0));
 				break;
 				
 			case 'view':
-				action_view($this->request->getParameter('name'));
+				action_view($request->getParameter('name'));
 				action_list();
 				break;
 			
@@ -160,6 +212,7 @@ class Session
 {
 	private $name;
 	private $file;
+	private $mtime;
 	
 	public function __construct($name)
 	{
@@ -169,15 +222,22 @@ class Session
 			throw new InvalidArgumentException(sprintf('Invalid session name ("%s").', $name));
 		$this->name = $name;
 		$this->file = $list[$name]['file'];
+		$this->mtime = $list[$name]['mtime'];
 	}
 	public function getFile()
 	{
 		return $this->file;
 	}
+	public function getMTime()
+	{
+		return $this->mtime;
+	}
 }
 
 class Sessions
 {
+	public static $SESSIONS;
+
 	public function getConfiguration()
 	{
 		$config = array();
@@ -188,8 +248,8 @@ class Sessions
 		}
 		return $config;
 	}
-	
-	public function getList()
+
+	private function getSessions()
 	{
 		$config = $this->getConfiguration();
 		$path = $config['save_path'];
@@ -203,12 +263,24 @@ class Sessions
 		$time = array();
 		foreach($files as $file)
 		{
-			sscanf(basename($file), $namePattern, $name);
-			
-			$sessions[$name] = array('file' => $file);
-			$time[] = filemtime($file);
+			$r = sscanf(basename($file), $namePattern, $name);
+			assert('$r===1');
+
+			$mtime = filemtime($file);
+			assert('$mtime!==FALSE');
+
+			$sessions[$name] = array('file' => $file, 'mtime' => $mtime);
+
+			$time[] = $mtime;
 		}
 		array_multisort($time, SORT_DESC, $sessions);
 		return $sessions;
+	}
+
+	public function getList()
+	{
+		if (NULL === self::$SESSIONS)
+			self::$SESSIONS = $this->getSessions();
+		return self::$SESSIONS;
 	}
 }
