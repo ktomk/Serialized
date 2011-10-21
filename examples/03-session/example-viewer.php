@@ -141,6 +141,7 @@ function date_age_short($timestamp)
 	$now = (int) $_SERVER['REQUEST_TIME'];
 	$diff = $now - $timestamp;
 	if ($diff < 10) return 'Now';
+	if ($diff < 60) return sprintf('%ds', $diff);
 	$secs = $diff % 60;
 	$mins = (int) ($diff / 60);
 	if ($mins < 60) return sprintf('%dm %ds', $mins, $secs);
