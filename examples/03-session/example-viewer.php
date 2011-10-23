@@ -120,6 +120,8 @@ function action_list()
 
 function action_view($name)
 {
+	$deleteLink = '?action=delete&name=%s';
+	$linkDelete = sprintf($deleteLink, urlencode($name));
 	$session = new Session($name);
 	$file = $session->getFile();
 	$mtime = $session->getMTime();
@@ -129,7 +131,11 @@ function action_view($name)
 	$parser = new SessionParser($serializedSession);
 ?>
 <h2><?php echo $name; ?></h2>
-<div><?php echo htmlspecialchars($file); ?> - <?php echo $age; ?></div>
+<div>
+	<?php echo htmlspecialchars($file); ?>
+	- <?php echo $age; ?>
+	- <a href="<?php echo $linkDelete; ?>">[delete]</a>
+</div>
 <pre style="height:380px; width:760px; overflow:auto; border:1px solid #ccc;">
 <?php echo htmlspecialchars($parser->getDump()); ?>
 </pre>
