@@ -20,7 +20,7 @@
 
     This can be used to inspect and validate serialized data w/o the need
   to unserialize it first. For example if waking up sleeping objects is
-  unwanted (parsing instead the factual process of unserializing). The 
+  unwanted (parsing instead the factual process of unserializing). The
   parsed data can then be inspected and changed.
 
     Serialized variables (Sessions) are supported as well. Those are

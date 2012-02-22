@@ -174,7 +174,7 @@ class Router
 		$request = $this->request;
 
 		$action = $request->getParameter('action', 'list');
-		
+
 		try
 		{
 			return $this->route($action);
@@ -191,12 +191,12 @@ class Router
 			case 'delete':
 				action_delete($request->getParameter('name'), $request->getParameter('older', 0));
 				break;
-				
+
 			case 'view':
 				action_view($request->getParameter('name'));
 				action_list();
 				break;
-			
+
 			case 'list':
 				action_list();
 				break;
@@ -220,7 +220,7 @@ class Session
 	private $name;
 	private $file;
 	private $mtime;
-	
+
 	public function __construct($name)
 	{
 		$sessions = new Sessions();
